@@ -1,0 +1,46 @@
+extends layout
+
+block content
+    h1= title
+    h1(id="userMM") #{usuario}
+    input(id="palabraBuscar", class="inputP", type="text", placeholder="buscar")
+
+    script.
+            
+        var something = function() {
+        var tableContent = '';
+        $.getJSON( 'https://cors-anywhere.herokuapp.com/https://api.qwant.com/api/search/images?count=20&offset=1&q='+$('#palabraBuscar').val(), function( data ) {
+
+        // Stick our user data array into a userlist variable in the global object
+        console.log(data);
+
+        // For each item in our JSON, add a table row and cells to the content string
+        $.each(data.data.result.items, function(){    
+        tableContent += '<img class="imgs" src="'+this.media+'">';
+        });
+
+        // Inject the whole content string into our existing HTML table
+        $('#contImg').html(tableContent);
+       
+        });
+
+        console.log($("#userMM").text());
+        
+        $.ajax({
+        type: 'GET',
+        url: '/enviarTexto/' + $('#palabraBuscar').val() + '/'+ $("#userMM").text()
+        }).done(function( response ) {
+        // Check for a successful (blank) response
+        if (response.msg === '') {
+        console.log('ok');
+        }
+        else {
+        console.log('Error: ' + response.msg);
+        }
+        });
+
+
+        }
+    #conteInput
+        button(onclick='something()', class='ddss') Buscar
+    #contImg
