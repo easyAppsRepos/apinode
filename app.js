@@ -144,7 +144,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
         console.log('error datan');
         res.send().status(500);
 
-      };
+      }
       else{
         return res.send({ insertId: data.insertId });
       }
