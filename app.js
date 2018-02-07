@@ -12,7 +12,7 @@ const Bcrypt = require('bcrypt');
 
 const db = require('./config/db');
 
-var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
+//var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
 
 
 const app = () => {
@@ -132,19 +132,23 @@ expressApp.get('/getPublisTodas', function(req, res) {
 });
 
 
-    expressApp.post('/verificarFBLog', (req, res) => {
-    db(`SELECT  idUsuario
-        FROM usuarios 
-        WHERE fbId = ? 
-    `,[req.body.id]).then((data) => {
-      console.log(data);
-      console.log('dddddd333');
-      console.log(data[0]);
+    expressApp.post('/verificarLog', (req, res) => {
 
-      if (!data) res.send().status(500);
-      return res.send({
-        idUsuario: data[0].idUsuario
-        });
+
+    db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
+        VALUES (?, ?, ?, ?)
+        `,[req.body.id, req.body.username, req.body.profile_picture, req.body.full_name]).then((data) => {
+      console.log(data);
+
+      if (!data) {
+        console.log('error datan');
+        res.send().status(500);
+
+      };
+      else{
+        return res.send({ insertId: data.insertId });
+      }
+      
     }).catch(err => res.send(err).status(500));
   });
 
