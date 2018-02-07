@@ -131,8 +131,27 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
 });
 
-
     expressApp.post('/verificarLog', (req, res) => {
+      
+    Promise.all([
+      db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
+        VALUES (${req.body.id}, ${req.body.username}, ${req.body.profile_picture}, ${req.body.full_name})`),
+      db(`SELECT * FROM usuarios WHERE instagramId = ${req.body.id}
+      `)
+    ]).then((data) => {
+      if (data[0].errno == 1062) {
+        return res.send(data[1]);
+      }
+      else{
+        return res.send({ insertId: data.insertId, data:data[1] });
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+
+    expressApp.post('/verificarLog2a', (req, res) => {
 
 
     db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
