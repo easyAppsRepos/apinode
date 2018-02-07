@@ -1,10 +1,10 @@
 const credentials = () => ({
   database: {
-    hostname: 'magicminddb.c9wrj87xicce.us-east-2.rds.amazonaws.com',
-    name: 'mminddb',
+    hostname: 'inflowencerdb.ctdr2gfabqo3.us-east-2.rds.amazonaws.com',
+    name: 'inflowencerdb',
     port: 3306,
-    username: 'administrator',
-    password: 'MagicMind2017',
+    username: 'inflowenceradmin',
+    password: '[Inflowencerapp]',
     pool: {
       max: 5,
       min: 0,

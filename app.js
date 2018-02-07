@@ -138,7 +138,8 @@ expressApp.get('/getPublisTodas', function(req, res) {
     db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
         VALUES (?, ?, ?, ?)
         `,[req.body.id, req.body.username, req.body.profile_picture, req.body.full_name]).then((data) => {
-      console.log(data);
+         console.log('dataerr333333');
+      console.log(data.errno);
 
       if (!data) {
         console.log('error datan');
