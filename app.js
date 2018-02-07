@@ -147,7 +147,8 @@ expressApp.get('/getPublisTodas', function(req, res) {
         FROM usuarios 
         WHERE instagramId = ?
     `,[req.body.id]).then((dataa) => {
-
+console.log('23aa');
+console.log(dataa);
       return res.send({
         user: dataa[0]
         });
