@@ -135,7 +135,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
     Promise.all([
       db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
-        VALUES (${req.body.id}, ${req.body.username}, ${req.body.profile_picture}, ${req.body.full_name})`),
+        VALUES (${req.body.id}, "${req.body.username}", "${req.body.profile_picture}", "${req.body.full_name}")`),
       db(`SELECT * FROM usuarios WHERE instagramId = ${req.body.id}
       `)
     ]).then((data) => {
