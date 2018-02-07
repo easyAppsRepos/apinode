@@ -137,17 +137,22 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
     db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
         VALUES (?, ?, ?, ?)
-        `,[req.body.id, req.body.username, req.body.profile_picture, req.body.full_name]).then((data) => {
-         console.log('dataerr333333');
-      console.log(data.errno);
+        `,[req.body.id, req.body.username, req.body.profile_picture, req.body.full_name])
 
-      if (!data) {
-        console.log('error datan');
-        res.send().status(500);
 
+
+
+    Promise.all([
+      db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
+        VALUES (${req.body.id}, ${req.body.username}, ${req.body.profile_picture}, ${req.body.full_name})`),
+      db(`SELECT * FROM usuarios WHERE instagramId = ${req.body.id}
+      `)
+    ]).then((data) => {
+      if (data[0].errno == 1062) {
+        return res.send(data[1]);
       }
       else{
-        return res.send({ insertId: data.insertId });
+        return res.send({ insertId: data.insertId, data:data[1] });
       }
       
     }).catch(err => res.send(err).status(500));
