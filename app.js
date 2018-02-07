@@ -146,10 +146,10 @@ expressApp.get('/getPublisTodas', function(req, res) {
           db(`SELECT  *
         FROM usuarios 
         WHERE instagramId = ?
-    `,[req.body.id]).then((data) => {
+    `,[req.body.id]).then((dataa) => {
 
       return res.send({
-        user: data
+        user: dataa[0]
         });
     }).catch(err => res.send(err).status(500));
 
