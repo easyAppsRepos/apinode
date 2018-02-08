@@ -170,7 +170,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
       if (data) {
 
-          db(`SELECT  username, idUsuario 
+          db(`SELECT  *  
         FROM usuarios 
         WHERE instagramId = ?
     `,[req.body.id]).then((dataa) => {
