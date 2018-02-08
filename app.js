@@ -138,7 +138,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
       db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
         VALUES (${req.body.id}, "${req.body.username}", "${req.body.profile_picture}", "${req.body.full_name}")
         ON DUPLICATE KEY UPDATE lastLogin= CURRENT_TIMESTAMP`),
-      db(`SELECT * FROM usuarios WHERE instagramId = ${req.body.id}
+      db(`SELECT * FROM usuarios WHERE instagramId = 2147483647
       `)
     ]).then((data) => {
       console.log('33ww');
@@ -150,7 +150,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
         return res.send(data[1]);
       }
       else{
-        return res.send({ insertId: data.insertId, data:data[1] });
+        return res.send({ insertId: data[0].insertId, data:data[1] });
       }
       
     }).catch(err => res.send(err).status(500));
