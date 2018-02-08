@@ -132,18 +132,19 @@ expressApp.get('/getPublisTodas', function(req, res) {
 });
 
     expressApp.post('/verificarLog', (req, res) => {
-
+      var idss = req.body.id;
     Promise.all([
       
       db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
         VALUES (${req.body.id}, "${req.body.username}", "${req.body.profile_picture}", "${req.body.full_name}")
         ON DUPLICATE KEY UPDATE lastLogin= CURRENT_TIMESTAMP`),
-      db('SELECT * FROM usuarios WHERE instagramId = '+req.body.id+' ')
+      db('SELECT * FROM usuarios WHERE instagramId = '+idss+' ')
     ]).then((data) => {
       console.log(req.body.id);
+       console.log(req.body);
        console.log(data[1]);
         console.log(data[0]);
-         console.log('33w31w');
+         console.log(idss);
       if (data[0].errno == 1062) {
         console.log(data[1]);
         return res.send(data[1]);
