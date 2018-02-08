@@ -131,7 +131,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
 });
 
-    expressApp.post('/verificarLog', (req, res) => {
+    expressApp.post('/verificarLogsd', (req, res) => {
       var idss = req.body.id;
     Promise.all([
       
@@ -158,23 +158,23 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
 
 
-    expressApp.post('/verificarLog2a', (req, res) => {
+    expressApp.post('/verificarLog', (req, res) => {
 
 
     db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
-        VALUES (?, ?, ?, ?)
-        `,[req.body.id, req.body.username, req.body.profile_picture, req.body.full_name]).then((data) => {
-         console.log('dataerr333333');
+        VALUES ("${req.body.id}", "${req.body.username}", "${req.body.profile_picture}", "${req.body.full_name}")
+        ON DUPLICATE KEY UPDATE lastLogin= CURRENT_TIMESTAMP`).then((data) => {
+
+
       console.log(data.errno);
 
-      if (data.errno == 1062) {
+      if (data) {
 
           db(`SELECT  username, idUsuario 
         FROM usuarios 
         WHERE instagramId = ?
     `,[req.body.id]).then((dataa) => {
-console.log('23aa');
-console.log(dataa);
+
       return res.send({
         user: dataa[0]
         });
@@ -183,7 +183,7 @@ console.log(dataa);
 
       }
       else{
-        return res.send({ insertId: data.insertId });
+        return res.send(err).status(500);
       }
       
     }).catch(err => res.send(err).status(500));
