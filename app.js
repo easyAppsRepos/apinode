@@ -253,8 +253,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
     expressApp.post('/getDataUser', (req, res) => {
 
 
-    db(`SELECT * FROM usuarios WHERE instagramId=?
-        `,[req.body.id]).then((data) => {
+    db(`SELECT u.username,u.imagen,u.tipoCuenta,u.followers,u.media,u.bio, pu.bio as bioApp, pu.opcion11,pu.opcion12,pu.opcion21,pu.opcion22 FROM usuarios as u LEFT JOIN perfilesUsuario as pu ON u.instagramId = pu.instagramId WHERE u.instagramId=?`,[req.body.id]).then((data) => {
 
 
       console.log(data);
