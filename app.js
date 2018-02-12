@@ -250,14 +250,36 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
   });
 
+    expressApp.post('/getDataUser', (req, res) => {
+
+
+    db(`SELECT * FROM usuarios WHERE instagramId=?
+        `,[req.body.id]).then((data) => {
+
+
+      console.log(data);
+
+      if (data) {
+        return res.send({
+          user: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+
+
+  });
 
 
 
     expressApp.post('/verificarLog', (req, res) => {
 
 
-    db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
-        VALUES ("${req.body.id}", "${req.body.username}", "${req.body.profile_picture}", "${req.body.full_name}")
+    db(`INSERT INTO usuarios (instagramId, username, bio, imagen,fullname, followers, media) 
+        VALUES ("${req.body.id}", "${req.body.username}", "${req.body.bio}", "${req.body.profile_picture}", "${req.body.full_name}", ${req.body.counts.followed_by}, ${req.body.counts.media})
         ON DUPLICATE KEY UPDATE lastLogin= CURRENT_TIMESTAMP`).then((data) => {
 
 
