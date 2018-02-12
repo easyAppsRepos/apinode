@@ -206,6 +206,51 @@ expressApp.get('/getPublisTodas', function(req, res) {
     }).catch(err => res.send(err).status(500));
   });
 
+
+    expressApp.post('/getRequests', (req, res) => {
+
+
+    db(`SELECT * FROM requests WHERE idInfluencer = ? OR idStore = ?`,[req.body.id, req.body.id]).then((data) => {
+
+
+      console.log(data);
+
+      if (data) {
+        return res.send({
+          data: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+    expressApp.post('/buscarUsuario', (req, res) => {
+
+
+    db(`SELECT * FROM usuarios WHERE username LIKE '%?%'`,[req.body.palabra]).then((data) => {
+
+
+      console.log(data);
+
+      if (data) {
+        return res.send({
+          data: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
     expressApp.post('/verificarLog', (req, res) => {
 
 
