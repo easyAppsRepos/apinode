@@ -238,7 +238,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
       if (data) {
         return res.send({
-          data: data
+          users: data
           });
       }
       else{
