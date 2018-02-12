@@ -231,7 +231,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
     expressApp.post('/buscarUsuario', (req, res) => {
 
 
-    db(`SELECT * FROM usuarios WHERE username LIKE '%?%'`,[req.body.palabra]).then((data) => {
+    db(`SELECT * FROM usuarios WHERE username LIKE '%{req.body.palabra}%'`).then((data) => {
 
 
       console.log(data);
