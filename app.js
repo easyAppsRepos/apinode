@@ -250,6 +250,32 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
   });
 
+
+
+  expressApp.post('/enviarReq', (req, res) => {
+
+
+    db(`INSERT INTO requests (idInfluencer, idStore, mensaje, precio, duracionPost) VALUES(?,?,?,?,?)`,[req.body.idInfluencer, req.body.idStore,req.body.mensaje, req.body.precio, req.body.duracion]).then((data) => {
+
+
+      console.log(data);
+
+      if (data) {
+        return res.send({
+          insertId: data[0].insertId;
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+
+
+  });
+
+
+
     expressApp.post('/getDataUser', (req, res) => {
 
 
