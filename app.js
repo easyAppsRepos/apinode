@@ -228,6 +228,26 @@ expressApp.get('/getPublisTodas', function(req, res) {
   });
 
 
+    expressApp.post('/infoRequest', (req, res) => {
+
+
+    db(`SELECT r.*, u.username as usernameStore FROM requests as r INNER JOIN usuarios as u ON r.idStore = u.instagramId WHERE r.idRequest = ?`,[req.body.idRequest]).then((data) => {
+
+
+      console.log(data);
+
+      if (data) {
+        return res.send({
+          request: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
     expressApp.post('/buscarUsuario', (req, res) => {
 
 
