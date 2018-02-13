@@ -262,7 +262,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
       if (data) {
         return res.send({
-          insertId: data[0].insertId
+          insertId: data.insertId
           });
       }
       else{
