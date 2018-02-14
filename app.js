@@ -210,7 +210,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
     expressApp.post('/getRequests', (req, res) => {
 
 
-    db(`SELECT r.*, u.username FROM requests as r INNER JOIN usuarios as u ON u.instagramId = r.idStore  WHERE r.idInfluencer = ? OR r.idStore = ?`,[req.body.id, req.body.id]).then((data) => {
+    db(`SELECT r.*, u.username as usernameStore, (SELECT e.username FROM usuarios as e WHERE r.idInfluencer = e.instagramId) as usernameInfluencer FROM requests as r, usuarios as u WHERE r.idRequest = ? AND r.idStore = u.instagramId`,[req.body.id]).then((data) => {
 
 
       console.log(data);
