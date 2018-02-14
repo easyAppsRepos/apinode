@@ -541,8 +541,8 @@ expressApp.get('/getPublisTodas', function(req, res) {
       }).catch(err => res.send(err).status(500));
   });
 
-  expressApp.post('/cambiarEstadoPubli', (req, res) => {
-    db(`UPDATE publicaciones SET estadoPublicacion = ${req.body.estado} WHERE idPublicacion = ${req.body.idPublicacion}`)
+  expressApp.post('/cambiarEstadoRequest', (req, res) => {
+    db(`UPDATE requests SET estado = ${req.body.estado} WHERE idRequest = ${req.body.idRequest}`)
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
