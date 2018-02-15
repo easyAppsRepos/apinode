@@ -228,6 +228,18 @@ expressApp.get('/getPublisTodas', function(req, res) {
   });
 
 
+  expressApp.post('/getTop', (req, res) => {
+    Promise.all([
+      db(`SELECT usuarios.username, usuarios.imagen, usuarios.followers, (SELECT count(requests.idStore) FROM requests WHERE requests.idStore = usuarios.instagramId AND requests.estado = 1)  as deals FROM usuarios ORDER BY deals DESC LIMIT 5`),
+      db(`SELECT p.opcion11, p.opcion12, p.opcion21, p.opcion22, usuarios.username, usuarios.imagen, usuarios.followers, (SELECT count(requests.idInfluencer) FROM requests WHERE requests.idInfluencer = usuarios.instagramId AND requests.estado = 1)  as deals FROM usuarios LEFT JOIN perfilesUsuario as p ON p.tipoCuenta = 2 AND p.instagramId = usuarios.instagramId ORDER BY deals DESC LIMIT 5`)
+    ]).then((data) => {
+      if (!data) res.send().status(500);
+      return res.send(data);
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/infoRequest', (req, res) => {
 
 
