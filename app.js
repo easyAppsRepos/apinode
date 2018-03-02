@@ -186,10 +186,18 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
     expressApp.post('/registrarUsuario', (req, res) => {
 
-
+/*
     db(`INSERT INTO perfilesUsuario(instagramId, tipoCuenta, bio,opcion11, opcion12, opcion21, opcion22) 
         VALUES (?,?,?,?,?,?,?)
-        ON DUPLICATE KEY UPDATE bio=?,opcion11=?, opcion12=?, opcion21=?, opcion22=?`,[req.body.instagramId, req.body.tipoCuenta, req.body.bio, req.body.opcion11, req.body.opcion12, req.body.opcion21, req.body.opcion22,req.body.bio, req.body.opcion11, req.body.opcion12, req.body.opcion21, req.body.opcion22]).then((data) => {
+        ON DUPLICATE KEY UPDATE bio=?,opcion11=?, opcion12=?, opcion21=?, opcion22=?, tipoCuenta=?`,[req.body.instagramId, req.body.tipoCuenta, req.body.bio, req.body.opcion11, req.body.opcion12, req.body.opcion21, req.body.opcion22,req.body.bio, req.body.opcion11, req.body.opcion12, req.body.opcion21, req.body.opcion22,req.body.tipoCuenta])
+*/
+
+    Promise.all([
+      db(`INSERT INTO perfilesUsuario(instagramId, tipoCuenta, bio,opcion11, opcion12, opcion21, opcion22) 
+        VALUES (?,?,?,?,?,?,?)
+        ON DUPLICATE KEY UPDATE bio=?,opcion11=?, opcion12=?, opcion21=?, opcion22=?, tipoCuenta=?`,[req.body.instagramId, req.body.tipoCuenta, req.body.bio, req.body.opcion11, req.body.opcion12, req.body.opcion21, req.body.opcion22,req.body.bio, req.body.opcion11, req.body.opcion12, req.body.opcion21, req.body.opcion22,req.body.tipoCuenta]),
+      db(`UPDATE usuarios set tipoCuenta=? WHERE instagramId = ?`,[req.body.tipoCuenta,req.body.instagramId])
+    ]).then((data) => {
 
 
       console.log(data.errno);
