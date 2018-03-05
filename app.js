@@ -270,8 +270,17 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
     expressApp.post('/buscarUsuario', (req, res) => {
 
-
-    db("SELECT * FROM usuarios WHERE username LIKE '%"+req.body.palabra+"%'").then((data) => {
+      //req.body.option1
+/*      var opcion1;
+      if(req.body.option1){
+        opcion1 ='1 ) AND';
+      }
+      else{
+        opcion1 = '1 OR tipoCuenta = 2) AND';
+      }
+      
+*/
+    db("SELECT * FROM usuarios WHERE tipoCuenta = 1 AND username LIKE '%"+req.body.palabra+"%'").then((data) => {
 
 
       console.log(data);
@@ -292,9 +301,37 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
 
 
+
+
+
+
+
+    expressApp.post('/listarTodos', (req, res) => {
+
+      //req.body.option1
+/*      var opcion1;
+      if(req.body.option1){
+        opcion1 ='1 ) AND';
+      }
+      else{
+        opcion1 = '1 OR tipoCuenta = 2) AND';
+      }
+      
+*/
+    db("SELECT * FROM usuarios WHERE tipoCuenta = 1 ").then((data) => {
+      console.log(data);
+      if (data) {
+        return res.send({
+          users: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+    }).catch(err => res.send(err).status(500));
+  });
+
   expressApp.post('/enviarReq', (req, res) => {
-
-
     db(`INSERT INTO requests (idInfluencer, idStore, mensaje, precio, duracionPost) VALUES(?,?,?,?,?)`,[req.body.idInfluencer, req.body.idStore,req.body.mensaje, req.body.precio, req.body.duracion]).then((data) => {
 
 
