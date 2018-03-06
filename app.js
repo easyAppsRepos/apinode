@@ -235,6 +235,27 @@ expressApp.get('/getPublisTodas', function(req, res) {
     }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/getHistory', (req, res) => {
+
+
+    db(`SELECT r.*, (SELECT e.username FROM usuarios as e WHERE r.idInfluencer = e.instagramId) as usernameInfluencer, (SELECT d.username FROM usuarios as d WHERE r.idStore = d.instagramId) as usernameStore FROM requests as r  WHERE r.idInfluencer = ? OR r.idStore = ? AND ( r.estado = 3 )`,[req.body.id, req.body.id]).then((data) => {
+
+
+      console.log(data);
+
+      if (data) {
+        return res.send({
+          data: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.post('/getTop', (req, res) => {
     Promise.all([
