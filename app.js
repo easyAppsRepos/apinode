@@ -238,17 +238,17 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
   expressApp.post('/getTop', (req, res) => {
     Promise.all([
-      db(`SELECT usuarios.instagramId, usuarios.username, usuarios.imagen, usuarios.followers, (SELECT count(requests.idStore) FROM requests WHERE requests.idStore = usuarios.instagramId AND requests.estado = 1)  as deals FROM usuarios ORDER BY deals DESC LIMIT 5`),
-      db(`SELECT usuarios.instagramId, p.opcion11, p.opcion12, p.opcion21, p.opcion22, usuarios.username, usuarios.imagen, usuarios.followers, (SELECT count(requests.idInfluencer) FROM requests WHERE requests.idInfluencer = usuarios.instagramId AND requests.estado = 1)  as deals FROM usuarios LEFT JOIN perfilesUsuario as p ON p.tipoCuenta = 2 AND p.instagramId = usuarios.instagramId ORDER BY deals DESC LIMIT 5`),
+      db(`SELECT usuarios.instagramId, usuarios.username, usuarios.imagen, usuarios.followers, (SELECT count(requests.idStore) FROM requests WHERE requests.idStore = usuarios.instagramId AND requests.estado = 1)  as deals FROM usuarios  WHERE usuarios.tipoCuenta = 2 ORDER BY deals DESC LIMIT 5`),
+      db(`SELECT usuarios.instagramId, p.opcion11, p.opcion12, p.opcion21, p.opcion22, usuarios.username, usuarios.imagen, usuarios.followers, (SELECT count(requests.idInfluencer) FROM requests WHERE requests.idInfluencer = usuarios.instagramId AND requests.estado = 1)  as deals FROM usuarios LEFT JOIN perfilesUsuario as p ON p.tipoCuenta = 2 AND p.instagramId = usuarios.instagramId  WHERE usuarios.tipoCuenta = 1  ORDER BY deals DESC LIMIT 5`),
       db(`SELECT (SELECT rank FROM 
 (SELECT instagramId, @rank:=@rank+1 AS rank 
   FROM (SELECT  ww.instagramId, 
     (SELECT count(rr.idStore) FROM requests as rr
     WHERE rr.idStore = ww.instagramId AND 
-    rr.estado = 1)  as deals FROM usuarios as ww ORDER BY deals DESC ) AS sq, 
+    rr.estado = 1)  as deals FROM usuarios as ww  WHERE ww.tipoCuenta = 2 ORDER BY deals DESC ) AS sq, 
   (SELECT @rank:=0) AS tr) AS q WHERE instagramId = "${req.body.idUser}") as asStore, ( SELECT rank FROM 
 (SELECT instagramId, @rank:=@rank+1 AS rank 
-  FROM (SELECT ww.instagramId, (SELECT count(ff.idInfluencer) FROM requests as ff WHERE ff.idInfluencer = ww.instagramId AND ff.estado = 1)  as deals FROM usuarios as ww ORDER BY deals DESC) AS sq, 
+  FROM (SELECT ww.instagramId, (SELECT count(ff.idInfluencer) FROM requests as ff WHERE ff.idInfluencer = ww.instagramId AND ff.estado = 1)  as deals FROM usuarios as ww  WHERE ww.tipoCuenta = 1 ORDER BY deals DESC) AS sq, 
   (SELECT @rank:=0) AS tr) AS q WHERE instagramId = "${req.body.idUser}") asInfluencer `)
     ]).then((data) => {
       if (!data) res.send().status(500);
