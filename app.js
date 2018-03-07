@@ -387,7 +387,13 @@ expressApp.get('/getPublisTodas', function(req, res) {
     expressApp.post('/getDataUser', (req, res) => {
 
 
-    db(`SELECT u.username,u.imagen,u.tipoCuenta,u.followers,u.media,u.bio, pu.bio as bioApp, pu.opcion11,pu.opcion12,pu.opcion21,pu.opcion22 FROM usuarios as u LEFT JOIN perfilesUsuario as pu ON u.instagramId = pu.instagramId WHERE u.instagramId=?`,[req.body.id]).then((data) => {
+    db(`SELECT (SELECT count(requests.idInfluencer) as deals
+  FROM requests 
+    WHERE requests.idInfluencer = ? 
+    AND (requests.estado = 1 OR requests.estado=3)) as dealsInfluencer, (SELECT count(requests.idStore) as deals
+  FROM requests 
+    WHERE requests.idStore = ? 
+    AND (requests.estado = 1 OR requests.estado=3)) as dealsStore, u.username,u.imagen,u.tipoCuenta,u.followers,u.media,u.bio, pu.bio as bioApp, pu.opcion11,pu.opcion12,pu.opcion21,pu.opcion22 FROM usuarios as u LEFT JOIN perfilesUsuario as pu ON u.instagramId = pu.instagramId WHERE u.instagramId=?`,[req.body.id,req.body.id,req.body.id]).then((data) => {
 
 
       console.log(data);
