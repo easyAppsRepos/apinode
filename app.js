@@ -13,6 +13,32 @@ const Bcrypt = require('bcrypt');
 const db = require('./config/db');
 
 //var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
+var iap = require('in-app-purchase');
+
+const { database } = require('./credentials');
+var validationType = iap.APPLE;
+
+iap.config({
+    applePassword: database.iapSecret
+});
+
+
+
+/*iap.setup(function (error) {
+    if (error) {
+        return console.error('something went wrong...');
+    }
+    // iap is ready
+    iap.validate(iap.APPLE, appleReceipt, function (err, appleRes) {
+        if (err) {
+            return console.error(err);
+        }
+        if (iap.isValidated(appRes)) {
+            // yay good!
+        }
+    });
+});
+*/
 
 
 const app = () => {
@@ -431,9 +457,43 @@ expressApp.get('/getPublisTodas', function(req, res) {
         WHERE instagramId = ?
     `,[req.body.id]).then((dataa) => {
 
-      return res.send({
-        user: dataa[0]
-        });
+      if(dataa[0].receipSubscription){
+        var data = dataa[0].receipSubscription;
+          iap.setup((err) => {
+            if (err) {
+            console.log(err);
+            } else {
+
+
+              iap.validate(iap.APPLE, data, (err, response) => {
+              if (err) {
+              console.log(err);
+
+              } else {
+              if (iap.isValidated(response)) {
+              var purcahseDataList = iap.getPurchaseData(response);
+              }
+              }
+              });
+
+              return res.send({
+              user: dataa[0],
+              suscription: purcahseDataList || null;
+              });
+
+
+            }
+          });
+
+      }
+      else{   
+
+        return res.send({
+              user: dataa[0]
+              });
+
+      }
+   
     }).catch(err => res.send(err).status(500));
 
 
