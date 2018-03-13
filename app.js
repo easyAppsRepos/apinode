@@ -77,6 +77,17 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/insertReceip', (req, res) => {
+
+
+    db(`INSERT INTO receipUsuario(idUsuario, receip) 
+        VALUES (?,?) ON DUPLICATE KEY UPDATE receip=?`,[req.body.idUsuario, req.body.receip, req.body.receip])
+      .then((data) => {
+        console.log(data);
+        if (!data) {res.send().status(500);}
+        return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
 
   expressApp.post('/verificarReceip', (req, res) => {
 
