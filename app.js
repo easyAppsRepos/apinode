@@ -85,21 +85,40 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
 
               iap.validate(iap.APPLE, req.body.receip, (err, response) => {
               if (err) {
+
               console.log(err);
 
+              return res.send({
+              suscription:  null,
+              error:true;
+              });
+
+
               } else {
+
               if (iap.isValidated(response)) {
               //  console.log(response);
               purcahseDataList = iap.getPurchaseData(response);
               console.log('2s2');
               console.log(purcahseDataList);
+              return res.send({
+              suscription:  purcahseDataList || null,
+              error:false;
+              });
+
               }
+              else{
+              return res.send({
+              suscription:  null,
+              error:true;
+              });
+
+              }
+
               }
               });
 
-              return res.send({
-              suscription: purcahseDataList || null
-              });
+
 
 
 
