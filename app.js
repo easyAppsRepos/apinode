@@ -77,6 +77,70 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+
+
+    expressApp.post('/verificarSuscripcion', (req, res) => {
+
+            var purcahseDataList;
+
+    db(`SELECT * FROM receipUsuario WHERE idUsuario = ?`,[req.body.idUsuario]).then((data) => {
+
+      if (data) {
+
+/*        return res.send({
+          data: data
+          });*/
+          //STAR IF
+
+
+             iap.validate(iap.APPLE, data[0].receip, (err, response) => {
+              if (err) {
+
+              console.log(err);
+
+              return res.send({
+              suscription:  false,
+              error:true
+              });
+
+
+              } else {
+
+              if (iap.isValidated(response)) {
+              // console.log(response);
+              purcahseDataList = iap.getPurchaseData(response);
+              console.log('2s2s3s3s3s');
+              console.log(purcahseDataList);
+              return res.send({
+              suscription:  true,
+              error:false
+              });
+
+              }
+              else{
+              return res.send({
+              suscription:  false,
+              error:false
+              });
+
+              }
+
+              }
+              });
+
+          //END IF
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/insertReceip', (req, res) => {
 
 
