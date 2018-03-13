@@ -478,7 +478,7 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
               return res.send({
               user: dataa[0],
-              suscription: purcahseDataList || null;
+              suscription: purcahseDataList || null
               });
 
 
