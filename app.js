@@ -565,16 +565,16 @@ expressApp.get('/getPublisTodas', function(req, res) {
   });
 
 
-
     expressApp.post('/verificarLog', (req, res) => {
 
 
     db(`INSERT INTO usuarios (instagramId, username, bio, imagen,fullname, followers, media) 
         VALUES ("${req.body.id}", "${req.body.username}", "${req.body.bio}", "${req.body.profile_picture}", "${req.body.full_name}", ${req.body.counts.followed_by}, ${req.body.counts.media})
         ON DUPLICATE KEY UPDATE lastLogin= CURRENT_TIMESTAMP`).then((data) => {
+  console.log('al menos here');
 
-
-      console.log(data.errno);
+      console.log(req.body);
+          console.log(data);
 
       if (data) {
 
@@ -583,43 +583,9 @@ expressApp.get('/getPublisTodas', function(req, res) {
         WHERE instagramId = ?
     `,[req.body.id]).then((dataa) => {
 
-      if(dataa[0].receipSubscription){
-        var data = dataa[0].receipSubscription;
-          iap.setup((err) => {
-            if (err) {
-            console.log(err);
-            } else {
-
-
-              iap.validate(iap.APPLE, data, (err, response) => {
-              if (err) {
-              console.log(err);
-
-              } else {
-              if (iap.isValidated(response)) {
-              var purcahseDataList = iap.getPurchaseData(response);
-              }
-              }
-              });
-
-              return res.send({
-              user: dataa[0],
-              suscription: purcahseDataList || null
-              });
-
-
-            }
-          });
-
-      }
-      else{   
-
-        return res.send({
-              user: dataa[0]
-              });
-
-      }
-   
+      return res.send({
+        user: dataa[0]
+        });
     }).catch(err => res.send(err).status(500));
 
 
@@ -627,6 +593,90 @@ expressApp.get('/getPublisTodas', function(req, res) {
       else{
         return res.send(err).status(500);
       }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+    expressApp.post('/vesrificarLog', (req, res) => {
+      console.log('al menos here');
+           console.log(req.body);
+
+    db(`INSERT INTO usuarios (instagramId, username, bio, imagen,fullname, followers, media) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE lastLogin=CURRENT_TIMESTAMP`,[req.body.id,req.body.username,req.body.bio,req.body.profile_picture, req.body.full_name, req.body.counts.media ]).then((data) => {
+
+
+      if (data) {
+
+          db(`SELECT  *  
+        FROM usuarios 
+        WHERE instagramId = ?
+    `,[req.body.id]).then((dataa) => {
+
+      return res.send({
+        user: dataa[0]
+        });
+    }).catch(err => res.send(err).status(500));
+
+
+      }
+      else{
+        return res.send(err).status(500);
+      }
+
+
+    //   if (data) {
+
+    //       db(`SELECT  *  
+    //     FROM usuarios 
+    //     WHERE instagramId = ?
+    // `,[req.body.id]).then((dataa) => {
+
+    //   if(dataa[0].receipSubscription){
+    //     var data = dataa[0].receipSubscription;
+    //       iap.setup((err) => {
+    //         if (err) {
+    //         console.log(err);
+    //         } else {
+
+
+    //           iap.validate(iap.APPLE, data, (err, response) => {
+    //           if (err) {
+    //           console.log(err);
+
+    //           } else {
+    //           if (iap.isValidated(response)) {
+    //           var purcahseDataList = iap.getPurchaseData(response);
+    //           }
+    //           }
+    //           });
+
+    //           return res.send({
+    //           user: dataa[0],
+    //           suscription: purcahseDataList || null
+    //           });
+
+
+    //         }
+    //       });
+
+    //   }
+    //   else{   
+
+    //     return res.send({
+    //           user: dataa[0]
+    //           });
+
+    //   }
+   
+    // }).catch(err => res.send(err).status(500));
+
+
+    //   }
+    //   else{
+    //     return res.send(err).status(500);
+    //   }
       
     }).catch(err => res.send(err).status(500));
   });
