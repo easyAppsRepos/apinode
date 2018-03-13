@@ -81,6 +81,7 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
   expressApp.post('/verificarReceip', (req, res) => {
 
 
+            var purcahseDataList;
 
               iap.validate(iap.APPLE, req.body.receip, (err, response) => {
               if (err) {
@@ -89,7 +90,7 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
               } else {
               if (iap.isValidated(response)) {
               //  console.log(response);
-              var purcahseDataList = iap.getPurchaseData(response);
+              purcahseDataList = iap.getPurchaseData(response);
               console.log('2s2');
               console.log(purcahseDataList);
               }
