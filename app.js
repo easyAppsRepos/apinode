@@ -77,6 +77,36 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/verificarReceip', (req, res) => {
+
+
+
+              iap.validate(iap.APPLE, req.body.receip, (err, response) => {
+              if (err) {
+              console.log(err);
+
+              } else {
+              if (iap.isValidated(response)) {
+                console.log(response);
+              var purcahseDataList = iap.getPurchaseData(response);
+              console.log(purcahseDataList);
+              }
+              }
+              });
+
+              return res.send({
+              suscription: purcahseDataList || null
+              });
+
+
+
+  });
+
+
+
+
+
  expressApp.post('/addUserFb', (req, res) => {
 console.log(req.body);
     db(`INSERT INTO usuarios (email, nombre, fbId, imagenUrl) 
