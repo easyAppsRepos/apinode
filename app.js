@@ -97,9 +97,9 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
               } else {
 
               if (iap.isValidated(response)) {
-              //  console.log(response);
+               console.log(response);
               purcahseDataList = iap.getPurchaseData(response);
-              console.log('2s2');
+              console.log('2s2s3s3s3s');
               console.log(purcahseDataList);
               return res.send({
               suscription:  purcahseDataList || null,
@@ -110,7 +110,7 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
               else{
               return res.send({
               suscription:  null,
-              error:true
+              error:false
               });
 
               }
