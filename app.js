@@ -88,8 +88,9 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
 
               } else {
               if (iap.isValidated(response)) {
-                console.log(response);
+              //  console.log(response);
               var purcahseDataList = iap.getPurchaseData(response);
+              console.log('2s2');
               console.log(purcahseDataList);
               }
               }
