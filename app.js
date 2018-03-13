@@ -15,7 +15,7 @@ const db = require('./config/db');
 //var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
 var iap = require('in-app-purchase');
 
-const { database } = require('./credentials');
+const { database } = require('./config/credentials');
 var validationType = iap.APPLE;
 
 iap.config({
