@@ -90,7 +90,7 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
 
               return res.send({
               suscription:  null,
-              error:true;
+              error:true
               });
 
 
@@ -103,14 +103,14 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
               console.log(purcahseDataList);
               return res.send({
               suscription:  purcahseDataList || null,
-              error:false;
+              error:false
               });
 
               }
               else{
               return res.send({
               suscription:  null,
-              error:true;
+              error:true
               });
 
               }
