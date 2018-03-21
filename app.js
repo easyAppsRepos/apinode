@@ -439,7 +439,16 @@ expressApp.get('/getPublisTodas', function(req, res) {
   (SELECT @rank:=0) AS tr) AS q WHERE instagramId = "${req.body.idUser}") as asStore, ( SELECT rank FROM 
 (SELECT instagramId, @rank:=@rank+1 AS rank 
   FROM (SELECT ww.instagramId, (SELECT count(ff.idInfluencer) FROM requests as ff WHERE ff.idInfluencer = ww.instagramId AND ff.estado = 1)  as deals FROM usuarios as ww  WHERE ww.tipoCuenta = 1 ORDER BY deals DESC) AS sq, 
-  (SELECT @rank:=0) AS tr) AS q WHERE instagramId = "${req.body.idUser}") asInfluencer `)
+  (SELECT @rank:=0) AS tr) AS q WHERE instagramId = "${req.body.idUser}") asInfluencer `),
+
+       db(`SELECT * FROM usuarios AS u
+          WHERE u.tipoCuenta = 1 AND (u.fechaCreacion >= DATE_SUB(CURDATE(), INTERVAL 7 DAY))
+          GROUP BY DAY(u.fechaCreacion) LIMIT 5
+          `),
+        
+        db(`SELECT * FROM usuarios AS u
+          WHERE u.tipoCuenta = 2 AND (u.fechaCreacion >= DATE_SUB(CURDATE(), INTERVAL 7 DAY))
+          GROUP BY DAY(u.fechaCreacion) LIMIT 5`)
     ]).then((data) => {
       if (!data) res.send().status(500);
       return res.send(data);
