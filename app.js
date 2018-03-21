@@ -504,19 +504,19 @@ expressApp.get('/getPublisTodas', function(req, res) {
       }
 
       if(req.body.opcion11){
-        stringQuery += ` AND (pu.opcion11 = `+req.body.opcion11+`) `;
+        stringQuery += ` AND (pu.opcion12 = `+req.body.opcion11+` OR pu.opcion11 = `+req.body.opcion11+`) `;
       }
 
       if(req.body.opcion12){
-        stringQuery += ` AND (pu.opcion12 = `+req.body.opcion12+`) `;
+        stringQuery += ` AND (pu.opcion12 = `+req.body.opcion12+` OR pu.opcion11 = `+req.body.opcion12+` ) `;
       }
 
       if(req.body.opcion21){
-        stringQuery += ` AND (pu.opcion21 = `+req.body.opcion21+`) `;
+        stringQuery += ` AND (pu.opcion21 = `+req.body.opcion21+` OR pu.opcion22 = `+req.body.opcion21+`) `;
       }
 
       if(req.body.opcion22){
-        stringQuery += ` AND (pu.opcion22 = `+req.body.opcion22+`) `;
+        stringQuery += ` AND (pu.opcion22 = `+req.body.opcion22+` OR pu.opcion21 = `+req.body.opcion22+`) `;
       }
 
     db(stringQuery).then((data) => {
