@@ -203,6 +203,19 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
 
 
 
+  expressApp.post('/editarUsuario', (req, res) => {
+    db(`UPDATE perfilesUsuario SET bio = ?, opcion11 = ?, opcion12=?, opcion21 = ?,
+    opcion22 = ? WHERE instagramId = ?`,[req.body.bio, req.body.opcion11, req.body.opcion12,
+                                        req.body.opcion21, req.body.opcion22, req.body.idUsuario ])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
  expressApp.post('/addUserFb', (req, res) => {
 console.log(req.body);
     db(`INSERT INTO usuarios (email, nombre, fbId, imagenUrl) 
@@ -310,30 +323,6 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
 
 
-    expressApp.post('/verificarLogsd', (req, res) => {
-      var idss = req.body.id;
-    Promise.all([
-      
-      db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
-        VALUES ("${req.body.id}", "${req.body.username}", "${req.body.profile_picture}", "${req.body.full_name}")
-        ON DUPLICATE KEY UPDATE lastLogin= CURRENT_TIMESTAMP`),
-      db('SELECT * FROM usuarios WHERE instagramId ="'+idss+'"')
-    ]).then((data) => {
-      console.log(req.body.id);
-       console.log(req.body);
-       console.log(data[1]);
-        console.log(data[0]);
-         console.log(idss);
-      if (data[0].errno == 1062) {
-        console.log(data[1]);
-        return res.send(data[1]);
-      }
-      else{
-        return res.send({ insertId: data[0].insertId, data:data[1] });
-      }
-      
-    }).catch(err => res.send(err).status(500));
-  });
 
 
     expressApp.post('/registrarUsuario', (req, res) => {
