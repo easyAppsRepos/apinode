@@ -470,16 +470,6 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
     expressApp.post('/buscarUsuario', (req, res) => {
 
-      //req.body.option1
-/*      var opcion1;
-      if(req.body.option1){
-        opcion1 ='1 ) AND';
-      }
-      else{
-        opcion1 = '1 OR tipoCuenta = 2) AND';
-      }
-      
-*/
     db("SELECT * FROM usuarios WHERE tipoCuenta = 1 AND username LIKE '%"+req.body.palabra+"%'").then((data) => {
 
 
@@ -502,6 +492,49 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
 
 
+    expressApp.post('/busquedaAvanzada', (req, res) => {
+
+      var stringQuery = `SELECT u.* FROM usuarios as u 
+      INNER JOIN perfilesUsuario as pu ON u.instagramId = pu.instagramId 
+      WHERE u.tipoCuenta = 1 `;
+
+      if(req.body.palabra){
+        stringQuery += ` AND (u.username LIKE '%`+req.body.palabra+`%' 
+      OR pu.bio LIKE '%`+req.body.palabra+`%') `;
+      }
+
+      if(req.body.opcion11){
+        stringQuery += ` AND (pu.opcion11 = `+req.body.opcion11+`) `;
+      }
+
+      if(req.body.opcion12){
+        stringQuery += ` AND (pu.opcion12 = `+req.body.opcion12+`) `;
+      }
+
+      if(req.body.opcion21){
+        stringQuery += ` AND (pu.opcion21 = `+req.body.opcion21+`) `;
+      }
+
+      if(req.body.opcion22){
+        stringQuery += ` AND (pu.opcion22 = `+req.body.opcion22+`) `;
+      }
+
+    db(stringQuery).then((data) => {
+      console.log(data);
+
+      if (data) {
+        return res.send({
+          users: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+
+
+  });
 
 
 
