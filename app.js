@@ -214,6 +214,34 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
   });
 
 
+  expressApp.post('/borrarRequest', (req, res) => {
+    db(`DELETE FROM requests WHERE idRequest =  ?`,[req.body.id ])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+  expressApp.get('/deleteuser/:idUsuario', function(req, res) {
+
+
+     db(`DELETE FROM usuarios WHERE idUsuario = ${req.params.idUsuario}
+        `)
+      .then((data) => {
+
+        if (!data) res.send({ msg:'error: '});
+        return res.send({ msg: '' });
+
+      }).catch(err => res.send(err).status(500));
+
+
+
+  });
+
+
+
 
 
  expressApp.post('/addUserFb', (req, res) => {
