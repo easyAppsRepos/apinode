@@ -207,11 +207,11 @@ console.log(req.body);
     }).catch(err => res.send(err).status(500));
   });
 
-
+/*
   expressApp.get('/:usuario', function(req, res) {
   res.render('index', { title: 'Busqueda de Imagenes', usuario: req.params.usuario });
   });
-
+*/
 
 
 
