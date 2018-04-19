@@ -13,16 +13,16 @@ const Bcrypt = require('bcrypt');
 const db = require('./config/db');
 
 //var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
-var iap = require('in-app-purchase');
+//var iap = require('in-app-purchase');
 
 const { database } = require('./config/credentials');
-var validationType = iap.APPLE;
+/*var validationType = iap.APPLE;
 
 iap.config({
     applePassword: database.iapSecret
 });
 
-
+*/
 
 /*iap.setup(function (error) {
     if (error) {
@@ -78,66 +78,6 @@ expressApp.use(express.static(path.join(__dirname, 'public')));
   });
 
 
-
-
-
-    expressApp.post('/verificarSuscripcion', (req, res) => {
-
-            var purcahseDataList;
-
-    db(`SELECT * FROM receipUsuario WHERE idUsuario = ?`,[req.body.idUsuario]).then((data) => {
-
-      if (data) {
-
-/*        return res.send({
-          data: data
-          });*/
-          //STAR IF
-
-
-             iap.validate(iap.APPLE, data[0].receip, (err, response) => {
-              if (err) {
-
-              console.log(err);
-
-              return res.send({
-              suscription:  false,
-              error:true
-              });
-
-
-              } else {
-
-              if (iap.isValidated(response)) {
-              // console.log(response);
-              purcahseDataList = iap.getPurchaseData(response);
-              console.log('2s2s3s3s3s');
-              console.log(purcahseDataList);
-              return res.send({
-              suscription:  true,
-              error:false
-              });
-
-              }
-              else{
-              return res.send({
-              suscription:  false,
-              error:false
-              });
-
-              }
-
-              }
-              });
-
-          //END IF
-      }
-      else{
-        return res.send(err).status(500);
-      }
-      
-    }).catch(err => res.send(err).status(500));
-  });
 
 
 
