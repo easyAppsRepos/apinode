@@ -324,31 +324,6 @@ expressApp.get('/getPublisTodas', function(req, res) {
 
 });
 
-    expressApp.post('/verificarLogsd', (req, res) => {
-      var idss = req.body.id;
-    Promise.all([
-      
-      db(`INSERT INTO usuarios (instagramId, username, imagen,fullname) 
-        VALUES ("${req.body.id}", "${req.body.username}", "${req.body.profile_picture}", "${req.body.full_name}")
-        ON DUPLICATE KEY UPDATE lastLogin= CURRENT_TIMESTAMP`),
-      db('SELECT * FROM usuarios WHERE instagramId ="'+idss+'"')
-    ]).then((data) => {
-      console.log(req.body.id);
-       console.log(req.body);
-       console.log(data[1]);
-        console.log(data[0]);
-         console.log(idss);
-      if (data[0].errno == 1062) {
-        console.log(data[1]);
-        return res.send(data[1]);
-      }
-      else{
-        return res.send({ insertId: data[0].insertId, data:data[1] });
-      }
-      
-    }).catch(err => res.send(err).status(500));
-  });
-
 
 
 
@@ -1132,8 +1107,8 @@ var nombreV = 'publicacion'+req.body.idPublicacion;
 
 
 
-/*  expressApp.get('/', (req, res) =>
-    res.send('Api is running in port 3000'));*/
+  expressApp.get('/test', (req, res) =>
+    res.send('Api is running in port 3000'));
 
   return expressApp.listen(
     3000,
