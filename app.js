@@ -42,19 +42,16 @@ iap.config({
 
 
 const app = () => {
+
+
   const expressApp = express();
   expressApp.use(bodyParser.urlencoded({ extended: true }));
   expressApp.use(bodyParser.json());
-expressApp.use(cors({origin: 'http://localhost:3000'}));
+//expressApp.use(cors({origin: 'http://localhost:3003'}));
+expressApp.use(cors({origin: '*'}));
 
 
 
-
-
-expressApp.set('views', path.join(__dirname, 'views'));
-expressApp.set('view engine', 'jade');
-//addUsuario
-expressApp.use(express.static(path.join(__dirname, 'public')));
 
 
   expressApp.post('/addUsuario', (req, res) => {
