@@ -56,8 +56,8 @@ const app = () => {
 
 //API BEYOU START
 
-expressApp.get('/serviciosHome', function(req, res) {
-    db(`SELECT  s.*, sh.posicion FROM servicio as s INNER JOIN servicio_home as sh ON s.idServicio = sh.idServicio LIMIT 8`).then((data) => {
+expressApp.get('/categoriasHome', function(req, res) {
+    db(`SELECT  s.*, sh.posicion FROM categoria as s INNER JOIN categorias_home as sh ON s.idCategoria = sh.idCategoria LIMIT 8`).then((data) => {
       console.log(data);
       res.json(data);
     }).catch(err => res.send(err).status(500));
