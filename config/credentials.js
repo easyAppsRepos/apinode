@@ -1,10 +1,10 @@
 const credentials = () => ({
   database: {
-    hostname: 'inflowencerdb.ctdr2gfabqo3.us-east-2.rds.amazonaws.com',
-    name: 'inflowencerdb',
+    hostname: 't',
+    name: 't',
     port: 3306,
-    username: 'inflowenceradmin',
-    password: '[Inflowencerapp]',
+    username: 't',
+    password: 't',
     pool: {
       max: 5,
       min: 0,
