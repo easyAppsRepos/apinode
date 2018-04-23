@@ -64,6 +64,12 @@ expressApp.get('/categoriasHome', function(req, res) {
 });
 
 
+expressApp.get('/categoriasActivas', function(req, res) {
+    db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1`).then((data) => {
+      console.log(data);
+      res.json(data);
+    }).catch(err => res.send(err).status(500));
+});
 
 
 
