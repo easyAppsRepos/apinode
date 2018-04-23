@@ -71,6 +71,19 @@ expressApp.get('/categoriasActivas', function(req, res) {
     }).catch(err => res.send(err).status(500));
 });
 
+  expressApp.post('/buscarServicios', (req, res) => {
+    db(`SELECT s.*, c.nombre as nombreCentro, c.idFoto 
+      FROM servicio as s, centro as c 
+      WHERE c.idCentro = s.idCentro 
+      AND s.idCategoria = ? 
+      AND s.estado = 1 `,[req.body.idCategoria])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
 
   expressApp.get('/test', (req, res) =>
