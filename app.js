@@ -84,7 +84,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
       }).catch(err => res.send(err).status(500));
   });
 
-lat lon lat 
+
 
   expressApp.post('/buscarServiciosGPS', (req, res) => {
     db(`SELECT c.*, 
