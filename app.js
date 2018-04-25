@@ -108,6 +108,23 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
 
 
+  expressApp.post('/getCentroInfo', (req, res) => {
+     Promise.all([
+    db(`SELECT c.*, 
+      COUNT(DISTINCT ec.puntuacion) as cantRate, 
+      AVG(ec.puntuacion) as rate, (SELECT idUsuarioFavorito 
+      FROM usuario_favorito WHERE idCentro = ? AND idCliente = ? AND estado = 1) as favorito
+      FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
+      GROUP BY c.idCentro`,[req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, c.nombre 
+      FROM servicio as s, categoria as c 
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro])])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({info:data[0],servicios:data[1]});
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
   expressApp.get('/test', (req, res) =>
