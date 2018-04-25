@@ -120,7 +120,9 @@ expressApp.get('/categoriasActivas', function(req, res) {
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
-    db(`SELECT * FROM evaluacionCentro WHERE idCentro = ?`,[req.body.idCentro])])
+    db(`SELECT ev.*, u.nombre as nombreUsuario 
+      FROM evaluacionCentro as ev, cliente as u, cita as c 
+      WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCita = ev.idCita`,[req.body.idCentro])])
       .then((data) => {
 
         if (!data) res.send().status(500);
