@@ -125,7 +125,10 @@ expressApp.get('/categoriasActivas', function(req, res) {
         if (!data) res.send().status(500);
 
         let comentarios = data[2].map((i, index) => {
+          console.log(i);
+
         i.timeAgo =  moment(i.fechaCreacion).fromNow();
+         console.log(i);
         return i;});
 
 
