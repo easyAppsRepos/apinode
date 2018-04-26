@@ -159,7 +159,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
        
 
         var groups = _.groupBy(data[0], 'nombreCategoria');
-        return res.send({servicios:groups});
+        return res.send({servicios:data[0]});
       }).catch(err => res.send(err).status(500));
   });
 
