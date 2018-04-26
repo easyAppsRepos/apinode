@@ -148,6 +148,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
+    db(`SELECT e.nombre, e.descripcion, e.idFoto, e.idEmpleado FROM empleado as e WHERE  e.idCentro = ? AND e.estado = 1`,[req.body.idCentro])
     ])
       .then((data) => {
 
@@ -159,7 +160,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
        
 
         var groups = _.groupBy(data[0], 'nombreCategoria');
-        return res.send({servicios:data[0]});
+        return res.send({servicios:data[0], empleados:data[2]});
       }).catch(err => res.send(err).status(500));
   });
 
