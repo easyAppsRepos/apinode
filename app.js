@@ -143,6 +143,27 @@ expressApp.get('/categoriasActivas', function(req, res) {
   });
 
 
+  expressApp.post('/getCentroServicios', (req, res) => {
+     Promise.all([
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+      FROM servicio as s, categoria as c 
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
+    ])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+
+
+
+       
+
+        var groups = _.groupBy(data[0], 'nombreCategoria');
+        return res.send({servicios:groups});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.get('/test', (req, res) =>
     res.send('Api is running in port 3000'));
