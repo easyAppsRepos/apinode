@@ -215,6 +215,34 @@ expressApp.get('/categoriasActivas', function(req, res) {
   });
 
 
+    expressApp.post('/doLoginApi', (req, res) => {
+
+    db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, 
+      u.fbId, u.idFoto FROM cliente as u WHERE u.email = ? AND u.password = ?`,[req.body.username,req.body.password]).then((data) => {
+      console.log(data);
+      if (data) {
+        return res.send({
+          data: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+  expressApp.post('/addPush', (req, res) => {
+    db(`INSERT INTO pushHandler (idCliente, so, pushKey, deviceID) 
+        VALUES (?, ?, ?, ?)
+        `,[req.body.user, req.body.device, req.body.pushK, req.body.deviceId])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.get('/test', (req, res) =>
     res.send('Api is running in port 3000'));
