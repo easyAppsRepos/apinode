@@ -155,12 +155,14 @@ expressApp.get('/categoriasActivas', function(req, res) {
     //,[req.body.email, req.body.pass,req.body.nombre,req.body.telefono]
 
     let horaInicio = req.body.fecha;
-    let horaFinal = req.body.fecha;
+    //let horaFinal = req.body.fecha;
+    let horaFinal = moment(req.body.fecha).format("YYYY-MM-DD");
+
 
     db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
       notaCita, estado ) 
         VALUES (?,?,?,?,?,?,?)
-        `,[req.body.data.idCentro, req.body.idCliente,horaInicio,
+        `,[req.body.data.idCentro, req.body.idCliente,horaFinal,
         horaFinal,req.body.total, req.body.notaCita, 1])
       .then((data) => {
         console.log(data);
