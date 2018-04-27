@@ -143,6 +143,53 @@ expressApp.get('/categoriasActivas', function(req, res) {
   });
 
 
+
+
+  expressApp.post('/addCita', (req, res) => {
+
+// console.log(req.body);
+    //var password = req.body.pass;
+   // var salt = Bcrypt.genSaltSync();
+   // console.log(password+'-'+ salt);
+    //var encryptedPassword = Bcrypt.hashSync(password, salt);
+    //,[req.body.email, req.body.pass,req.body.nombre,req.body.telefono]
+
+    let horaInicio = req.body.fecha;
+    let horaFinal = req.body.fecha;
+
+    db(`INSERT INTO cita (idCentro, idCliente, horarioInicio, horarioFinalEsperado, precioEsperado,
+      notaCita, estado ) 
+        VALUES (?,?,?,?,?,?,?)
+        `,[req.body.data.idCentro, req.body.idCliente,horaInicio,
+        horaFinal,req.body.total, req.body.notaCita, 1])
+      .then((data) => {
+        console.log(data);
+        if (!data) {
+          res.send().status(500);
+        }
+
+        let arrayFunctions = [];
+        //
+        req.body.servicios.forEach((elementw, index) => {
+
+            arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado) 
+            VALUES (?,?,0)
+            `,[data.insertId, elementw.idServicio]));
+
+          });
+      Promise.all(arrayFunctions).then((data) => {
+        if (!data) res.send().status(500);
+         return res.send({insertId:data.insertId });
+      }).catch(err => res.send(err).status(500));
+
+
+        //return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
   expressApp.post('/getCentroServicios', (req, res) => {
      Promise.all([
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
