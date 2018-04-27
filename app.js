@@ -85,6 +85,14 @@ expressApp.get('/categoriasActivas', function(req, res) {
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/reservasUser', (req, res) => {
+    db(`SELECT c.nombre as nombreCentro, r.idCita, r.idCentro, r.horaInicio,
+      r.estado FROM centro as c, cita as r WHERE c.idCentro = r.idCentro AND r.idCliente = ?`,[req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/buscarServiciosGPS', (req, res) => {
