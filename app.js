@@ -157,7 +157,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
     let horaInicio = req.body.fecha;
     //let horaFinal = req.body.fecha;
     let horaFinal = moment(req.body.fecha).format("YYYY-MM-DD");
-
+    let idCita=null;
 
     db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
       notaCita, estado ) 
@@ -171,6 +171,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
         }
 
         let arrayFunctions = [];
+        idCita = data.insertId;
         //
         req.body.servicios.forEach((elementw, index) => {
 
@@ -181,7 +182,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
           });
       Promise.all(arrayFunctions).then((data) => {
         if (!data) res.send().status(500);
-         return res.send({insertId:data.insertId });
+         return res.send({insertId:idCita });
       }).catch(err => res.send(err).status(500));
 
 
