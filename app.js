@@ -218,7 +218,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
     expressApp.post('/doLoginApi', (req, res) => {
 
     db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, 
-      u.fbId, u.idFoto FROM cliente as u WHERE u.email = ? AND u.password = ?`,[req.body.username,req.body.password]).then((data) => {
+      u.fbId, u.idFoto, u.estado FROM cliente as u WHERE u.email = ? AND u.password = ?`,[req.body.username,req.body.password]).then((data) => {
       console.log(data);
       if (data) {
         return res.send({
