@@ -157,7 +157,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
     let horaInicio = req.body.fecha;
     let horaFinal = req.body.fecha;
 
-    db(`INSERT INTO cita (idCentro, idCliente, horarioInicio, horarioFinalEsperado, precioEsperado,
+    db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
       notaCita, estado ) 
         VALUES (?,?,?,?,?,?,?)
         `,[req.body.data.idCentro, req.body.idCliente,horaInicio,
