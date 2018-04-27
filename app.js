@@ -160,10 +160,10 @@ expressApp.get('/categoriasActivas', function(req, res) {
     let idCita=null;
 
     db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
-      notaCita, estado ) 
-        VALUES (?,?,?,?,?,?,?)
+      notaCita, estado, idEmpleado ) 
+        VALUES (?,?,?,?,?,?,?,?)
         `,[req.body.data.idCentro, req.body.idCliente,horaFinal,
-        horaFinal,req.body.total, req.body.notaCita, 1])
+        horaFinal,req.body.total, req.body.notaCita, 1, req.body.idEmpleado])
       .then((data) => {
         console.log(data);
         if (!data) {
