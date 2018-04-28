@@ -242,7 +242,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
     data[1].forEach((elementw, index) => {
     total += elementw.precio;
     });
-    data[0].total = total;
+    data[0][0].total = total;
 
 
 
