@@ -236,6 +236,16 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
         if (!data) res.send().status(500);
     //var groups = _.groupBy(data[0], 'nombreCategoria');
+    
+
+    let total = 0;
+    data[1].forEach((elementw, index) => {
+    total += elementw.precio;
+    });
+    data[0].total = total;
+
+
+
         return res.send({cita:data[0], servicios:data[1]});
       }).catch(err => res.send(err).status(500));
   });
