@@ -342,6 +342,43 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
     }).catch(err => res.send(err).status(500));
   });
 
+//"INSERT INTO Usuarios(nombre, email, fbId, imagenFB) values(?, ?, ?, ?)"
+
+    expressApp.post('/addUserFb', (req, res) => {
+
+    db(`INSERT INTO cliente(nombre,email,fbId,imagenFb) 
+      VALUES(?, ?, ?, ?)`,[req.body.nombre,req.body.email,req.body.fbId,req.body.imagenFB]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send({ insertId: data.insertId });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+    expressApp.post('/verificarFBLog', (req, res) => {
+
+    db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, 
+      u.fbId, u.idFoto, u.estado FROM cliente as u WHERE u.fbId = ? AND u.estado = 1`,[req.body.idUsuario]).then((data) => {
+      console.log(data);
+      if (data) {
+        return res.send({
+          data: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+    
+
+
   expressApp.post('/addPush', (req, res) => {
     db(`INSERT INTO pushHandler (idCliente, so, pushKey, deviceID) 
         VALUES (?, ?, ?, ?)
