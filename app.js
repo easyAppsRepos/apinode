@@ -93,7 +93,25 @@ expressApp.get('/categoriasActivas', function(req, res) {
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
-
+  expressApp.post('/buscarOfertas', (req, res) => {
+    db(`SELECT c.nombre as nombreCentro, 
+      s.precio, 
+      s.nombre as nombreOferta,
+      s.precioOferta, 
+      (SELECT COUNT(DISTINCT ec.puntuacion)  FROM  evaluacionCentro as ec WHERE ec.idCentro = c.idCentro) as cantRate, (SELECT AVG(ec.puntuacion) as rate  FROM  evaluacionCentro as ec WHERE ec.idCentro = c.idCentro) as rate,
+       ( 6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
+   * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
+   * sin( radians(c.latitud)))) AS distance 
+        FROM servicio as s, centro as c 
+      WHERE c.idCentro = s.idCentro 
+      AND s.idCategoria = 8 
+      AND s.estado = 1 
+`,[req.body.lat, req.body.lon, req.body.lat])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
   expressApp.post('/buscarServiciosGPS', (req, res) => {
     db(`SELECT c.*, 
