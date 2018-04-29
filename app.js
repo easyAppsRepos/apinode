@@ -137,6 +137,17 @@ expressApp.get('/categoriasActivas', function(req, res) {
   });
 
 
+  expressApp.post('/getOpiniones', (req, res) => {
+    db(`SELECT ec.estado, ec.comentario, ec.puntuacion, ec.fechaCreacion, c.nombre, c.idFoto, ci.horaFinalEsperado,
+ (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = ci.idCita) as total 
+ FROM evaluacionCentro as ec, centro as c, cita as ci 
+ WHERE ec.idCentro = c.idCentro AND ec.idCita = ci.idCita AND  ci.idCliente = ?`,[req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
   expressApp.post('/getCentroInfo', (req, res) => {
      Promise.all([
     db(`SELECT c.*, 
