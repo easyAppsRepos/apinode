@@ -363,7 +363,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
     expressApp.post('/verificarFBLog', (req, res) => {
 
     db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, 
-      u.fbId, u.idFoto, u.estado FROM cliente as u WHERE u.fbId = ? AND u.estado = 1`,[req.body.idUsuario]).then((data) => {
+      u.fbId, u.idFoto, u.estado FROM cliente as u WHERE u.fbId = ? AND u.estado = 1`,[req.body.userId]).then((data) => {
       console.log(data);
       if (data) {
         return res.send({
