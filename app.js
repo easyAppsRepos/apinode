@@ -148,6 +148,30 @@ expressApp.get('/categoriasActivas', function(req, res) {
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/getCupones', (req, res) => {
+    db(`SELECT c.nombre as nombreCupon, ce.nombre as nombreCentro, 
+      c.fechaExpira, cc.estado, cc.fechaUso FROM cupon as c, centro as ce, cupon_cliente as cc 
+      WHERE ce.idCentro = c.idCentro AND c.idCupon = cc.idCupon AND cc.idCliente = ?`,[req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+  expressApp.post('/canjearCupon', (req, res) => {
+    db(`INSERT INTO cupon_cliente(idCliente, idCupon, fechaActivacion, estado)
+SELECT ?, c.idCupon, ?, 1 FROM cupon as c WHERE c.codigo = ? 
+AND c.fechaExpira > CURRENT_TIMESTAMP 
+AND c.estado = 1`,[req.body.idCliente,Date.now(), req.body.codigo])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/getCentroInfo', (req, res) => {
      Promise.all([
     db(`SELECT c.*, 
