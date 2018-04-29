@@ -163,7 +163,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
     db(`INSERT INTO cupon_cliente(idCliente, idCupon, fechaActivacion, estado)
 SELECT ?, c.idCupon, ?, 1 FROM cupon as c WHERE c.codigo = ? 
 AND c.fechaExpira > CURRENT_TIMESTAMP 
-AND c.estado = 1`,[req.body.idCliente,Date.now(), req.body.codigo])
+AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), req.body.codigo])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send({ insertId: data.insertId });
