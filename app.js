@@ -357,6 +357,23 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       
     }).catch(err => res.send(err).status(500));
   });
+
+        expressApp.post('/addNegocio', (req, res) => {
+
+    db(`INSERT centro cliente(nombre,nombreTitular,telefono,email, estado) 
+      VALUES(?, ?, ?, ?, 0)`,[req.body.nombre,req.body.nombre2,req.body.telefono,req.body.email]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send({ insertId: data.insertId });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
  
     expressApp.post('/addUserFb', (req, res) => {
 
