@@ -343,7 +343,21 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
   });
 
 //"INSERT INTO Usuarios(nombre, email, fbId, imagenFB) values(?, ?, ?, ?)"
+    expressApp.post('/addUserEmail', (req, res) => {
 
+    db(`INSERT INTO cliente(nombre,email,telefono,password) 
+      VALUES(?, ?, ?, ?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.pass]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send({ insertId: data.insertId });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+ 
     expressApp.post('/addUserFb', (req, res) => {
 
     db(`INSERT INTO cliente(nombre,email,fbId,imagenFb) 
