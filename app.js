@@ -93,6 +93,21 @@ expressApp.get('/categoriasActivas', function(req, res) {
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+  expressApp.post('/cambiarFavorito', (req, res) => {
+    db(`INSERT INTO usuario_favorito(idCentro,idCliente,estado) VALUES (?,?,1)
+  ON DUPLICATE KEY UPDATE estado= 1 - estado`,[req.body.idCentro,req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({insertId:data.insertId});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
+
   expressApp.post('/buscarOfertas', (req, res) => {
     db(`SELECT c.nombre as nombreCentro, 
       s.precio, 
