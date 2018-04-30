@@ -360,7 +360,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
 
         expressApp.post('/addNegocio', (req, res) => {
 
-    db(`INSERT centro cliente(nombre,nombreTitular,telefono,email, estado) 
+    db(`INSERT INTO centro(nombre,nombreTitular,telefono,email, estado) 
       VALUES(?, ?, ?, ?, 0)`,[req.body.nombre,req.body.nombre2,req.body.telefono,req.body.email]).then((data) => {
       console.log(data);
       if (data) {
