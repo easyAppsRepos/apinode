@@ -346,7 +346,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
     expressApp.post('/addUserEmail', (req, res) => {
 
     db(`INSERT INTO cliente(nombre,email,telefono,password) 
-      VALUES(?, ?, ?, ?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.pass]).then((data) => {
+      VALUES(?, ?, ?, ?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.password]).then((data) => {
       console.log(data);
       if (data) {
        return res.send({ insertId: data.insertId });
