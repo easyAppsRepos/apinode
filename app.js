@@ -159,7 +159,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
    * sin( radians(c.latitud)))) AS distance 
           FROM usuario_favorito as uf, servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
       WHERE c.idCentro = s.idCentro 
-      AND s.idCentro = uf.idCentro AND uf.idCliente=? 
+      AND s.idCentro = uf.idCentro AND uf.idCliente=? AND uf.estado = 1
       AND s.estado = 1 
       GROUP BY c.idCentro
       `,[req.body.lat, req.body.lon, req.body.lat, req.body.idCliente])
