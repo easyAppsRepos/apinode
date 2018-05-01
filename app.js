@@ -408,6 +408,26 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
   });
 
 
+UPDATE servicio set nombre=?,duracion=?,precio=?,estado=?, 
+      descripcion=?, idCategoria=? WHERE idServicio = ?
+
+
+        expressApp.post('/nuevoServicio', (req, res) => {
+
+    db(`INSERT INTO servicio(nombre,duracion,precio,estado, descripcion,idCategoria, idCentro) 
+      VALUES(?, ?, ?, ?, ?, ?, ?)`,[req.body.nombre,req.body.duracion,req.body.precio,req.body.estado,
+      req.body.descripcion,req.body.idCategoria,req.body.idCentro]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send({ insertId: data.insertId });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
  
     expressApp.post('/addUserFb', (req, res) => {
 
