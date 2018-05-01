@@ -408,8 +408,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
   });
 
 
-UPDATE servicio set nombre=?,duracion=?,precio=?,estado=?, 
-      descripcion=?, idCategoria=? WHERE idServicio = ?
+
 
 
         expressApp.post('/nuevoServicio', (req, res) => {
