@@ -103,6 +103,15 @@ expressApp.get('/categoriasActivas', function(req, res) {
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/editarServicio', (req, res) => {
+    db(`UPDATE servicio set nombre=?,duracion=?,precio=?,estado=?, 
+      descripcion=?, idCategoria=? WHERE idServicio = ?`,[req.body.nombre,req.body.duracion,
+      req.body.precio,req.body.estado,req.body.descripcion,req.body.idCategoria,req.body.idServicio])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
