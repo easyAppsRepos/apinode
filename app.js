@@ -363,7 +363,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       }).catch(err => res.send(err).status(500));
   });
   expressApp.post('/getCuponesCentro', (req, res) => {
-    db(`SELECT * FROM cupon WHERE idCentro = ?`,[req.body.idCentro])
+    db(`SELECT c.*,  CAST(DATE(c.fechaExpira) AS char) as soloFecha FROM cupon as c WHERE c.idCentro = ?`,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send({cupones:data});
