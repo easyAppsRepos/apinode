@@ -113,7 +113,15 @@ expressApp.get('/categoriasActivas', function(req, res) {
       }).catch(err => res.send(err).status(500));
   });
 
-
+  expressApp.post('/editarCupon', (req, res) => {
+    db(`UPDATE cupon set nombre=?,codigo=?,porcentajeDescuento=?,fechaExpira=?,estado=?
+     WHERE idCupon = ?`,[req.body.nombre,req.body.codigo,
+      req.body.porcentajeDescuento,req.body.fechaExpira,req.body.estado,req.body.idCupon])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
@@ -200,6 +208,32 @@ expressApp.get('/categoriasActivas', function(req, res) {
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+
+
+    expressApp.post('/getClienteCupones', (req, res) => {
+  
+    db(`SELECT c.nombre as nombreCupon, ce.nombre as nombreCliente, 
+      c.fechaExpira, cc.estado, cc.fechaUso FROM cupon as c, cliente as ce, cupon_cliente as cc 
+      WHERE ce.idCliente = cc.idCliente AND c.idCupon = cc.idCupon AND c.idCentro = ? `,[req.body.idCentro]).then((data) => {
+
+        if (!data) res.send().status(500);
+    //var groups = _.groupBy(data[0], 'nombreCategoria');
+    
+
+/*    let total = 0;
+    data[1].forEach((elementw, index) => {
+    total += elementw.precio;
+    });
+    data[0][0].total = total;
+
+*/
+
+        return res.send({clientes:data});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.post('/canjearCupon', (req, res) => {
     db(`INSERT INTO cupon_cliente(idCliente, idCupon, fechaActivacion, estado)
@@ -328,7 +362,13 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
         return res.send({servicios:data});
       }).catch(err => res.send(err).status(500));
   });
-
+  expressApp.post('/getCuponesCentro', (req, res) => {
+    db(`SELECT * FROM cupon WHERE idCentro = ?`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({cupones:data});
+      }).catch(err => res.send(err).status(500));
+  });
 
     expressApp.post('/getDataCita', (req, res) => {
      Promise.all([
@@ -426,7 +466,21 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       
     }).catch(err => res.send(err).status(500));
   });
+        expressApp.post('/nuevoCupon', (req, res) => {
 
+    db(`INSERT INTO cupon(nombre,idCentro,codigo,porcentajeDescuento, fechaExpira,estado) 
+      VALUES(?, ?, ?, ?, ?, ?)`,[req.body.nombre,req.body.idCentro,req.body.codigo,req.body.porcentajeDescuento,
+      req.body.fechaExpira,req.body.estado]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send({ insertId: data.insertId });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
  
     expressApp.post('/addUserFb', (req, res) => {
 
