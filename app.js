@@ -213,12 +213,12 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
     expressApp.post('/getClienteCupones', (req, res) => {
   
-    db(`SELECT c.nombre as nombreCupon, ce.nombre as nombreCliente, 
-      c.fechaExpira, cc.estado, cc.fechaUso FROM cupon as c, cliente as ce, cupon_cliente as cc 
+    db(`SELECT c.nombre as nombreCupon, ce.nombre as nombreCliente, ce.email,
+      c.fechaExpira, cc.estado, cc.fechaUso, cc.fechaActivacion FROM cupon as c, cliente as ce, cupon_cliente as cc 
       WHERE ce.idCliente = cc.idCliente AND c.idCupon = cc.idCupon AND c.idCentro = ? `,[req.body.idCentro]).then((data) => {
 
         if (!data) res.send().status(500);
-    //var groups = _.groupBy(data[0], 'nombreCategoria');
+    var groups = _.groupBy(data, 'estado');
     
 
 /*    let total = 0;
@@ -229,8 +229,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
 */
 
-        return res.send({clientes:data});
-      }).catch(err => res.send(err).status(500));
+        return res.send(groups).status(500);
   });
 
 
