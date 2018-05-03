@@ -229,7 +229,8 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
 */
 
-        return res.send(groups).status(500);
+        return res.send(groups);
+      }).catch(err => res.send(err).status(500));
   });
 
 
