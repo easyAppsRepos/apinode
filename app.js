@@ -218,6 +218,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
       WHERE ce.idCliente = cc.idCliente AND c.idCupon = cc.idCupon AND c.idCentro = ? `,[req.body.idCentro]).then((data) => {
 
         if (!data) res.send().status(500);
+        
     var groups = _.groupBy(data, 'estado');
     
 
@@ -229,7 +230,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
 */
 
-        return res.send({data:groups});
+        return res.send(groups);
       }).catch(err => res.send(err).status(500));
   });
 
