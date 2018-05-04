@@ -388,15 +388,12 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       }).catch(err => res.send(err).status(500));
   });
 
-    expressApp.post('/getDataCita', (req, res) => {
-     Promise.all([
-    db(`SELECT c.idCentro, c.nombre, c.direccion, c.idFoto, c.telefono,c.latitud, c.longitud, 
-      ci.idCita, ci.estado, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio, ci.idCliente FROM centro as c, cita as ci 
-      WHERE ci.idCita = ? AND c.idCentro = ci.idCentro`,[req.body.idCita]),
-    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+    expressApp.post('/getServiciosCita', (req, res) => {
+     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c, servicio_cita as sc  
-      WHERE s.idServicio = sc.idServicio AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita])
-    ])
+      WHERE s.idServicio = sc.idServicio 
+      AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita])
+
       .then((data) => {
 
         if (!data) res.send().status(500);
@@ -404,14 +401,13 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
     
 
     let total = 0;
-    data[1].forEach((elementw, index) => {
+    data.forEach((elementw, index) => {
     total += elementw.precio;
     });
-    data[0][0].total = total;
 
 
 
-        return res.send({cita:data[0], servicios:data[1]});
+        return res.send({servicios:data, total:total});
       }).catch(err => res.send(err).status(500));
   });
 
