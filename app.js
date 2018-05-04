@@ -388,8 +388,19 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/borrarServicioCita', function(req, res) {
+     db(`DELETE FROM servicio_cita WHERE idServicioCita = ?`,[req.body.idServicioCita])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/getServiciosCita', (req, res) => {
-     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+     db(`SELECT sc.idServicioCita, s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c, servicio_cita as sc  
       WHERE s.idServicio = sc.idServicio 
       AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita])
