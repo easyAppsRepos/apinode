@@ -94,6 +94,23 @@ expressApp.get('/categoriasActivas', function(req, res) {
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/citasCentroC', (req, res) => {
+    db(`SELECT c.nombre as nombreCliente, em.nombre as nombreEmpleado, (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = r.idCita) as total,
+c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
+      r.estado FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
+      WHERE c.idCliente = r.idCliente AND r.idCentro = ?`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+            var groups = _.groupBy(data, 'estado');
+            return res.send(groups);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/cambiarFavorito', (req, res) => {
     db(`INSERT INTO usuario_favorito(idCentro,idCliente,estado) VALUES (?,?,1)
   ON DUPLICATE KEY UPDATE estado= 1 - estado`,[req.body.idCentro,req.body.idCliente])
