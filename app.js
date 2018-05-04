@@ -215,10 +215,10 @@ expressApp.get('/categoriasActivas', function(req, res) {
   
     db(`SELECT c.nombre as nombreCupon, ce.nombre as nombreCliente, ce.email,
       c.fechaExpira, cc.estado, cc.fechaUso, cc.fechaActivacion FROM cupon as c, cliente as ce, cupon_cliente as cc 
-      WHERE ce.idCliente = cc.idCliente AND c.idCupon = cc.idCupon AND c.idCentro = ? `,[req.body.idCentro]).then((data) => {
+      WHERE ce.idCliente = cc.idCliente AND c.idCupon = cc.idCupon AND cc.idCupon = ?`,[req.body.idCupon]).then((data) => {
 
         if (!data) res.send().status(500);
-        
+
     var groups = _.groupBy(data, 'estado');
     
 
