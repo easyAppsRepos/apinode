@@ -109,6 +109,18 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/citasCentroC2', (req, res) => {
+    db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = r.idCita) as total,
+c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
+      r.estado FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
+      WHERE c.idCliente = r.idCliente AND r.idCentro = ?`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+            return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/cambiarFavorito', (req, res) => {
