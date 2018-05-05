@@ -180,6 +180,13 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/getCentrosUsuario', (req, res) => {
+    db(`SELECT idCentro FROM usuario_consola_centro WHERE idUsuarioConsola = ?`,[req.body.idUsuario])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
