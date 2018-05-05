@@ -163,6 +163,14 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
   });
 
 
+  expressApp.post('/confirmarCita', (req, res) => {
+    db(`UPDATE cita set  estado=2 WHERE idCita = ?`,[req.body.idCita])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
   expressApp.post('/buscarOfertas', (req, res) => {
