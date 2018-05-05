@@ -154,6 +154,17 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
 
 
 
+  expressApp.post('/reprogramarCita', (req, res) => {
+    db(`UPDATE cita set horaInicio=? WHERE idCita = ?`,[req.body.fechaCompleta,req.body.idCita])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
   expressApp.post('/buscarOfertas', (req, res) => {
     db(`SELECT c.nombre as nombreCentro, 
       s.precio, 
