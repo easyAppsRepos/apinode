@@ -155,7 +155,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
 
 
   expressApp.post('/reprogramarCita', (req, res) => {
-    db(`UPDATE cita set horaInicio=? WHERE idCita = ?`,[req.body.fechaCompleta,req.body.idCita])
+    db(`UPDATE cita set horaInicio=?, estado=5 WHERE idCita = ?`,[req.body.fechaCompleta,req.body.idCita])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
