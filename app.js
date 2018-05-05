@@ -181,7 +181,8 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
   });
 
     expressApp.post('/getCentrosUsuario', (req, res) => {
-    db(`SELECT idCentro FROM usuario_consola_centro WHERE idUsuarioConsola = ?`,[req.body.idUsuario])
+    db(`SELECT a.idCentro, c.nombre FROM usuario_consola_centro as a, centro as c WHERE c.idCentro = a.idCentro
+       AND a.idUsuarioConsola = ?`,[req.body.idUsuario])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
