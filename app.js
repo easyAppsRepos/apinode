@@ -122,7 +122,18 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/getCalendario', (req, res) => {
+    db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, em.idEmpleado as idEmpleado, 
+c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
+      r.horaFinalEsperado,r.estado FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
+      WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2)`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
 
+            return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
   expressApp.post('/cambiarFavorito', (req, res) => {
     db(`INSERT INTO usuario_favorito(idCentro,idCliente,estado) VALUES (?,?,1)
   ON DUPLICATE KEY UPDATE estado= 1 - estado`,[req.body.idCentro,req.body.idCliente])
