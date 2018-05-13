@@ -155,8 +155,10 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
         location: "",
         subject: item['nombreCliente'],
         calendar: item['nombreEmpleado'],
-         start: new Date(item['horaInicio']).toUTCString(),
-        end: new Date(item['horaFinalEsperado']).toUTCString()
+        // start: new Date(item['horaInicio']).toUTCString(),
+      //  end: new Date(item['horaFinalEsperado']).toUTCString()
+       start: moment.utc(item['horaInicio']).format("YYYY-MM-DD HH:mm:ss"),
+     end: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD HH:mm:ss")
 
         };
         console.log(appnt);
