@@ -139,7 +139,9 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
     expressApp.post('/getCalendario2', (req, res) => {
     db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, em.idEmpleado as idEmpleado, 
 c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
-      r.horaFinalEsperado,r.estado FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
+      r.horaFinalEsperado,r.estado, (SELECT GROUP_CONCAT(x.nombre) FROM servicio as x, servicio_cita as sc
+WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
+) as servicios FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
       WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2)`)
       .then((data) => {
         if (!data) res.send().status(500);
@@ -151,7 +153,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
 
         let appnt = {
         id: item['idCita']+'',
-        description: "ss",
+        description: item['servicios'],
         location: "",
         subject: item['nombreCliente'],
         calendar: item['nombreEmpleado'],
