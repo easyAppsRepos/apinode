@@ -150,7 +150,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
               data.forEach((item, index) => {
 
         let appnt = {
-        id: '"'+item['idCita']+'"',
+        id: item['idCita']+'',
         description: "ss",
         location: "",
         subject: item['nombreCliente'],
