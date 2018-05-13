@@ -440,6 +440,19 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
         return res.send({servicios:data});
       }).catch(err => res.send(err).status(500));
   });
+
+
+    expressApp.post('/getStaff', (req, res) => {
+    db(`SELECT e.nombre, e.descripcion, e.idFoto, e.idEmpleado FROM empleado as e WHERE
+      e.estado = 1`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({servicios:data});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/getCuponesCentro', (req, res) => {
     db(`SELECT c.*,  CAST(DATE(c.fechaExpira) AS char) as soloFecha FROM cupon as c WHERE c.idCentro = ?`,[req.body.idCentro])
       .then((data) => {
