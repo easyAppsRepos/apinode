@@ -168,7 +168,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
 
 
 
-            return res.send(appointments);
+            return res.json(appointments);
 
       }).catch(err => res.send(err).status(500));
   });
