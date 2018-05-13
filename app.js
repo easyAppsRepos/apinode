@@ -155,7 +155,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         id: item['idCita']+'',
         description: item['servicios'],
         location: "",
-        subject: item['nombreCliente'],
+        subject: item['nombreCliente']+'. '+moment.utc(item['horaInicio']).format("hh:mm:ss a")+
+        '-'+moment.utc(item['horaFinalEsperado']).format("hh:mm:ss a"),
         calendar: item['nombreEmpleado'],
         // start: new Date(item['horaInicio']).toUTCString(),
       //  end: new Date(item['horaFinalEsperado']).toUTCString()
