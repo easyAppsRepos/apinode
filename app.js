@@ -150,7 +150,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
               data.forEach((item, index) => {
 
         let appnt = {
-        id: item['idCita'],
+        id: '"'+item['idCita']+'"',
         description: "ss",
         location: "",
         subject: item['nombreCliente'],
@@ -168,7 +168,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
 
 
 
-            return res.json(JSON.stringify(appointments));
+            return res.json(appointments);
 
       }).catch(err => res.send(err).status(500));
   });
