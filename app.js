@@ -13,7 +13,7 @@ const Bcrypt = require('bcrypt');
 const db = require('./config/db');
 const moment = require('moment');
 
-
+import 'moment/locale/es';
 
 
 //var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
