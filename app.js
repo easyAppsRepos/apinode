@@ -151,9 +151,9 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
          let appointments = new Array();
-moment.locale('es');
-              data.forEach((item, index) => {
 
+              data.forEach((item, index) => {
+moment.locale('es');
         let appnt = {
         id: item['idCita']+'',
         description: item['servicios'],
@@ -166,7 +166,7 @@ moment.locale('es');
       //  end: new Date(item['horaFinalEsperado']).toUTCString()
        start: moment.utc(item['horaInicio']).format("YYYY-MM-DD HH:mm:ss"),
      end: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD HH:mm:ss"),
-     soloFecha: moment.utc(item['horaInicio']).format("YYYY-MM-DD")
+     soloFecha: moment.utc(item['horaInicio']).format("YYYY-MM-DD").format('LL');
 
         };
         console.log(appnt);
