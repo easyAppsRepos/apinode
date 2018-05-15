@@ -193,6 +193,15 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       .then((data) => {
         if (!data) res.send().status(500);
 
+              data.forEach((item, index) => {
+
+        data[index].detalle = item['nombreCliente']+'. '+moment.utc(item['horaInicio']).format("hh:mm a")+
+        '-'+moment.utc(item['horaFinalEsperado']).format("hh:mm a");
+
+        });
+
+
+
 
             var groups = _.groupBy(data, 'soloFecha');
             return res.send(groups);
