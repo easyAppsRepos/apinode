@@ -150,7 +150,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
          let appointments = new Array();
 
               data.forEach((item, index) => {
-
+moment.lang('es');
         let appnt = {
         id: item['idCita']+'',
         description: item['servicios'],
