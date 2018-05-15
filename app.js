@@ -165,8 +165,7 @@ moment.locale('es');
         // start: new Date(item['horaInicio']).toUTCString(),
       //  end: new Date(item['horaFinalEsperado']).toUTCString()
        start: moment.utc(item['horaInicio']).format("YYYY-MM-DD HH:mm:ss"),
-     end: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD HH:mm:ss"),
-     soloFecha: moment.utc(item['horaInicio']).format("MMM Do YY")
+     end: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD HH:mm:ss")
 
         };
         console.log(appnt);
@@ -181,6 +180,28 @@ moment.locale('es');
 
       }).catch(err => res.send(err).status(500));
   });
+
+
+
+    expressApp.post('/getCalendario3', (req, res) => {
+    db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, em.idEmpleado as idEmpleado, 
+c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
+      r.horaFinalEsperado,r.estado, CAST(DATE(r.horaInicio) AS char) as soloFecha, (SELECT GROUP_CONCAT(x.nombre) FROM servicio as x, servicio_cita as sc
+WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
+) as servicios FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
+      WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2)`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+
+            var groups = _.groupBy(data, 'soloFecha');
+            return res.send(groups);
+
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
 
   expressApp.post('/cambiarFavorito', (req, res) => {
