@@ -11,7 +11,7 @@ const Bcrypt = require('bcrypt');
  var _ = require('underscore');
 
 const db = require('./config/db');
-const moment = require('moment/locale/es.js');
+const moment = require('moment');
 
 //var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
 //var iap = require('in-app-purchase');
