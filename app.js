@@ -13,8 +13,7 @@ const Bcrypt = require('bcrypt');
 const db = require('./config/db');
 const moment = require('moment');
 
-let trLocale = require('moment/locale/es');
-moment.locale('es',trLocale)
+
 
 
 //var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
@@ -152,7 +151,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
          let appointments = new Array();
-
+moment.locale('es');
               data.forEach((item, index) => {
 
         let appnt = {
