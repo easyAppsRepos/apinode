@@ -147,6 +147,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 ) as servicios FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
       WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2)`)
       .then((data) => {
+  console.log('---s---');
+        console.log(req.body.idCentro);
         if (!data) res.send().status(500);
 
 
