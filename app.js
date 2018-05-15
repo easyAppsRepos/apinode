@@ -591,10 +591,10 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
 
     expressApp.post('/login', (req, res) => {
 
-    db(`SELECT u.email, u.nombre, u.tipo FROM uario_consola as u 
+    db(`SELECT u.idUsuarioConsola, u.email, u.nombre, u.tipo FROM usuario_consola as u 
       WHERE u.email = ? AND u.password = ?`,[req.body.username,req.body.password]).then((data) => {
       console.log(data);
-      if (data) {
+      if (data[0].idUsuarioConsola) {
         data.status=true;
         return res.send(data);
       }
