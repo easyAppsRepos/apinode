@@ -145,10 +145,10 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
       r.horaFinalEsperado,r.estado, (SELECT GROUP_CONCAT(x.nombre) FROM servicio as x, servicio_cita as sc
 WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 ) as servicios FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
-      WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2)`)
+      WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2) AND r.idCentro = ?`,[req.body.idCentro])
       .then((data) => {
-  console.log('---s---');
-        console.log(req.body.idCentro);
+  //console.log('---s---');
+       // console.log(req.body.idCentro);
         if (!data) res.send().status(500);
 
 
@@ -191,7 +191,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
       r.horaFinalEsperado,r.estado, CAST(DATE(r.horaInicio) AS char) as soloFecha, (SELECT GROUP_CONCAT(x.nombre) FROM servicio as x, servicio_cita as sc
 WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 ) as servicios FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
-      WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2) ORDER BY r.horaInicio ASC`)
+      WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2) AND r.idCentro = ? ORDER BY r.horaInicio ASC`,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
 
