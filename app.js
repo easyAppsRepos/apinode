@@ -170,7 +170,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         // start: new Date(item['horaInicio']).toUTCString(),
       //  end: new Date(item['horaFinalEsperado']).toUTCString()
        start: moment.utc(item['horaInicio']).format("YYYY-MM-DD HH:mm:ss"),
-     end: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD HH:mm:ss")
+     end: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD HH:mm:ss"),
+     soloFecha: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD")
 
         };
         console.log(appnt);
