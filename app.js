@@ -197,6 +197,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
         data[index].detalle = item['nombreCliente']+'. '+moment.utc(item['horaInicio']).format("hh:mm a")+
         '-'+moment.utc(item['horaFinalEsperado']).format("hh:mm a");
+        data[index].horaString = moment.utc(item['horaInicio']).format("MMM Do YY");
 
         });
 
