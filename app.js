@@ -206,13 +206,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
             var groups = _.groupBy(data, 'soloFecha');
 
-            var sorted = _.sortBy(groups,function(node){
-  return - (new Date(node).getTime());
-});
-
-console.log(sorted);
-
-            return res.send(sorted);
+            
+            return res.send(groups);
 
 
       }).catch(err => res.send(err).status(500));
