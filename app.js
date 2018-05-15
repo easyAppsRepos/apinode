@@ -167,7 +167,6 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
         };
         console.log(appnt);
-
         //appointments.push(appointmentDataFields);    
         appointments.push(appnt);
 
