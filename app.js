@@ -166,7 +166,7 @@ moment.locale('es');
       //  end: new Date(item['horaFinalEsperado']).toUTCString()
        start: moment.utc(item['horaInicio']).format("YYYY-MM-DD HH:mm:ss"),
      end: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD HH:mm:ss"),
-     soloFecha: moment.utc(item['horaInicio']).format("MMM Do YY");
+     soloFecha: moment.utc(item['horaInicio']).format("YYYY-MM-DD").format('LL')
 
         };
         console.log(appnt);
