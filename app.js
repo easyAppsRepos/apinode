@@ -637,7 +637,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
         expressApp.post('/nuevoStaf', function(req, res) {
 
     db(`INSERT INTO empleado(nombre,descripcion,estado, idCentro) 
-      VALUES(?, ?)`,[req.body.nombre,req.body.descripcion,req.body.estado, req.body.idCentro])
+      VALUES(?, ?,?,?)`,[req.body.nombre,req.body.descripcion,req.body.estado, req.body.idCentro])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
