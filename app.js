@@ -409,6 +409,29 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
   });
 
 
+  expressApp.post('/getInfoCentro', (req, res) => {
+     Promise.all([
+    db(`SELECT c.*, 
+      COUNT(DISTINCT ec.puntuacion) as cantRate, 
+      AVG(ec.puntuacion) as rate, (SELECT COUNT(r.idCita) FROM cita as r WHERE r.idCentro = c.idCentro AND r.estado = 2) as programadas, (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 3) as completadas,
+      (SELECT COUNT(DISTINCT f.idCliente) FROM cliente as f, cita as h WHERE f.idCliente = h.idCliente AND h.estado = 3 AND h.idCentro = c.idCentro) as clientesActivos  
+      FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro 
+      WHERE c.idCentro = ?`,[req.body.idCentro]), 
+    db(`SELECT  c.nombre, c.email, c.idCliente, COUNT(r.idCita) as cantidad, 
+      SUM(r.precioEsperado) as total 
+      FROM cliente as c, cita as r 
+      WHERE r.idCentro = ? AND r.idCliente = c.idCliente 
+      AND r.estado = 2 GROUP BY c.idCliente`,[req.body.idCentro])])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+        return res.send({info:data[0],clientes:data[1]});
+
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
   expressApp.post('/getCentroInfo', (req, res) => {
      Promise.all([
