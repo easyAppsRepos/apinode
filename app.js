@@ -237,6 +237,17 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/editarUC', (req, res) => {
+    db(`UPDATE usuario_consola set nombre=?,email=?,password=?,estado=? 
+      WHERE idUsuarioConsola = ?`,[req.body.nombre,req.body.email,
+      req.body.password,req.body.estado,req.body.idUsuarioConsola])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.post('/actualizarDCentro', (req, res) => {
     db(`UPDATE centro set nombre=?,email=?,fbLink=?,latitud=?, 
