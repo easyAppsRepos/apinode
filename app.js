@@ -247,6 +247,15 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/editarStaf', (req, res) => {
+    db(`UPDATE empleado set nombre = ?, descripcion = ?, estado = ? 
+      WHERE idEmpleado = ?`,[req.body.nombre,req.body.descripcion,
+      req.body.estado,req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/actualizarDCentro', (req, res) => {
@@ -624,6 +633,19 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
 
       }).catch(err => res.send(err).status(500));
   });
+
+        expressApp.post('/nuevoStaf', function(req, res) {
+
+    db(`INSERT INTO empleado(nombre,descripcion,estado, idCentro) 
+      VALUES(?, ?)`,[req.body.nombre,req.body.descripcion,req.body.estado, req.body.idCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
 
         expressApp.post('/nuevoUsuarioC', function(req, res) {
