@@ -744,6 +744,28 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
     }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/agregarNegocioUsuario', (req, res) => {
+
+    db(`INSERT INTO usuario_consola_centro(idUsuarioConsola,idCentro) 
+      VALUES(?, ?)`,[req.body.idUsuarioConsola,req.body.idCentro]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send({ insertId: data.insertId });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+    expressApp.post('/eliminarNegocioUsuario', function(req, res) {
+     db(`DELETE FROM usuario_consola_centro WHERE idUsuarioConsolaCentro = ?`,[req.body.idUsuarioConsolaCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
