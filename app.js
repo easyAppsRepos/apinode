@@ -464,7 +464,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       SUM(r.precioEsperado) as total 
       FROM cliente as c, cita as r 
       WHERE r.idCentro = ? AND r.idCliente = c.idCliente 
-      AND r.estado = 2 GROUP BY c.idCliente`,[req.body.idCentro]),
+      AND r.estado = 3 GROUP BY c.idCliente`,[req.body.idCentro]),
     db(`SELECT SUM(r.precioEsperado) as total, AVG(r.precioEsperado) as promedio 
       FROM cita as r WHERE r.idCentro = ? AND r.estado = 3`,[req.body.idCentro])])
       .then((data) => {
