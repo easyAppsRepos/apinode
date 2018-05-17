@@ -311,10 +311,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
     expressApp.post('/cargaUsuariosConsola', (req, res) => {
-    db(`SELECT uc.* FROM usuario_consola  as uc, usuario_consola_centro as ux  
-      WHERE ux.idUsuarioConsola = uc.idUsuarioConsola AND ux.idCentro 
-      IN (SELECT c.idCentro FROM usuario_consola_centro as c WHERE idUsuarioConsola = ?)
-       GROUP BY uc.idUsuarioConsola`,[req.body.idUsuario])
+    db(`SELECT uc.* FROM usuario_consola  as uc WHERE uc.parentUser = ?`,[req.body.idUsuario])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
@@ -631,8 +628,8 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
 
         expressApp.post('/nuevoUsuarioC', function(req, res) {
 
-    db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password) 
-      VALUES(?, ?,2,?,?)`,[req.body.email,req.body.nombre,req.body.estado,req.body.password])
+    db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password, parentUser) 
+      VALUES(?, ?,2,?,?,?)`,[req.body.email,req.body.nombre,req.body.estado,req.body.password,req.body.parentUser])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
