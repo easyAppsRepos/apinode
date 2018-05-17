@@ -237,6 +237,22 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/actualizarDCentro', (req, res) => {
+    db(`UPDATE centro set nombre=?,email=?,fbLink=?,latitud=?, 
+      longitud=?, horarioAppBanner=?, sobreNosotros=?,
+      direccion=?,telefono=? WHERE idCentro = ?`,[req.body.nombre,req.body.email,
+      req.body.fbLink,req.body.latitud,req.body.longitud,req.body.horarioAppBanner,req.body.sobreNosotros,
+      req.body.direccion,req.body.telefono,req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
   expressApp.post('/editarCupon', (req, res) => {
     db(`UPDATE cupon set nombre=?,codigo=?,porcentajeDescuento=?,fechaExpira=?,estado=?
      WHERE idCupon = ?`,[req.body.nombre,req.body.codigo,
