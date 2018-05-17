@@ -629,6 +629,19 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
   });
 
 
+        expressApp.post('/nuevoUsuarioC', function(req, res) {
+
+    db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password) 
+      VALUES(?, ?,2,?,?)`,[req.body.email,req.body.nombre,req.body.estado,req.body.password])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/getServiciosCita', (req, res) => {
      db(`SELECT sc.idServicioCita, s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c, servicio_cita as sc  
