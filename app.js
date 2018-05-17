@@ -663,6 +663,24 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
   });
 
 
+    expressApp.post('/cargarNegocios', (req, res) => {
+     db(`SELECT cc.*, c.nombre FROM usuario_consola_centro as cc, centro as c  
+      WHERE cc.idUsuarioConsola = ? AND c.idCentro = cc.idCentro`,[req.body.idUsuarioConsola])
+
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+    //var groups = _.groupBy(data[0], 'nombreCategoria');
+
+
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
     expressApp.post('/login', (req, res) => {
 
     db(`SELECT u.idUsuarioConsola, u.email, u.nombre, u.tipo FROM usuario_consola as u 
