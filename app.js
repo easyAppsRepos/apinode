@@ -299,6 +299,16 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+    expressApp.post('/cargaUsuariosConsola', (req, res) => {
+    db(`SELECT uc.* FROM usuario_consola  as uc, usuario_consola_centro as ux  
+      WHERE ux.idUsuarioConsola = uc.idUsuarioConsola AND ux.idCentro 
+      IN (SELECT c.idCentro FROM usuario_consola_centro as c WHERE idUsuarioConsola = ?)
+       GROUP BY uc.idUsuarioConsola`,[req.body.idUsuario])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
