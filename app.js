@@ -596,7 +596,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
 
     expressApp.post('/getStaff', (req, res) => {
     db(`SELECT e.nombre, e.descripcion, e.idFoto, e.estado, e.idEmpleado FROM empleado as e WHERE
-      e.estado = 1 AND e.idCentro = ?`,[req.body.idCentro])
+       e.idCentro = ?`,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
