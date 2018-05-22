@@ -88,6 +88,63 @@ expressApp.get('/categoriasActivas', function(req, res) {
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+  expressApp.post('/buscarServiciosFiltro', (req, res) => {
+
+
+
+      if(req.body.lat && req.body.long){
+
+        let stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, 
+        COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate, 
+        ( 6371 * acos( cos( radians(`+req.body.lat+`?) ) * cos( radians( c.latitud ) ) 
+         * cos( radians(c.longitud) - radians(`+req.body.long+`)) + sin(radians(`+req.body.lat+`)) 
+         * sin( radians(c.latitud)))) AS distance 
+      FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
+      WHERE c.idCentro = s.idCentro AND distance > 20 AND s.estado = 1`;
+
+      }
+      else{
+
+      let stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate
+      FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
+      WHERE c.idCentro = s.idCentro 
+      AND s.estado = 1`;
+
+      }
+
+      if(req.body.palabra){
+        stringQuery += ` AND c.sobreNosotros LIKE '%`+req.body.palabra+`%'`; 
+      }
+
+      
+
+    
+      if(req.body.abierto){
+        stringQuery += ` AND (SELECT COUNT(hh.*) FROM horarioCentro as hh 
+ WHERE c.idCentro = hh.idCentro AND hh.diaSemana='`+req.body.diaSemana+`' AND hh.horaAbrir<='`+req.body.horaSemana+`' 
+  AND hh.horaCerrar>='`+req.body.horaSemana+`') > 0 `; 
+      }
+      if(req.body.disponible){
+        stringQuery += ` AND (SELECT COUNT(hh.*) FROM horarioCentro as hh 
+ WHERE c.idCentro = hh.idCentro AND hh.diaSemana='`+req.body.diaSemana+`) > 0 `; 
+      }
+
+
+     stringQuery += ` GROUP BY c.idCentro`; 
+
+     console.log(stringQuery);
+
+    //db(stringQuery,[req.body.idCategoria])
+    db(stringQuery)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
   expressApp.post('/reservasUser', (req, res) => {
     db(`SELECT c.nombre as nombreCentro, r.idCita, r.idCentro, r.horaInicio,
       r.estado FROM centro as c, cita as r WHERE c.idCentro = r.idCentro AND r.idCliente = ?`,[req.body.idCliente])
