@@ -92,27 +92,21 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
   expressApp.post('/buscarServiciosFiltro', (req, res) => {
 
-var stringQuery = ''; 
-
-      if(req.body.lat && req.body.long){
-
-         stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, 
-        COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate, 
-        ( 6371 * acos( cos( radians(`+req.body.lat+`) ) * cos( radians( c.latitud ) ) 
-         * cos( radians(c.longitud) - radians(`+req.body.long+`)) + sin(radians(`+req.body.lat+`)) 
-         * sin( radians(c.latitud)))) AS distance 
-      FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
-      WHERE c.idCentro = s.idCentro AND distance > 20 AND s.estado = 1`;
-
-      }
-      else{
-
-       stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate
+var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
       WHERE c.idCentro = s.idCentro 
       AND s.estado = 1`;
 
+     
+
+         if(req.body.lat && req.body.long){
+
+         stringQuery = ` AND ( 6371 * acos( cos( radians(`+req.body.lat+`) ) * cos( radians( c.latitud ) ) 
+         * cos( radians(c.longitud) - radians(`+req.body.long+`)) + sin(radians(`+req.body.lat+`)) 
+         * sin( radians(c.latitud)))) < 20 `;
+
       }
+
 
       if(req.body.palabra){
         stringQuery += ` AND c.sobreNosotros LIKE '%`+req.body.palabra+`%'`; 
