@@ -98,7 +98,7 @@ var stringQuery = '';
 
          stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, 
         COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate, 
-        ( 6371 * acos( cos( radians(`+req.body.lat+`?) ) * cos( radians( c.latitud ) ) 
+        ( 6371 * acos( cos( radians(`+req.body.lat+`) ) * cos( radians( c.latitud ) ) 
          * cos( radians(c.longitud) - radians(`+req.body.long+`)) + sin(radians(`+req.body.lat+`)) 
          * sin( radians(c.latitud)))) AS distance 
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
