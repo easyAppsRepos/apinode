@@ -92,11 +92,11 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
   expressApp.post('/buscarServiciosFiltro', (req, res) => {
 
-
+var stringQuery = ''; 
 
       if(req.body.lat && req.body.long){
 
-        let stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, 
+         stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, 
         COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate, 
         ( 6371 * acos( cos( radians(`+req.body.lat+`?) ) * cos( radians( c.latitud ) ) 
          * cos( radians(c.longitud) - radians(`+req.body.long+`)) + sin(radians(`+req.body.lat+`)) 
@@ -107,7 +107,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
       }
       else{
 
-      let stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate
+       stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
       WHERE c.idCentro = s.idCentro 
       AND s.estado = 1`;
