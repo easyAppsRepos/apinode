@@ -129,6 +129,19 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
 
   if(req.body.orden){
         stringQuery += ` ORDER BY pMax `+req.body.orden+` `; 
+
+        if(req.body.ordenOpiniones){
+        stringQuery += ` ,rate DESC `; 
+      }
+
+
+      }
+
+else{
+        if(req.body.ordenOpiniones){
+
+                stringQuery += ` ORDER BY rate DESC `; 
+              }
       }
 
    //  stringQuery += ` GROUP BY c.idCentro`; 
