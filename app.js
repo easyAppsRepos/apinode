@@ -101,7 +101,7 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
 
          if(req.body.lat && req.body.long){
 
-         stringQuery = ` AND ( 6371 * acos( cos( radians(`+req.body.lat+`) ) * cos( radians( c.latitud ) ) 
+         stringQuery += ` AND ( 6371 * acos( cos( radians(`+req.body.lat+`) ) * cos( radians( c.latitud ) ) 
          * cos( radians(c.longitud) - radians(`+req.body.long+`)) + sin(radians(`+req.body.lat+`)) 
          * sin( radians(c.latitud)))) < 20 `;
 
