@@ -125,8 +125,13 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
  WHERE c.idCentro = hh.idCentro AND hh.diaSemana=`+req.body.diaSemana+`) > 0 `; 
       }
 
+ stringQuery += ` GROUP BY c.idCentro`; 
 
-     stringQuery += ` GROUP BY c.idCentro`; 
+  if(req.body.orden){
+        stringQuery += ` ORDER BY pMax `+req.body.orden+` `; 
+      }
+
+   //  stringQuery += ` GROUP BY c.idCentro`; 
 
      console.log(stringQuery);
 
