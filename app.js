@@ -112,7 +112,26 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
         stringQuery += ` AND c.sobreNosotros LIKE '%`+req.body.palabra+`%'`; 
       }
 
-      
+       if(req.body.servicios.length>0){
+        stringQuery += ` AND s.idCategoria IN (`; 
+
+        req.body.servicios.forEach((item, index) => {
+
+          if(req.body.servicios.length == (index+1)){
+            stringQuery += item+`)`;
+          }
+          else{
+            stringQuery += item+`,`;
+          }  
+          
+
+        });
+
+        //req.body.servicios.forEach
+
+
+      }
+
 
     
       if(req.body.abierto){
