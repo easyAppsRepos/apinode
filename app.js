@@ -122,8 +122,8 @@ var stringQuery = '';
 
     
       if(req.body.abierto){
-        stringQuery += ` AND (SELECT COUNT(hh.*) FROM horarioCentro as hh 
- WHERE c.idCentro = hh.idCentro AND hh.diaSemana='`+req.body.diaSemana+`' AND hh.horaAbrir<='`+req.body.horaSemana+`' 
+        stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
+ WHERE c.idCentro = hh.idCentro AND hh.diaSemana=`+req.body.diaSemana+` AND hh.horaAbrir<='`+req.body.horaSemana+`' 
   AND hh.horaCerrar>='`+req.body.horaSemana+`') > 0 `; 
       }
       if(req.body.disponible){
