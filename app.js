@@ -133,7 +133,13 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
       }
 
 
-    
+       if(req.body.filtroHora){
+        stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
+ WHERE c.idCentro = hh.idCentro  AND hh.horaAbrir<='`+req.body.filtroHora+`' 
+  AND hh.horaCerrar>='`+req.body.filtroHora+`') > 0 `; 
+      }
+
+
       if(req.body.abierto){
         stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
  WHERE c.idCentro = hh.idCentro AND hh.diaSemana=`+req.body.diaSemana+` AND hh.horaAbrir<='`+req.body.horaSemana+`' 
