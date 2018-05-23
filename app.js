@@ -591,7 +591,11 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
     db(`SELECT ev.*, u.nombre as nombreUsuario 
       FROM evaluacionCentro as ev, cliente as u, cita as c 
-      WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCita = ev.idCita`,[req.body.idCentro])])
+      WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCita = ev.idCita`,[req.body.idCentro]),
+    db(`SELECT c.* FROM cupon as c 
+      INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
+      INNER JOIN cupon_cliente as cl ON (c.idCupon = cl.idCupon AND cl.idCliente = ? AND cl.estado = 1) 
+WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente])])
       .then((data) => {
 
         if (!data) res.send().status(500);
@@ -607,7 +611,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
        
 
         var groups = _.groupBy(data[1], 'nombreCategoria');
-        return res.send({info:data[0],servicios:groups, comentarios:comentarios});
+        return res.send({info:data[0],servicios:groups, comentarios:comentarios, cupon:data[3]});
       }).catch(err => res.send(err).status(500));
   });
 
