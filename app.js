@@ -146,20 +146,21 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
 
  stringQuery += ` GROUP BY c.idCentro`; 
 
-  if(req.body.orden){
-        stringQuery += ` ORDER BY pMax `+req.body.orden+` `; 
-
-        if(req.body.ordenOpiniones){
-        stringQuery += ` ,rate DESC `; 
+  if(req.body.ordenOpiniones){
+        //stringQuery += ` ORDER BY pMax `+req.body.orden+` `; 
+    stringQuery += ` ORDER BY rate DESC `; 
+        if(req.body.orden){
+        stringQuery += ` , pMin `+req.body.orden+` `; 
       }
 
 
       }
 
 else{
-        if(req.body.ordenOpiniones){
+        if(req.body.orden){
 
-                stringQuery += ` ORDER BY rate DESC `; 
+                //stringQuery += ` ORDER BY rate DESC `; 
+                  stringQuery += ` ORDER BY pMin `+req.body.orden+` `; 
               }
       }
 
