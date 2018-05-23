@@ -671,7 +671,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
-    db(`SELECT e.nombre, e.descripcion, e.idFoto, e.idEmpleado FROM empleado as e WHERE  e.idCentro = ? AND e.estado = 1`,[req.body.idCentro])
+    db(`SELECT e.nombre, e.descripcion, e.idFoto, e.idEmpleado FROM empleado as e WHERE  e.idCentro = ? AND e.estado = 1`,[req.body.idCentro]),
+    db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro])
     ])
       .then((data) => {
 
@@ -683,7 +684,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
        
 
         //var groups = _.groupBy(data[0], 'nombreCategoria');
-        return res.send({servicios:data[0], empleados:data[1]});
+        return res.send({servicios:data[0], empleados:data[1], horario:data[2]});
       }).catch(err => res.send(err).status(500));
   });
 
