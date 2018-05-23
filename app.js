@@ -132,6 +132,11 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
 
       }
 
+      //
+      if(req.body.fecha){
+        stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
+ WHERE c.idCentro = hh.idCentro  AND hh.diaSemana=`+req.body.fecha+`) > 0 `;
+      }
 
        if(req.body.filtroHora){
         stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
