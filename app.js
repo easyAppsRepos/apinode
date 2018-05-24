@@ -665,7 +665,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
 
-    expressApp.post('/', (req, res) => {
+    expressApp.post('/getDataCita', (req, res) => {
      Promise.all([
     db(`SELECT c.idCentro, c.nombre, c.direccion, c.idFoto, c.telefono,c.latitud, c.longitud, 
       ci.idCita, ci.estado, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
