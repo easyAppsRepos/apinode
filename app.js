@@ -592,7 +592,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
     db(`SELECT ev.*, u.nombre as nombreUsuario 
       FROM evaluacionCentro as ev, cliente as u, cita as c 
       WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCita = ev.idCita`,[req.body.idCentro]),
-    db(`SELECT c.* FROM cupon as c 
+    db(`SELECT c.*, cl.idCuponCliente FROM cupon as c 
       INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
       INNER JOIN cupon_cliente as cl ON (c.idCupon = cl.idCupon AND cl.idCliente = ? AND cl.estado = 1) 
 WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente])])
@@ -633,10 +633,10 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     let idCita=null;
 
     db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
-      notaCita, estado, idEmpleado ) 
-        VALUES (?,?,?,?,?,?,?,?)
+      notaCita, estado, idEmpleado,idCuponCliente ) 
+        VALUES (?,?,?,?,?,?,?,?,?)
         `,[req.body.data.idCentro, req.body.idCliente,req.body.fechaInicio,
-        req.body.fechaFinal,req.body.total, req.body.notaCita, 1, req.body.idEmpleado])
+        req.body.fechaFinal,req.body.total, req.body.notaCita, 1, req.body.idEmpleado, req.body.idCuponCliente])
       .then((data) => {
         console.log(data);
         if (!data) {
