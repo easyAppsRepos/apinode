@@ -669,7 +669,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
      Promise.all([
     db(`SELECT c.idCentro, c.nombre, c.direccion, c.idFoto, c.telefono,c.latitud, c.longitud, 
       ci.idCita, ci.estado, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
-      ci.horaFinalEsperado,precioEsperado, ci.idCuponCliente, ci.idCliente FROM centro as c, cita as ci 
+      ci.horaFinalEsperado,precioEsperado, ci.idCuponCliente, ci.idCliente, 
+      (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
+      WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento FROM centro as c, cita as ci 
       WHERE ci.idCita = ? AND c.idCentro = ci.idCentro`,[req.body.idCita]),
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c, servicio_cita as sc  
