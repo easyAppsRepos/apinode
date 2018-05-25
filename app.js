@@ -473,10 +473,29 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
-
   expressApp.post('/buscarOfertas', (req, res) => {
     db(`SELECT c.nombre as nombreCentro, 
       s.precio, 
+      c.idCentro,
+      s.nombre as nombreOferta,
+      s.precioOferta, 
+      (SELECT COUNT(DISTINCT ec.puntuacion)  FROM  evaluacionCentro as ec WHERE ec.idCentro = c.idCentro) as cantRate, (SELECT AVG(ec.puntuacion) as rate  FROM  evaluacionCentro as ec WHERE ec.idCentro = c.idCentro) as rate
+        FROM servicio as s, centro as c 
+      WHERE c.idCentro = s.idCentro 
+      AND s.idCategoria = 8 
+      AND s.estado = 1 
+`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+  expressApp.post('/busssscarOfertas', (req, res) => {
+    db(`SELECT c.nombre as nombreCentro, 
+      s.precio, 
+      c.idCentro,
       s.nombre as nombreOferta,
       s.precioOferta, 
       (SELECT COUNT(DISTINCT ec.puntuacion)  FROM  evaluacionCentro as ec WHERE ec.idCentro = c.idCentro) as cantRate, (SELECT AVG(ec.puntuacion) as rate  FROM  evaluacionCentro as ec WHERE ec.idCentro = c.idCentro) as rate,
