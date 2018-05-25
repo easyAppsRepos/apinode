@@ -544,6 +544,19 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/getCuponesApp', (req, res) => {
+    db(`SELECT c.nombre as nombreCupon, 
+ c.fechaExpira, cc.estado, cc.fechaUso FROM cupon as c, cupon_cliente as cc
+WHERE c.idCupon = cc.idCupon AND cc.idCliente = ?`,[req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
 
 
     expressApp.post('/getClienteCupones', (req, res) => {
