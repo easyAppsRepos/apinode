@@ -527,7 +527,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     db(`SELECT c.*, k.porcentajeDescuento, k.nombre,
       MAX(s.precio) as pMax, 
       MIN(s.precio) as pMin FROM  cupon as k, servicio as s, centro as c 
-      INNER JOIN cupon_centro AS cce ON cce.idCentro = c.idCentro AND cce.idCupon = 1
+      INNER JOIN cupon_centro AS cce ON cce.idCentro = c.idCentro AND cce.idCupon = ?
       WHERE c.idCentro = s.idCentro AND s.estado = 1 AND k.idCupon = cce.idCupon 
       GROUP BY c.idCentro`,[req.body.idCupon])
       .then((data) => {
