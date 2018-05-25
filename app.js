@@ -333,7 +333,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
      WHERE idEvaluacionCentro = ?`,[req.body.evaluacion, req.body.comentario,req.body.idEvaluacionCentro])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send({insertId:data.insertId});
+        return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
 
