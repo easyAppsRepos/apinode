@@ -358,6 +358,13 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/aceptarReprogramacion', (req, res) => {
+    db(`UPDATE cita set estado=2  WHERE idCita = ?`,[req.body.idCita])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
