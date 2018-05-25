@@ -522,6 +522,24 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+
+  expressApp.post('/getCC', (req, res) => {
+    db(`SELECT c.*, k.porcentajeDescuento, k.nombre,
+      MAX(s.precio) as pMax, 
+      MIN(s.precio) as pMin FROM  cupon as k, servicio as s, centro as c 
+      INNER JOIN cupon_centro AS cce ON cce.idCentro = c.idCentro AND cce.idCupon = 1
+      WHERE c.idCentro = s.idCentro AND s.estado = 1 AND k.idCupon = cce.idCupon 
+      GROUP BY c.idCentro`,[req.body.idCupon])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
   expressApp.post('/getOpiniones', (req, res) => {
     db(`SELECT ec.estado, ec.comentario, ec.puntuacion, ec.fechaCreacion, c.nombre, c.idFoto, ci.horaFinalEsperado,
  (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = ci.idCita) as total 
