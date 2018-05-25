@@ -687,14 +687,16 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       WHERE ci.idCita = ? AND c.idCentro = ci.idCentro`,[req.body.idCita]),
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c, servicio_cita as sc  
-      WHERE s.idServicio = sc.idServicio AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita])
+      WHERE s.idServicio = sc.idServicio AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita]),
+    db(`SELECT h.* FROM horarioCentro AS h INNER JOIN cita as c 
+      ON c.idCentro = h.idCentro AND c.idCita = ?`,[req.body.idCita])
     ])
       .then((data) => {
 
         if (!data) res.send().status(500);
     //var groups = _.groupBy(data[0], 'nombreCategoria');
   
-        return res.send({cita:data[0], servicios:data[1]});
+        return res.send({cita:data[0], servicios:data[1], horario:data[2]});
       }).catch(err => res.send(err).status(500));
   });
 
