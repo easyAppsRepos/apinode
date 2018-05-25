@@ -526,10 +526,9 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   expressApp.post('/getCC', (req, res) => {
     db(`SELECT c.*, k.porcentajeDescuento, k.nombre,
       MAX(s.precio) as pMax, 
-      MIN(s.precio) as pMin FROM  cupon as k, servicio as s, centro as c 
-      INNER JOIN cupon_centro AS cce ON cce.idCentro = c.idCentro AND cce.idCupon = ?
-      WHERE c.idCentro = s.idCentro AND s.estado = 1 AND k.idCupon = cce.idCupon 
-      GROUP BY c.idCentro`,[req.body.idCupon])
+      MIN(s.precio) as pMin,COUNT(DISTINCT ec.puntuacion) as cantRate, 
+      AVG(ec.puntuacion) as rate FROM  cupon as k, servicio as s, centro as c INNER JOIN cupon_centro AS cce ON cce.idCentro = c.idCentro AND cce.idCupon = ?
+      LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro  WHERE c.idCentro = s.idCentro AND s.estado = 1 AND k.idCupon = cce.idCupon GROUP BY c.idCentro`,[req.body.idCupon])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
