@@ -327,6 +327,20 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/agregarOpinion', (req, res) => {
+    db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2
+     WHERE idEvaluacionCentro = ?`,[req.body.evaluacion, req.body.comentario,req.body.idEvaluacionCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({insertId:data.insertId});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+  
+
+
   expressApp.post('/editarServicio', (req, res) => {
     db(`UPDATE servicio set nombre=?,duracion=?,precio=?,estado=?, 
       descripcion=?, idCategoria=? WHERE idServicio = ?`,[req.body.nombre,req.body.duracion,
