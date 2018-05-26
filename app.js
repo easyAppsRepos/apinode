@@ -460,6 +460,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/actualizarDCentro', upload.any(), (req, res) => {
 
+    var retornoVar(dato){
+      return dato === 'null' ? return null : return dato;
+    };
+
     var rellenoQuery = ' ';
     var files = req.files;
     if(files){
@@ -480,9 +484,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       longitud=?, horarioAppBanner=?, sobreNosotros=?,
       direccion=?,telefono=? WHERE idCentro = ?`;
 
-    db(stringQuery,[req.body.nombre,req.body.email,
-      req.body.fbLink,req.body.latitud,req.body.longitud,req.body.horarioAppBanner,req.body.sobreNosotros,
-      req.body.direccion,req.body.telefono,req.body.idCentro])
+    db(stringQuery,[retornoVar(req.body.nombre),retornoVar(req.body.email),
+      retornoVar(req.body.fbLink),retornoVar(req.body.latitud),retornoVar(req.body.longitud),retornoVar(req.body.horarioAppBanner),
+        retornoVar(req.body.sobreNosotros),
+      retornoVar(req.body.direccion),retornoVar(req.body.telefono),retornoVar(req.body.idCentro)])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
