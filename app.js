@@ -460,13 +460,34 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
-    expressApp.post('/completarCita', (req, res) => {
+    expressApp.post('/completasssrCita', (req, res) => {
     db(`UPDATE cita set  estado=3 WHERE idCita = ?`,[req.body.idCita])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+
+
+
+
+  expressApp.post('/completarCita', (req, res) => {
+     Promise.all([
+    db(`UPDATE cita set  estado=3 WHERE idCita = ?`,[req.body.idCita]), 
+    db(`INSERT INTO evaluacionCentro (idCentro,idCita) 
+      VALUES((SELECT x.idCentro FROM cita as x WHERE x.idCita = ?), ?)`,[req.body.idCita,req.body.idCita])])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+           return res.send(data[0]);
+
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
     expressApp.post('/getCentrosUsuario', (req, res) => {
     db(`SELECT a.idCentro, c.nombre FROM usuario_consola_centro as a, centro as c WHERE c.idCentro = a.idCentro
