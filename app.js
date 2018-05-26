@@ -5,7 +5,11 @@ const gcm = require('node-gcm');
 const mail = require("nodemailer").mail;
 const path = require('path');
 const multer  =   require('multer');
-const upload = multer();
+
+
+const upload = multer({dest: 'uploads/'});
+
+
 const cors = require('cors');
 const Bcrypt = require('bcrypt');
  var _ = require('underscore');
@@ -350,6 +354,21 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
+
+
+    expressApp.post('/subirImagen', upload.single('imageU'),(req, res) => {
+      console.log(req.file);
+
+/*    db(`UPDATE cliente set nombre=?,telefono=?,genero=?
+     WHERE idCliente = ?`,[req.body.nombre, req.body.telefono,req.body.genero,
+     req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));*/
+
+      
+  });
 
 
 
