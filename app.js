@@ -56,6 +56,7 @@ const app = () => {
 
 
   const expressApp = express();
+  expressApp.use(express.static('uploads'))
   expressApp.use(bodyParser.urlencoded({ extended: true }));
   expressApp.use(bodyParser.json());
 //expressApp.use(cors({origin: 'http://localhost:3003'}));
@@ -367,7 +368,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));*/
 
-      
+
   });
 
 
