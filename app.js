@@ -937,6 +937,12 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/getHorario', (req, res) => {
+   db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro]).then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/getCuponesCentro', (req, res) => {
