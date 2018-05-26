@@ -56,7 +56,7 @@ const app = () => {
 
 
   const expressApp = express();
-  expressApp.use(express.static('uploads'))
+  expressApp.use('/uploads',express.static('uploads'));
   expressApp.use(bodyParser.urlencoded({ extended: true }));
   expressApp.use(bodyParser.json());
 //expressApp.use(cors({origin: 'http://localhost:3003'}));
