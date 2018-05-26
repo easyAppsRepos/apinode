@@ -446,6 +446,17 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/editarStafImagen', upload.single('imageU'),(req, res) => {
+    db(`UPDATE empleado set nombre = ?, descripcion = ?, estado = ?, idFoto=?  
+      WHERE idEmpleado = ?`,[req.body.nombre,req.body.descripcion,
+      req.body.estado,req.file.path,req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.post('/actualizarDCentro', (req, res) => {
     db(`UPDATE centro set nombre=?,email=?,fbLink=?,latitud=?, 
