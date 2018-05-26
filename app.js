@@ -467,16 +467,16 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
           if(file.fieldname == 'imageU'){
 
-            rellenoQuery+=` set idFoto='`+file.path+`',`;
+            rellenoQuery+=` idFoto='`+file.path+`',`;
           }
           if(file.fieldname == 'imageB'){
-            rellenoQuery+=` set imagenBanner='`+file.path+`',`;
+            rellenoQuery+=` imagenBanner='`+file.path+`',`;
           }
 
         });
     }
 
-    var stringQuery = `UPDATE centro `+rellenoQuery+` set  nombre=?,email=?,fbLink=?,latitud=?, 
+    var stringQuery = `UPDATE centro set  nombre=?, `+rellenoQuery+`email=?,fbLink=?,latitud=?, 
       longitud=?, horarioAppBanner=?, sobreNosotros=?,
       direccion=?,telefono=? WHERE idCentro = ?`;
 
