@@ -467,10 +467,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
           if(file.fieldname == 'imageU'){
 
-            rellenoQuery+=' set idFoto=\''+file.path+'\',';
+            rellenoQuery+=` set idFoto='`+file.path+`',`;
           }
           if(file.fieldname == 'imageB'){
-            rellenoQuery+=' set imagenBanner=\''+file.path+'\',';
+            rellenoQuery+=` set imagenBanner='`+file.path+`',`;
           }
 
         });
