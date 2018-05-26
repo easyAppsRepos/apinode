@@ -461,7 +461,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   expressApp.post('/actualizarDCentro', upload.any(), (req, res) => {
 
     const retornoVar = (dato)=>{
-      return dato === 'null' ? return null : return dato;
+      return dato === 'null' ?  null :  dato;
     };
 
     var rellenoQuery = ' ';
