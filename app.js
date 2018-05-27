@@ -344,6 +344,19 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/actulizarHorario', (req, res) => {
+    db(`INSERT INTO horarioCentro(idCentro,diaSemana,horaAbrir,horaCerrar,estado) VALUES (?,?,?,?,?)
+  ON DUPLICATE KEY UPDATE diaSemana=?,horaAbrir=?,horaCerrar=?,estado=?`,[req.body.idCentro,
+  req.body.diaSemana,req.body.horaAbrir,req.body.horaCerrar,req.body.estado,req.body.diaSemana,
+  req.body.horaAbrir,req.body.horaCerrar,req.body.estado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
 
   expressApp.post('/agregarOpinion', (req, res) => {
     db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2
