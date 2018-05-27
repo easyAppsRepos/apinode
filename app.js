@@ -1041,10 +1041,10 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
     expressApp.post('/getServiciosCita', (req, res) => {
-     Promise.all([db(`SELECT sc.idServicioCita, s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
-      FROM servicio as s, categoria as c, servicio_cita as sc  
+     Promise.all([db(`SELECT vv.precioEsperado, sc.idServicioCita, s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+      FROM cita as vv, servicio as s, categoria as c, servicio_cita as sc  
       WHERE s.idServicio = sc.idServicio 
-      AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita]),
+      AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND vv.idCita = ? AND s.estado = 1`,[req.body.idCita,req.body.idCita]),
      db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, s.estado, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado =  1`,[req.body.idCentro])])
