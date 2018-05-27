@@ -422,8 +422,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
     expressApp.post('/reprogramarCita', (req, res) => {
-    db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?, estado=1  WHERE idCita = ?`,[req.body.horaInicio,
-      req.body.horaFinalEsperado,req.body.idCita])
+    db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?,comentarioEstado=?, estado=1  WHERE idCita = ?`,[req.body.horaInicio,
+      req.body.horaFinalEsperado,req.body.comentarioEstado,req.body.idCita])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
