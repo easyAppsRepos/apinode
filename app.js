@@ -984,7 +984,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       LEFT JOIN cupon_cliente as cc ON ( cc.idCuponCliente = r.idCuponCliente ) 
       LEFT JOIN cupon as c ON cc.idCupon = c.idCupon 
       WHERE s.idServicio = ? AND r.idCita = ?) 
-      WHERE xx.idCita = ? `,[req.body.idServicioCita, req.body.idCita,req.body.idCita]),
+      WHERE xx.idCita = ? `,[req.body.idServicio, req.body.idCita,req.body.idCita]),
        db(`DELETE FROM servicio_cita WHERE idServicioCita = ?`,[req.body.idServicioCita])])
       .then((data) => {
          if (!data) res.send().status(500);
