@@ -1024,7 +1024,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       .then((data) => {
 
         if (!data) res.send().status(500);
-    //var groups = _.groupBy(data[0], 'nombreCategoria');
+    var groups = _.groupBy(data, 'idCategoria');
     
 
     let total = 0;
@@ -1034,7 +1034,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
 
-        return res.send({servicios:data, total:total});
+        return res.send({servicios:data, total:total, categorias:groups});
       }).catch(err => res.send(err).status(500));
   });
 
