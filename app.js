@@ -977,14 +977,15 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   });
     expressApp.post('/borrarServicioCita2', function(req, res) {
      Promise.all([
-      db(`DELETE FROM servicio_cita WHERE idServicioCita = ?`,[req.body.idServicioCita]),
+     
       db(`UPDATE cita as xx set xx.precioEsperado = 
       xx.precioEsperado-(SELECT (s.precio - (s.precio * (IFNULL(c.porcentajeDescuento, 0)/100))) as precioDescuento 
       FROM servicio as s , (SELECT * FROM cita) as r  
       LEFT JOIN cupon_cliente as cc ON ( cc.idCuponCliente = r.idCuponCliente ) 
       LEFT JOIN cupon as c ON cc.idCupon = c.idCupon 
       WHERE s.idServicio = ? AND r.idCita = ?) 
-      WHERE xx.idCita = ? `,[req.body.idServicioCita, req.body.idCita,req.body.idCita])])
+      WHERE xx.idCita = ? `,[req.body.idServicioCita, req.body.idCita,req.body.idCita]),
+       db(`DELETE FROM servicio_cita WHERE idServicioCita = ?`,[req.body.idServicioCita])])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
