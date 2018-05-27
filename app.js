@@ -976,6 +976,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
     expressApp.post('/borrarServicioCita2', function(req, res) {
+
+      console.log(req.body);
      Promise.all([
      
       db(`UPDATE cita as xx set xx.precioEsperado = 
