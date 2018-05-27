@@ -993,7 +993,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       console.log(req.body);
      Promise.all([
      
-      db(`UPDATE cita as xx set xx.precioEsperado = 
+      db(`UPDATE cita as xx set xx.horaFinalEsperado = (xx.horaFinalEsperado - INTERVAL (SELECT l.duracion FROM servicio as l WHERE l.idServicio = ? ) MINUTE), xx.precioEsperado = 
       xx.precioEsperado-(SELECT (s.precio - (s.precio * (IFNULL(c.porcentajeDescuento, 0)/100))) as precioDescuento 
       FROM servicio as s , (SELECT * FROM cita) as r  
       LEFT JOIN cupon_cliente as cc ON ( cc.idCuponCliente = r.idCuponCliente ) 
