@@ -1012,13 +1012,13 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
     Promise.all([db(`INSERT INTO servicio_cita(idCita,idServicio) 
       VALUES(?, ?)`,[req.body.idCita,req.body.idServicio]),
-    db(`UPDATE cita as xx set xx.precioEsperado = 
+    db(`UPDATE cita as xx set xx.horaFinalEsperado = (xx.horaFinalEsperado + INTERVAL (SELECT l.duracion FROM servicio as l WHERE l.idServicio = ? ) MINUTE),xx.precioEsperado = 
       xx.precioEsperado+(SELECT (s.precio - (s.precio * (IFNULL(c.porcentajeDescuento, 0)/100))) as precioDescuento 
       FROM servicio as s , (SELECT * FROM cita) as r  
       LEFT JOIN cupon_cliente as cc ON ( cc.idCuponCliente = r.idCuponCliente ) 
       LEFT JOIN cupon as c ON cc.idCupon = c.idCupon 
       WHERE s.idServicio = ? AND r.idCita = ?) 
-      WHERE xx.idCita = ? `,[req.body.idServicio, req.body.idCita,req.body.idCita])])
+      WHERE xx.idCita = ? `,[req.body.idServicio, req.body.idServicio, req.body.idCita,req.body.idCita])])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
