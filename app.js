@@ -1027,7 +1027,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       .then((data) => {
 
         if (!data) res.send().status(500);
-    var groups = _.groupBy(data[1], 'idCategoria');
+    var groups = _.groupBy(data[1], 'nombreCategoria');
     
 
     let total = 0;
