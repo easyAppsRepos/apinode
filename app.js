@@ -981,9 +981,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
     Promise.all([db(`INSERT INTO servicio_cita(idCita,idServicio) 
       VALUES(?, ?)`,[req.body.idCita,req.body.idServicio]),
-    db(`UPDATE cita as xx INNER JOIN cita as jj ON xx.idCita = jj.idCita SET xx.precioEsperado = 
-      jj.precioEsperado+(SELECT (s.precio - (s.precio * (IFNULL(c.porcentajeDescuento, 0)/100))) as precioDescuento 
-      FROM servicio as s , cita as r  
+    db(`UPDATE cita as xx set xx.precioEsperado = 
+      xx.precioEsperado+(SELECT (s.precio - (s.precio * (IFNULL(c.porcentajeDescuento, 0)/100))) as precioDescuento 
+      FROM servicio as s , (SELECT * FROM cita) as r  
       LEFT JOIN cupon_cliente as cc ON ( cc.idCuponCliente = r.idCuponCliente ) 
       LEFT JOIN cupon as c ON cc.idCupon = c.idCupon 
       WHERE s.idServicio = ? AND r.idCita = ?) 
