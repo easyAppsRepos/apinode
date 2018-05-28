@@ -1005,6 +1005,19 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
       }).catch(err => res.send(err).status(500));
   });
+
+    expressApp.post('/eliminarUsuarioC', function(req, res) {
+     db(`DELETE FROM usuario_consola WHERE idUsuarioConsola = ?`,[req.body.idUsuarioConsola])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+    
+
+
     expressApp.post('/borrarServicioCita2', function(req, res) {
 
       console.log(req.body);
