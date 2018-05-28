@@ -652,6 +652,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     db(`SELECT c.nombre as nombreCentro, 
       s.precio, 
       c.idCentro,
+      c.idFoto,
       s.nombre as nombreOferta,
       s.precioOferta, 
       (SELECT COUNT(DISTINCT ec.puntuacion)  FROM  evaluacionCentro as ec WHERE ec.idCentro = c.idCentro) as cantRate, (SELECT AVG(ec.puntuacion) as rate  FROM  evaluacionCentro as ec WHERE ec.idCentro = c.idCentro) as rate
