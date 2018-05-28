@@ -206,7 +206,7 @@ else{
 
 
   expressApp.post('/reservasUser', (req, res) => {
-    db(`SELECT c.nombre as nombreCentro, r.idCita, r.idCentro, r.horaInicio,
+    db(`SELECT c.nombre as nombreCentro, c.idFoto, r.idCita, r.idCentro, r.horaInicio,
       r.estado FROM centro as c, cita as r WHERE c.idCentro = r.idCentro AND r.idCliente = ?`,[req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
