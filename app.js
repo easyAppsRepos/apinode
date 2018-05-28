@@ -982,7 +982,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
   expressApp.post('/getCentrosAll', (req, res) => {
-    db(`SELECT * from centro`)
+    db(`SELECT * from centro ORDER BY FIELD(estado, 2, 1, 3) ASC`)
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
