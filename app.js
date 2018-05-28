@@ -819,7 +819,13 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
         return res.send({ insertId: data.insertId });
       }).catch(err => res.send(err).status(500));
   });
-
+  expressApp.post('/agregarCuponCentro', (req, res) => {
+    db(`INSERT INTO cupon_centro(idCupon, idCentro) VALUES (?,?)`,[req.body.idCupon, req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
 
   expressApp.post('/getInfoCentro', (req, res) => {
      Promise.all([
@@ -1287,7 +1293,14 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/eliminarCuponCentro', function(req, res) {
+     db(`DELETE FROM cupon_centro WHERE idCentro = ? AND idCupon=?`,[req.body.idCentro,req.body.idCupon])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
 
+      }).catch(err => res.send(err).status(500));
+  });
 
 
         expressApp.post('/nuevoServicio', (req, res) => {
