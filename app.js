@@ -230,6 +230,23 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/citasCentroFiltro', (req, res) => {
+    db(`SELECT c.nombre as nombreCliente, r.precioEsperado, c.telefono, em.nombre as nombreEmpleado, (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = r.idCita) as total,
+c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEstado, r.notaCita, r.horaInicio,r.horaFinalEsperado,
+      r.estado, (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
+      WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = r.idCuponCliente) as descuento FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
+      WHERE c.idCliente = r.idCliente AND r.idCentro = ? AND DATE(r.horaInicio) = ?`,[req.body.idCentro, req.body.fecha])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+            var groups = _.groupBy(data, 'estado');
+            return res.send(groups);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/citasCentroC2', (req, res) => {
     db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = r.idCita) as total,
 c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
