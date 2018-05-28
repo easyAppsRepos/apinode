@@ -1027,7 +1027,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
   expressApp.post('/getCuponesAll', (req, res) => {
-    db(`SELECT c.*,  CAST(DATE(c.fechaExpira) AS char) as soloFecha FROM cupon `)
+    db(`SELECT c.*,  CAST(DATE(c.fechaExpira) AS char) as soloFecha FROM cupon as c`)
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send({cupones:data});
