@@ -1025,6 +1025,17 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/getCuponesAll', (req, res) => {
+    db(`SELECT c.*,  CAST(DATE(c.fechaExpira) AS char) as soloFecha FROM cupon `)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({cupones:data});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/borrarServicioCita', function(req, res) {
      db(`DELETE FROM servicio_cita WHERE idServicioCita = ?`,[req.body.idServicioCita])
       .then((data) => {
