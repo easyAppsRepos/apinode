@@ -627,6 +627,14 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/cargaUsuariosConsolaAd', (req, res) => {
+    db(`SELECT uc.* FROM usuario_consola  as uc WHERE uc.tipo = 1`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
 
   expressApp.post('/buscarOfertas', (req, res) => {
     db(`SELECT c.nombre as nombreCentro, 
