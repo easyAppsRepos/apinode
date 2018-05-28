@@ -627,6 +627,18 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+
+        expressApp.post('/cargaUsuariosSA', (req, res) => {
+    db(`SELECT uc.* FROM usuario_consola as uc  INNER JOIN usuario_consola_centro as ucc ON 
+      ucc.idUsuarioConsola = uc.idUsuarioConsola WHERE ucc.idCentro = ? AND uc.tipo = 1`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/cargaUsuariosConsolaAd', (req, res) => {
     db(`SELECT uc.* FROM usuario_consola  as uc WHERE uc.tipo = 1`)
       .then((data) => {
