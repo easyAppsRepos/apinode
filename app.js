@@ -1114,7 +1114,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         expressApp.post('/nuevoUsuarioCAD', function(req, res) {
 
     db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password) 
-      VALUES(?, ?,3,?,?)`,[req.body.email,req.body.nombre,req.body.estado,req.body.password])
+      VALUES(?, ?,1,?,?)`,[req.body.email,req.body.nombre,req.body.estado,req.body.password])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
