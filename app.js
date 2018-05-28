@@ -112,7 +112,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
 var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
       WHERE c.idCentro = s.idCentro 
-      AND s.estado = 1`;
+      AND s.estado = 1 AND c.estado = 1 `;
 
      
 
