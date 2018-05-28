@@ -980,6 +980,14 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   });
 
 
+
+  expressApp.post('/getCentrosAll', (req, res) => {
+    db(`SELECT * from centro`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
     expressApp.post('/getStaff', (req, res) => {
     db(`SELECT e.nombre, e.descripcion, e.idFoto, e.estado, e.idEmpleado FROM empleado as e WHERE
        e.idCentro = ?`,[req.body.idCentro])
