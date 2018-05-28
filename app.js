@@ -629,7 +629,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
         expressApp.post('/cargaUsuariosSA', (req, res) => {
-    db(`SELECT uc.* FROM usuario_consola as uc  INNER JOIN usuario_consola_centro as ucc ON 
+    db(`SELECT uc.*, ucc.idUsuarioConsolaCentro FROM usuario_consola as uc  INNER JOIN usuario_consola_centro as ucc ON 
       ucc.idUsuarioConsola = uc.idUsuarioConsola WHERE ucc.idCentro = ? AND uc.tipo = 1`,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
