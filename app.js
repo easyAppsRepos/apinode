@@ -457,6 +457,16 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+/*
+  expressApp.post('/reprogramarCita', (req, res) => {
+    db(`UPDATE cita set horaInicio=?, estado=5 WHERE idCita = ?`,[req.body.fechaCompleta,req.body.idCita])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+*/
+
 
 
 
@@ -564,13 +574,6 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
-  expressApp.post('/reprogramarCita', (req, res) => {
-    db(`UPDATE cita set horaInicio=?, estado=5 WHERE idCita = ?`,[req.body.fechaCompleta,req.body.idCita])
-      .then((data) => {
-        if (!data) res.send().status(500);
-        return res.send(data);
-      }).catch(err => res.send(err).status(500));
-  });
 
 
   expressApp.post('/confirmarCita', (req, res) => {
@@ -619,6 +622,23 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+
+    expressApp.post('/getUsuariosConsolaSA', (req, res) => {
+    db(`SELECT c.idCliente, c.nombre, c.telefono, c.email,
+    c.estado, c.idFoto, c.imagenFb, 
+    (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado IN (5,2,1)) as activas, 
+    (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as completadas
+     FROM cliente as c `,[req.body.idUsuario])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
     expressApp.post('/cargaUsuariosConsola', (req, res) => {
     db(`SELECT uc.* FROM usuario_consola  as uc WHERE uc.parentUser = ?`,[req.body.idUsuario])
       .then((data) => {
