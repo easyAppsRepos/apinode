@@ -720,7 +720,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
      ]).then((data) => {
         if (!data) res.send().status(500);
 
-            var groups = _.groupBy(data, 'estado');
+            var groups = _.groupBy(data[1], 'estado');
         var datav= {sucursales:data[0], info:groups}
         return res.send(datav);
       }).catch(err => res.send(err).status(500));
