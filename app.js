@@ -841,8 +841,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/getOpinionesSA', (req, res) => {
     db(`SELECT ec.idEvaluacionCentro, ec.estado, ec.comentario, ec.idcita, ec.puntuacion, ec.fechaCreacion, c.nombre as nombreCliente 
- FROM evaluacionCentro as ec, cliente as c 
- WHERE ec.idCentro = ? AND ec.estado=2`,[req.body.idCentro])
+ FROM evaluacionCentro as ec, cliente as c, cita as cx  
+ WHERE ec.idCentro=?  AND ec.estado=2 AND ec.idCita=cx.idCita AND c.idCliente=cx.idCliente`,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
