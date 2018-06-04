@@ -1335,7 +1335,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         expressApp.post('/addNegocioSA', (req, res) => {
 
     db(`INSERT INTO centro(nombre,nombreTitular,telefono,email, estado) 
-      VALUES(?, ?, ?, ?, 2)`,[req.body.nombre,req.body.nombre2,req.body.telefono,req.body.email]).then((data) => {
+      VALUES(?, ?, ?, ?, 1)`,[req.body.nombre,req.body.nombre2,req.body.telefono,req.body.email]).then((data) => {
       console.log(data);
       if (data.insertId>0) {
 
