@@ -710,6 +710,19 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
+        expressApp.post('/cargaCentrosUserSA', (req, res) => {
+    db(` SELECT c.nombre, c.email, c.estado,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.horaFinalEsperado > CURRENT_TIMESTAMP AND r.estado IN (1,2,5) AND r.idCentro = c.idCentro) as activos,
+  (SELECT COUNT(r.idCita) FROM cita as r WHERE r.horaFinalEsperado < CURRENT_TIMESTAMP AND r.estado IN (1,2,5) AND r.idCentro = c.idCentro) as sincerrar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 3 AND r.idCentro = c.idCentro) as completos
+  FROM centro as c WHERE c.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = ?)`,[req.body.idUsuarioConsola])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.post('/buscarOfertas', (req, res) => {
     db(`SELECT c.nombre as nombreCentro, 
