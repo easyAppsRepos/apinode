@@ -216,11 +216,7 @@ else{
 
 
   expressApp.post('/citasUserSA', (req, res) => {
-    db(`SELECT c.nombre as nombreCliente, r.precioEsperado, c.telefono, em.nombre as nombreEmpleado, (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = r.idCita) as total,
-c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEstado, r.notaCita, r.horaInicio,r.horaFinalEsperado,
-      r.estado, (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
-      WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = r.idCuponCliente) as descuento FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
-      WHERE c.idCliente = r.idCliente AND c.idCliente = ?`,[req.body.idCliente])
+    db("SELECT  r.precioEsperado, em.nombre as nombreEmpleado, r.idCita, r.idCentro, CONCAT(DATE_FORMAT(r.`horaInicio`, "%d/%m/%y %H:%i"), ' - ', DATE_FORMAT(r.`horaFinalEsperado`, "%H:%i")) as FechaCita, r.comentarioCita,r.comentarioEstado, r.notaCita, r.estado, (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = r.idCuponCliente) as descuento, (SELECT COUNT(sc.idServicioCita) FROM servicio_cita as sc WHERE sc.idCita = r.idCita AND sc.estado = 0) as totalServicios FROM cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado WHERE  r.idCliente  = ?",[req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
 
