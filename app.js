@@ -849,6 +849,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+
+
   expressApp.post('/getCupones', (req, res) => {
     db(`SELECT c.nombre as nombreCupon, ce.nombre as nombreCentro, 
       c.fechaExpira, cc.estado, cc.fechaUso FROM cupon as c, centro as ce, cupon_cliente as cc 
@@ -1371,6 +1375,20 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     db(`UPDATE centro SET nombre=?, nombreTitular=?, telefono=?,
       email=?, estado=? WHERE idCentro = ?`,[req.body.nombre,req.body.nombreTitular,
       req.body.telefono,req.body.email, req.body.estado, req.body.idCentro]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send(data);
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+                expressApp.post('/updateOpinionSA', (req, res) => {
+
+    db(`UPDATE evaluacionCentro SET estado=? WHERE idEvaluacionCentro = ?`,[req.body.estado,req.body.idEvaluacionCentro]).then((data) => {
       console.log(data);
       if (data) {
        return res.send(data);
