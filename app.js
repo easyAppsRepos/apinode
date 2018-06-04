@@ -839,6 +839,15 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/getOpinionesSA', (req, res) => {
+    db(`SELECT ec.idEvaluacionCentro, ec.estado, ec.comentario, ec.idcita, ec.puntuacion, ec.fechaCreacion, c.nombre as nombreCliente 
+ FROM evaluacionCentro as ec, cliente as c 
+ WHERE ec.idCentro = ? AND ec.estado=2`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
   expressApp.post('/getCupones', (req, res) => {
     db(`SELECT c.nombre as nombreCupon, ce.nombre as nombreCentro, 
