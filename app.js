@@ -1332,7 +1332,29 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/addNegocioSA', (req, res) => {
 
+    db(`INSERT INTO centro(nombre,nombreTitular,telefono,email, estado) 
+      VALUES(?, ?, ?, ?, 2)`,[req.body.nombre,req.body.nombre2,req.body.telefono,req.body.email]).then((data) => {
+      console.log(data);
+      if (data.insertId>0) {
+
+      db(`INSERT INTO usuario_consola_centro(idUsuarioConsola,idCentro) 
+      VALUES(?, ?)`,[req.body.parentUser, data.insertId]).then((datad) => {
+        if (!datad) {return res.send(err).status(500);}
+
+        return res.send({ insertId: datad.insertId });
+
+      });
+
+       
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
 
         expressApp.post('/editNegocio', (req, res) => {
 
