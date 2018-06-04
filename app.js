@@ -220,9 +220,9 @@ else{
       .then((data) => {
         if (!data) res.send().status(500);
 
-           // var groups = _.groupBy(data, 'estado');
-           // return res.send(groups);
-           return res.send(data);
+            var groups = _.groupBy(data, 'estado');
+            return res.send(groups);
+           //return res.send(data);
 
       }).catch(err => res.send(err).status(500));
   });
