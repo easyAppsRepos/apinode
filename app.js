@@ -837,6 +837,19 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+  expressApp.post('/getCentrosSucursales', (req, res) => {
+    db(`SELECT uc.nombre as centro, uc.idUsuarioConsola as idCentro, c.nombre as nombreCentro, c.idCentro
+     FROM usuario_consola as uc, centro as c WHERE uc.tipo = 1 AND c.idCentro IN (SELECT e.idCentro 
+      FROM usuario_consola_centro as e WHERE e.idUsuarioConsola = uc.idUsuarioConsola)`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        var groups = _.groupBy(data, 'centro');
+        return res.send(groups);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/getServiciosCupon', (req, res) => {
     Promise.all([db(`SELECT s.nombre,s.idServicio FROM  servicio as s, cupon_centro as cc 
       INNER JOIN cupon_servicio as cs 
