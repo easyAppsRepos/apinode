@@ -824,6 +824,19 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+  expressApp.post('/getServiciosCupon', (req, res) => {
+    db(`SELECT s.nombre,s.idServicio FROM  servicio as s, cupon_centro as cc 
+      INNER JOIN cupon_servicio as cs 
+      ON  cc.idCuponCentro = cs.idCuponCentro 
+      WHERE s.idCentro = cc.idCentro AND cc.idCuponCentro = ?
+`,[req.body.idCuponCetro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.post('/getCC', (req, res) => {
     db(`SELECT c.*, k.porcentajeDescuento, k.nombre as nombreCupon,
