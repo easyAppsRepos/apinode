@@ -274,6 +274,19 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/getCategoriasSA', (req, res) => {
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, s.estado, c.nombre as nombreCategoria  
+      FROM servicio as s, categoria as c 
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado =  1`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+            return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
   expressApp.post('/getCalendario', (req, res) => {
     db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, em.idEmpleado as idEmpleado, 
 c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
