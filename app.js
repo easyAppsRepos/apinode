@@ -840,12 +840,15 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
   expressApp.post('/getOpinionesSA', (req, res) => {
-    db(`SELECT ec.idEvaluacionCentro, ec.estado, ec.comentario, ec.idCita, ec.puntuacion, ec.fechaCreacion, c.nombre as nombreCliente 
+     Promise.all([db(`SELECT ec.idEvaluacionCentro, ec.estado, ec.comentario, ec.idCita, ec.puntuacion, ec.fechaCreacion, c.nombre as nombreCliente 
  FROM evaluacionCentro as ec, cliente as c, cita as cx  
- WHERE ec.idCentro=?  AND ec.estado IN (2,3) AND ec.idCita=cx.idCita AND c.idCliente=cx.idCliente`,[req.body.idCentro])
+ WHERE ec.idCentro=?  AND ec.estado IN (2,3) AND ec.idCita=cx.idCita AND c.idCliente=cx.idCliente`,[req.body.idCentro]),
+     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+      FROM servicio as s, categoria as c 
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send({opiniones:data[0], servicios:data[1]});
       }).catch(err => res.send(err).status(500));
   });
 
