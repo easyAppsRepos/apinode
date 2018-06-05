@@ -838,14 +838,16 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
   expressApp.post('/getServiciosCupon', (req, res) => {
-    db(`SELECT s.nombre,s.idServicio FROM  servicio as s, cupon_centro as cc 
+    Promise.all([db(`SELECT s.nombre,s.idServicio FROM  servicio as s, cupon_centro as cc 
       INNER JOIN cupon_servicio as cs 
       ON  cc.idCuponCentro = cs.idCuponCentro 
-      WHERE s.idCentro = cc.idCentro AND cc.idCuponCentro = ?
-`,[req.body.idCuponCetro])
+      WHERE s.idCentro = cc.idCentro AND cc.idCuponCentro = ?`,[req.body.idCuponCetro]),
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, s.estado, c.nombre as nombreCategoria  
+      FROM cupon_centro as f, servicio as s, categoria as c 
+      WHERE f.idCuponCentro = ? AND s.idCentro = f.idCentro AND c.idCategoria = s.idCategoria AND s.estado =  1`,[req.body.idCuponCetro])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send({centros:data[0], servicios:data[1]});
       }).catch(err => res.send(err).status(500));
   });
 
