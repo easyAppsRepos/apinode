@@ -847,7 +847,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       WHERE f.idCuponCentro = ? AND s.idCentro = f.idCentro AND c.idCategoria = s.idCategoria AND s.estado =  1`,[req.body.idCuponCetro])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send({centros:data[0], servicios:data[1]});
+            var groups = _.groupBy(data[1], 'nombreCategoria');
+    
+
+        return res.send({centros:data[0], servicios:groups});
       }).catch(err => res.send(err).status(500));
   });
 
