@@ -827,7 +827,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
   expressApp.post('/getCentrosCuponSA', (req, res) => {
-    db(`SELECT c.nombre, c.idCentro, cc.idCuponCentro FROM centro as c 
+    db(`SELECT c.nombre, c.idCentro, c.idFoto, cc.idCuponCentro, (SELECT COUNT(f.idCuponServicio) FROM cupon_centro as s, cupon_servicio as f WHERE f.idCuponCentro = s.idCuponCentro AND s.idCupon = cc.idCupon AND s.idCentro = c.idCentro) as cantServicios  FROM centro as c 
       INNER JOIN cupon_centro as cc ON cc.idCentro = c.idCentro AND cc.idCupon = ?
 `,[req.body.idCupon])
       .then((data) => {
