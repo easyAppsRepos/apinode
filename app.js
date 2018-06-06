@@ -851,7 +851,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
   expressApp.post('/getServiciosCupon', (req, res) => {
-    Promise.all([db(`SELECT DISTINCT s.nombre,s.idServicio FROM  servicio as s, cupon_centro as cc 
+    Promise.all([db(`SELECT DISTINCT s.nombre,s.idServicio, s.precio, s.precioOferta FROM  servicio as s, cupon_centro as cc 
       INNER JOIN cupon_servicio as cs 
       ON  (cc.idCuponCentro = cs.idCuponCentro AND cs.idServicio)
       WHERE s.idCentro = cc.idCentro AND  cc.idCuponCentro = 5 AND  
