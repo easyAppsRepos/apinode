@@ -603,9 +603,9 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   }); 
   
   expressApp.post('/editarCupon', (req, res) => {
-    db(`UPDATE cupon set nombre=?,codigo=?,porcentajeDescuento=?,fechaExpira=?,estado=?
+    db(`UPDATE cupon set nombre=?,codigo=?,porcentajeDescuento=?,fechaExpira=?,estado=?, tipo=?, tipoDescuento=? 
      WHERE idCupon = ?`,[req.body.nombre,req.body.codigo,
-      req.body.porcentajeDescuento,req.body.fechaExpira,req.body.estado,req.body.idCupon])
+      req.body.porcentajeDescuento,req.body.fechaExpira,req.body.estado,req.body.tipo, req.body.tipoDescuento,req.body.idCupon])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
@@ -1532,9 +1532,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   });
         expressApp.post('/nuevoCupon', (req, res) => {
 
-    db(`INSERT INTO cupon(nombre,idCentro,codigo,porcentajeDescuento, fechaExpira,estado) 
-      VALUES(?, ?, ?, ?, ?, ?)`,[req.body.nombre,req.body.idCentro,req.body.codigo,req.body.porcentajeDescuento,
-      req.body.fechaExpira,req.body.estado]).then((data) => {
+    db(`INSERT INTO cupon(nombre,codigo,porcentajeDescuento, fechaExpira,estado, tipo, tipoDescuento) 
+      VALUES(?, ?, ?, ?, ?, ?,?,?)`,[req.body.nombre,req.body.idCentro,req.body.codigo,req.body.porcentajeDescuento,
+      req.body.fechaExpira,req.body.estado,req.body.tipo, req.body.tipoDescuento]).then((data) => {
       console.log(data);
       if (data) {
        return res.send({ insertId: data.insertId });
