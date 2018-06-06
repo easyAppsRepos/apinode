@@ -1266,6 +1266,26 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/addServicioCupon', function(req, res) {
+
+    db(`INSERT INTO cupon_servicio(idCuponCentro,idServicio) 
+      VALUES(?, ?)`,[req.body.idCuponCentro,req.body.idServicio])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+        expressApp.post('/addCentroCupon', function(req, res) {
+
+    db(`INSERT INTO cupon_centro(idCupon,idCentro) 
+      VALUES(?, ?)`,[req.body.idCupon,req.body.idCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
