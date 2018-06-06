@@ -853,8 +853,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   expressApp.post('/getServiciosCupon', (req, res) => {
     Promise.all([db(`SELECT s.nombre,s.idServicio FROM  servicio as s, cupon_centro as cc 
       INNER JOIN cupon_servicio as cs 
-      ON  cc.idCuponCentro = cs.idCuponCentro 
-      WHERE s.idCentro = cc.idCentro AND cc.idCuponCentro = ?`,[req.body.idCuponCetro]),
+      ON  (cc.idCuponCentro = cs.idCuponCentro AND cs.idServicio)
+      WHERE s.idCentro = cc.idCentro AND s.idServicio AND cc.idCuponCentro = 5 AND  s.idServicio IN (SELECT iss.idServicio FROM cupon_servicio as iss WHERE iss.idCuponCentro = ? )`,[req.body.idCuponCetro]),
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, s.estado, c.nombre as nombreCategoria  
       FROM cupon_centro as f, servicio as s, categoria as c 
       WHERE f.idCuponCentro = ? AND s.idCentro = f.idCentro AND c.idCategoria = s.idCategoria AND s.estado =  1`,[req.body.idCuponCetro])])
