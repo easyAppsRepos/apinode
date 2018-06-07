@@ -564,7 +564,15 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
-
+    expressApp.post('/editarCategoriaN', (req, res) => {
+    db(`UPDATE categoria set nombre = ?,  estado = ? 
+      WHERE idCategoria = ?`,[req.body.nombre,
+      req.body.estado,req.body.idCategoria])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
     expressApp.post('/editarCategoriaImagen', upload.single('imageU'),(req, res) => {
     db(`UPDATE categoria set nombre = ?, estado = ?, idFoto=?  
