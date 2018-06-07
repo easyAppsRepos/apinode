@@ -287,6 +287,21 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+  expressApp.post('/getCategoriasAllSA', (req, res) => {
+    db(`SELECT c.* FROM categoria as c`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+            return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
   expressApp.post('/getCalendario', (req, res) => {
     db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, em.idEmpleado as idEmpleado, 
 c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
@@ -550,6 +565,27 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+
+    expressApp.post('/editarCategoriaImagen', upload.single('imageU'),(req, res) => {
+    db(`UPDATE categoria set nombre = ?, estado = ?, idFoto=?  
+      WHERE idCategoria = ?`,[req.body.nombre,
+      req.body.estado,req.file.path,req.body.idCategoria])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+        expressApp.post('/nuevaCategoria', function(req, res) {
+
+    db(`INSERT INTO categoria(nombre,estado) 
+      VALUES(?, ?)`,[req.body.nombre,req.body.estado])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/actualizarDCentro', upload.any(), (req, res) => {
@@ -1267,6 +1303,11 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
       }).catch(err => res.send(err).status(500));
   });
+
+
+
+
+
 
         expressApp.post('/addServicioCupon', function(req, res) {
 
