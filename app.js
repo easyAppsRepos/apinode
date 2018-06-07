@@ -575,6 +575,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
     expressApp.post('/editarCategoriaImagen', upload.single('imageU'),(req, res) => {
+      console.log(req.file);
     db(`UPDATE categoria set nombre = ?, estado = ?, idFoto=?  
       WHERE idCategoria = ?`,[req.body.nombre,
       req.body.estado,req.file.path,req.body.idCategoria])
