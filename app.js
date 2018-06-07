@@ -290,7 +290,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
 
 
   expressApp.post('/getCategoriasAllSA', (req, res) => {
-    db(`SELECT c.* FROM categoria as c`)
+    db(`SELECT c.*, (SELECT COUNT(g.idServicio) FROM servicio as g WHERE idCategoria = c.idCategoria) as cantServicios FROM categoria as c`)
       .then((data) => {
         if (!data) res.send().status(500);
 
