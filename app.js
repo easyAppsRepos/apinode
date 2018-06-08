@@ -439,6 +439,15 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+    expressApp.post('/editarParametro', (req, res) => {
+    db(`UPDATE parametros set valor=? WHERE idParametro=?`,[req.body.idParametro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
     expressApp.post('/editarUsuarioSA', (req, res) => {
     db(`UPDATE cliente set nombre=?,telefono=?,idGenero=?,estado=?
@@ -1207,6 +1216,18 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+
+
+  expressApp.post('/getParametros', (req, res) => {
+    db(`SELECT * from parametros`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
     expressApp.post('/getStaff', (req, res) => {
     db(`SELECT e.nombre, e.descripcion, e.idFoto, e.estado, e.idEmpleado FROM empleado as e WHERE
        e.idCentro = ?`,[req.body.idCentro])
