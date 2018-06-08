@@ -440,7 +440,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
     expressApp.post('/editarParametro', (req, res) => {
-    db(`UPDATE parametros set valor=? WHERE idParametro=?`,[req.body.idParametro])
+    db(`UPDATE parametros set valor=? WHERE idParametro=?`,[req.body.valor,req.body.idParametro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
