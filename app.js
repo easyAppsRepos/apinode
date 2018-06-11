@@ -958,7 +958,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
      db(`SELECT s.idServicio, s.estado, s.precioOferta,s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idCentro]),
-          db(`SELECT * FROM control_centro WHERE idCentro = ?`,[req.body.idCentro])])
+          db(`SELECT *,  CAST(DATE(fechaCreacion) AS char) as soloFecha FROM control_centro WHERE idCentro = ?`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send({opiniones:data[0], servicios:data[1], actividad:data[2]});
