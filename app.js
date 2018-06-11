@@ -709,7 +709,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/getVentas', (req, res) => {
      Promise.all([
-    db(`SELECT c.nombre, SUM((f.comision)) 
+    db(`SELECT c.nombre, SUM(f.comision) as comision  
       FROM centro as c, cita as f 
       WHERE c.idCentro = f.idCentro 
       AND f.idCentro = ? 
