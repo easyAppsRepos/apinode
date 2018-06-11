@@ -712,9 +712,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     db(`SELECT c.nombre, SUM(f.comision) as comision  
       FROM centro as c, cita as f 
       WHERE c.idCentro = f.idCentro 
-      AND f.idCentro = ? 
       AND f.horaFinalEsperado between ? 
-      AND LAST_DAY(?)`,[req.body.idCentro,req.body.fechaFixed, req.body.fechaFixed]), 
+      AND LAST_DAY(?)`,[req.body.fechaFixed, req.body.fechaFixed]), 
     db(`SELECT cc.* FROM control_centro as cc 
       WHERE cc.fechaCreacion between ? 
       AND LAST_DAY(?) 
