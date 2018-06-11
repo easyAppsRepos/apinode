@@ -707,6 +707,28 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+  expressApp.post('/getVentas', (req, res) => {
+     Promise.all([
+    db(`SELECT c.nombre, SUM((f.comision)) 
+      FROM centro as c, cita as f 
+      WHERE c.idCentro = f.idCentro 
+      AND f.idCentro = ? 
+      AND f.horaFinalEsperado between ? 
+      AND LAST_DAY(?)`,[req.body.idCentro,req.body.fechaFixed, req.body.fechaFixed]), 
+    db(`SELECT cc.* FROM control_centro as cc 
+      WHERE cc.fechaCreacion between ? 
+      AND LAST_DAY(?) AND cc.idCentro = ? 
+      ORDER BY cc.idControlCentro DESC`,[req.body.fechaFixed, req.body.fechaFixed, req.body.idCentro])])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+           return res.send({info:data[0], periodo:data[1]});
+
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
     expressApp.post('/getCentrosUsuario', (req, res) => {
     db(`SELECT a.idCentro, c.nombre FROM usuario_consola_centro as a, centro as c WHERE c.idCentro = a.idCentro
