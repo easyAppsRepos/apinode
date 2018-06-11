@@ -1528,6 +1528,37 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       email=?, estado=? WHERE idCentro = ?`,[req.body.nombre,req.body.nombreTitular,
       req.body.telefono,req.body.email, req.body.estado, req.body.idCentro]).then((data) => {
       console.log(data);
+
+      if (data.affectedRows>0) {
+
+     
+        if(req.body.estado !== req.body.estadoAnterior){
+        db(`INSERT INTO control_centro(idCentro,estadoAsignado) 
+      VALUES(?, ?)`,[req.body.idCentro, data.estado]).then((datad) => {
+        if (!datad) {return res.send(err).status(500);}
+
+        return res.send(data);
+
+      });
+      }
+
+         return res.send(data);
+
+       
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+/*        expressApp.post('/editNegocio', (req, res) => {
+
+    db(`UPDATE centro SET nombre=?, nombreTitular=?, telefono=?,
+      email=?, estado=? WHERE idCentro = ?`,[req.body.nombre,req.body.nombreTitular,
+      req.body.telefono,req.body.email, req.body.estado, req.body.idCentro]).then((data) => {
+      console.log(data);
       if (data) {
        return res.send(data);
       }
@@ -1536,7 +1567,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }
       
     }).catch(err => res.send(err).status(500));
-  });
+  });*/
 
                 expressApp.post('/updateOpinionSA', (req, res) => {
 
