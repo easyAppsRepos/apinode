@@ -717,13 +717,13 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       AND LAST_DAY(?)`,[req.body.idCentro,req.body.fechaFixed, req.body.fechaFixed]), 
     db(`SELECT cc.* FROM control_centro as cc 
       WHERE cc.fechaCreacion between ? 
-      AND LAST_DAY(?) AND cc.idCentro = ? 
-      ORDER BY cc.idControlCentro DESC`,[req.body.fechaFixed, req.body.fechaFixed, req.body.idCentro])])
+      AND LAST_DAY(?) 
+      ORDER BY cc.idControlCentro DESC`,[req.body.fechaFixed, req.body.fechaFixed])])
       .then((data) => {
 
         if (!data) res.send().status(500);
-
-           return res.send({info:data[0], periodo:data[1]});
+var groups = _.groupBy(data[1], 'idCentro');
+           return res.send({info:data[0], periodo:groups});
 
 
       }).catch(err => res.send(err).status(500));
