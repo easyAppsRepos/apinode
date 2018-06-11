@@ -709,10 +709,13 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/getVentas', (req, res) => {
      Promise.all([
-    db(`SELECT c.nombre, c.idCentro, c.estado, SUM(f.comision) as comision  
+    db(`SELECT c.nombre, c.idCentro, c.estado, SUM(f.comision) as comision,
+      (SELECT n.estadoAsignado FROM control_centro as n 
+      WHERE n.fechaCreacion < ? 
+      AND n.idCentro=c.idCentro ORDER BY n.fechaCreacion DESC LIMIT 1 ) as estadoMomento  
       FROM centro as c LEFT JOIN cita as f ON c.idCentro = f.idCentro AND
        f.horaFinalEsperado between ? 
-      AND LAST_DAY(?) GROUP BY c.idCentro`,[req.body.fechaFixed, req.body.fechaFixed]), 
+      AND LAST_DAY(?) GROUP BY c.idCentro`,[req.body.fechaFixed,req.body.fechaFixed, req.body.fechaFixed]), 
     db(`SELECT cc.* FROM control_centro as cc 
       WHERE cc.fechaCreacion between ? 
       AND LAST_DAY(?) 
