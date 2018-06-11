@@ -1535,11 +1535,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         if(req.body.estado !== req.body.estadoAnterior){
         db(`INSERT INTO control_centro(idCentro,estadoAsignado) 
       VALUES(?, ?)`,[req.body.idCentro, req.body.estado]).then((datad) => {
-        if (!datad) {return res.send(err).status(500);}
-
-        return res.send(data);
-
-      }).catch(err => res.send(err).status(500));
+        
+        }).catch(err => res.send(err).status(500));
       }
 
          return res.send(data);
