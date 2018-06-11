@@ -716,7 +716,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     db(`SELECT cc.* FROM control_centro as cc 
       WHERE cc.fechaCreacion between ? 
       AND LAST_DAY(?) 
-      ORDER BY cc.idControlCentro DESC`,[req.body.fechaFixed, req.body.fechaFixed])])
+      ORDER BY cc.idControlCentro ASC`,[req.body.fechaFixed, req.body.fechaFixed])])
       .then((data) => {
 
         if (!data) res.send().status(500);
