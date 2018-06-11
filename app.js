@@ -957,10 +957,11 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
  WHERE ec.idCentro=?  AND ec.estado IN (2,3) AND ec.idCita=cx.idCita AND c.idCliente=cx.idCliente`,[req.body.idCentro]),
      db(`SELECT s.idServicio, s.estado, s.precioOferta,s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
-      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idCentro])])
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idCentro]),
+          db(`SELECT * FROM control_centro WHERE idCentro = ?`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send({opiniones:data[0], servicios:data[1]});
+        return res.send({opiniones:data[0], servicios:data[1], actividad:data[2]});
       }).catch(err => res.send(err).status(500));
   });
 
@@ -1535,7 +1536,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         if(req.body.estado !== req.body.estadoAnterior){
         db(`INSERT INTO control_centro(idCentro,estadoAsignado) 
       VALUES(?, ?)`,[req.body.idCentro, req.body.estado]).then((datad) => {
-        
+
         }).catch(err => res.send(err).status(500));
       }
 
