@@ -741,14 +741,16 @@ var groups = _.groupBy(data[1], 'idCentro');
   });
 
     expressApp.post('/getPaquetes', (req, res) => {
-    db(`SELECT b.*, (SELECT  GROUP_CONCAT(DISTINCT f.nombre SEPARATOR ', ') as listaServicios 
+    Promise.all([db(`SELECT b.*, (SELECT  GROUP_CONCAT(DISTINCT f.nombre SEPARATOR ', ') as listaServicios 
       FROM servicio AS f WHERE f.idServicio
        IN (SELECT g.idServicio FROM paquete_servicio AS g 
        WHERE g.idPaqueteCentro = b.idPaqueteCentro) GROUP BY f.idCentro) as listaServicios 
-       FROM paquete_centro AS b WHERE b.idCentro = ?  `,[req.body.idCentro])
+       FROM paquete_centro AS b WHERE b.idCentro = ?  `,[req.body.idCentro]),
+    db(`SELECT s.nombre, co.* FROM control_oferta AS co INNER JOIN servicio AS s 
+      ON s.idServicio = co.idServicio AND s.idCentro = ?`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send({paquetes:data[0], ofertas:data[1]});
       }).catch(err => res.send(err).status(500));
   });
 
