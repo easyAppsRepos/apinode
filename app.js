@@ -740,6 +740,17 @@ var groups = _.groupBy(data[1], 'idCentro');
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/getPaquetes', (req, res) => {
+    db(`SELECT b.*, (SELECT  GROUP_CONCAT(DISTINCT f.nombre SEPARATOR ', ') as listaServicios 
+      FROM servicio AS f WHERE f.idServicio
+       IN (SELECT g.idServicio FROM paquete_servicio AS g 
+       WHERE g.idPaqueteCentro = b.idPaqueteCentro) GROUP BY f.idCentro) as listaServicios 
+       FROM paquete_centro AS b WHERE b.idCentro = ?  `,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
     expressApp.post('/getUsuariosConsolaSA', (req, res) => {
     db(`SELECT c.idCliente, c.nombre, c.telefono, c.email, c.idGenero,
@@ -981,10 +992,15 @@ var groups = _.groupBy(data[1], 'idCentro');
      db(`SELECT s.idServicio, s.estado, s.precioOferta,s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idCentro]),
-          db(`SELECT *,  CAST(DATE(fechaCreacion) AS char) as soloFecha FROM control_centro WHERE idCentro = ? ORDER BY fechaCreacion DESC`,[req.body.idCentro])])
+      db(`SELECT *,  CAST(DATE(fechaCreacion) AS char) as soloFecha FROM control_centro WHERE idCentro = ? ORDER BY fechaCreacion DESC`,[req.body.idCentro]),
+      db(`SELECT b.*, (SELECT  GROUP_CONCAT(DISTINCT f.nombre SEPARATOR ', ') as listaServicios 
+      FROM servicio AS f WHERE f.idServicio
+       IN (SELECT g.idServicio FROM paquete_servicio AS g 
+       WHERE g.idPaqueteCentro = b.idPaqueteCentro) GROUP BY f.idCentro) as listaServicios 
+       FROM paquete_centro AS b WHERE b.idCentro = ?`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send({opiniones:data[0], servicios:data[1], actividad:data[2]});
+        return res.send({opiniones:data[0], servicios:data[1], actividad:data[2], paquetes:data[3]});
       }).catch(err => res.send(err).status(500));
   });
 
