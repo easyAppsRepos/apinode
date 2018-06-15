@@ -1393,8 +1393,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
         expressApp.post('/contratarOferta', function(req, res) {
 
-    db(`INSERT INTO control_oferta(estado, idCentro, fechaCaducidad) 
-      VALUES(0, ?,(DATE_ADD(NOW(), INTERVAL (SELECT valor FROM parametros WHERE idParametro = 3) DAY)))`,[req.body.idCentro])
+    db(`INSERT INTO control_oferta(estado, idCentro, fechaCaducidad, costo) 
+      VALUES(0, ?,(DATE_ADD(NOW(), INTERVAL (SELECT valor FROM parametros WHERE idParametro = 3) DAY)), (SELECT valor FROM parametros WHERE idParametro = 4))`,[req.body.idCentro])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
@@ -1404,8 +1404,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
         expressApp.post('/contratarPaquete', function(req, res) {
 
-    db(`INSERT INTO paquete_centro(estado, idCentro, fechaVencimiento) 
-      VALUES(0, ?,(DATE_ADD(NOW(), INTERVAL (SELECT valor FROM parametros WHERE idParametro = 5) DAY)))`,[req.body.idCentro])
+    db(`INSERT INTO paquete_centro(estado, idCentro, fechaVencimiento, costo) 
+      VALUES(0, ?,(DATE_ADD(NOW(), INTERVAL (SELECT valor FROM parametros WHERE idParametro = 5) DAY)), (SELECT valor FROM parametros WHERE idParametro = 6))`,[req.body.idCentro])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
