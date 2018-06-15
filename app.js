@@ -710,7 +710,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   expressApp.post('/getVentas', (req, res) => {
      Promise.all([
     db(`SELECT c.nombre, c.idCentro, c.estado, SUM(f.comision) as comision,
-      SELECT (SELECT SUM(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  AND co.fechaCreacion between ? 
+       (SELECT SUM(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  AND co.fechaCreacion between ? 
       AND LAST_DAY(?)) + (SELECT SUM(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  AND co.fechaCreacion between ? 
       AND LAST_DAY(?)) AS extras, 
       (SELECT n.estadoAsignado FROM control_centro as n 
