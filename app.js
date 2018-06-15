@@ -410,7 +410,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       AND estado = 0 AND fechaCaducidad>CURRENT_TIMESTAMP  LIMIT 1`,[req.body.idServicio,req.body.precioOferta,req.body.idServicio])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send({insertId:data.insertId});
+        return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
 
