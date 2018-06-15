@@ -1288,6 +1288,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+
     expressApp.post('/getHorario', (req, res) => {
    db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro]).then((data) => {
         if (!data) res.send().status(500);
@@ -1385,7 +1388,16 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/contratarOferta', function(req, res) {
 
+    db(`INSERT INTO control_oferta(estado, idCentro, fechaCaducidad) 
+      VALUES(0, ?,(DATE_ADD(NOW(), INTERVAL (SELECT valor FROM parametros WHERE idParametro = 3) DAY)))`,[req.body.idCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
