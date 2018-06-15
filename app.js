@@ -404,6 +404,16 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/marcarEnOferta', (req, res) => {
+    db(`UPDATE control_oferta set idServicio=?, precioOferta=?,
+      estado=1 WHERE idCentro = (SELECT idCentro FROM servicio WHERE idServicio = ?) 
+      AND estado = 0 AND fechaCaducidad>CURRENT_TIMESTAMP  LIMIT 1`,[req.body.idServicio,req.body.precioOferta,req.body.idServicio])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({insertId:data.insertId});
+      }).catch(err => res.send(err).status(500));
+  });
+
   expressApp.post('/actulizarHorario', (req, res) => {
     db(`INSERT INTO horarioCentro(idCentro,diaSemana,horaAbrir,horaCerrar,estado) VALUES (?,?,?,?,?)
   ON DUPLICATE KEY UPDATE diaSemana=?,horaAbrir=?,horaCerrar=?,estado=?`,[req.body.idCentro,
