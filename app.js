@@ -1399,7 +1399,16 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/contratarPaquete', function(req, res) {
 
+    db(`INSERT INTO paquete_centro(estado, idCentro, fechaVencimiento) 
+      VALUES(0, ?,(DATE_ADD(NOW(), INTERVAL (SELECT valor FROM parametros WHERE idParametro = 5) DAY)))`,[req.body.idCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
         expressApp.post('/addServicioCupon', function(req, res) {
