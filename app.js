@@ -746,8 +746,8 @@ var groups = _.groupBy(data[1], 'idCentro');
        IN (SELECT g.idServicio FROM paquete_servicio AS g 
        WHERE g.idPaqueteCentro = b.idPaqueteCentro) GROUP BY f.idCentro) as listaServicios 
        FROM paquete_centro AS b WHERE b.idCentro = ?  `,[req.body.idCentro]),
-    db(`SELECT s.nombre, co.* FROM control_oferta AS co INNER JOIN servicio AS s 
-      ON s.idServicio = co.idServicio AND s.idCentro = ?`,[req.body.idCentro])])
+    db(`SELECT s.nombre, co.* FROM control_oferta AS co LEFT JOIN servicio AS s 
+      ON s.idServicio = co.idServicio WHERE co.idCentro = ? AND co.fechaCaducidad > CURRENT_TIMESTAMP`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send({paquetes:data[0], ofertas:data[1]});
