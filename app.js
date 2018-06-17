@@ -593,6 +593,20 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/editarSCategoriaN', (req, res) => {
+    db(`UPDATE subcategoria set nombre = ?,  estado = ? 
+      WHERE idSubcategoria = ?`,[req.body.nombre,
+      req.body.estado,req.body.idSubcategoria])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
     expressApp.post('/editarCategoriaImagen', upload.single('imageU'),(req, res) => {
       console.log(req.file);
     db(`UPDATE categoria set nombre = ?, estado = ?, idFoto=?  
