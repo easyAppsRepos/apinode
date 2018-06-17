@@ -641,6 +641,16 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
       }).catch(err => res.send(err).status(500));
   });
+        expressApp.post('/nuevaSCategoria', function(req, res) {
+
+    db(`INSERT INTO subcategoria(nombre,estado,idCategoria) 
+      VALUES(?, ?,?)`,[req.body.nombre,req.body.estado,req.body.idCategoria])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/actualizarDCentro', upload.any(), (req, res) => {
