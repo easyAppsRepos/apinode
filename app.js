@@ -752,6 +752,16 @@ var groups = _.groupBy(data[1], 'idCentro');
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+    expressApp.post('/getSubcategorias', (req, res) => {
+    db(`SELECT * FROM subcategoria WHERE idCategoria = ?`,[req.body.idCategoria])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+    
+
+
 
     expressApp.post('/getPaquetes', (req, res) => {
     Promise.all([db(`SELECT b.*, (SELECT  GROUP_CONCAT(DISTINCT f.nombre SEPARATOR ', ') as listaServicios 
