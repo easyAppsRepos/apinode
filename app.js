@@ -1300,7 +1300,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   });
 
   expressApp.post('/getCentroServiciosC', (req, res) => {
-     Promise.all([db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria, co.precioOferta, co.duracion as duracionOferta  
+     Promise.all([db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.estado, s.idSubcategoria, s.idCategoria, s.descripcion, c.nombre as nombreCategoria, co.precioOferta, co.duracion as duracionOferta  
       FROM  categoria as c, servicio as s LEFT JOIN control_oferta AS co ON (co.idServicio = s.idServicio AND  co.fechaCaducidad > CURRENT_TIMESTAMP )  
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
      db(`SELECT * FROM control_oferta WHERE idCentro = ? AND estado = 0 AND fechaCaducidad > CURRENT_TIMESTAMP`,[req.body.idCentro])])
