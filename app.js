@@ -422,6 +422,20 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/updateCategoriaEmpleado', (req, res) => {
+    db(`INSERT INTO empleado_categoria(idEmpleado,idCategoria,estado) VALUES (?,?,?)
+  ON DUPLICATE KEY UPDATE estado= ?`,[req.body.idEmpleado,req.body.idCategoria, req.body.estado,req.body.estado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
   expressApp.post('/marcarEnOferta', (req, res) => {
     db(`UPDATE control_oferta set idServicio=?, precioOferta=?,
       estado=1 WHERE idCentro = (SELECT idCentro FROM servicio WHERE idServicio = ?) 
