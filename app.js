@@ -222,10 +222,10 @@ else{
   });
   expressApp.post('/categoriaEmpleados', (req, res) => {
     db(`SELECT c.*, 
-      (SELECT ec.idEmpleadoCategoria 
+      (SELECT ec.estado 
       FROM empleado_categoria as ec 
       WHERE ec.idCategoria = c.idCategoria 
-      AND ec.idEmpleado = ? AND ec.estado = 1) as idEmpleadoCategoria 
+      AND ec.idEmpleado = ? AND ec.estado = 1) as estadoEmpleadoCategoria 
       FROM categoria as c WHERE c.estado = 1 
  `,[req.body.idEmpleado])
       .then((data) => {
