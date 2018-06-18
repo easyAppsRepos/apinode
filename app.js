@@ -225,7 +225,7 @@ else{
       (SELECT ec.idEmpleadoCategoria 
       FROM empleado_categoria as ec 
       WHERE ec.idCategoria = c.idCategoria 
-      AND ec.idEmpleado = ? AND ec.estado = 1) as checked 
+      AND ec.idEmpleado = ? AND ec.estado = 1) as idEmpleadoCategoria 
       FROM categoria as c WHERE c.estado = 1 
  `,[req.body.idEmpleado])
       .then((data) => {
