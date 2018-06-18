@@ -492,8 +492,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/editarServicio', (req, res) => {
     db(`UPDATE servicio set nombre=?,duracion=?,precio=?,estado=?, 
-      descripcion=?, idCategoria=? WHERE idServicio = ?`,[req.body.nombre,req.body.duracion,
-      req.body.precio,req.body.estado,req.body.descripcion,req.body.idCategoria,req.body.idServicio])
+      descripcion=?, idCategoria=?, idSubcategoria=? WHERE idServicio = ?`,[req.body.nombre,req.body.duracion,
+      req.body.precio,req.body.estado,req.body.descripcion,req.body.idCategoria,req.body.idSubcategoria,req.body.idServicio])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
