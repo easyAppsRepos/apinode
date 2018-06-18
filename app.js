@@ -663,6 +663,21 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+    expressApp.post('/nuevaEmpleadoImagen', upload.single('imageU2'),(req, res) => {
+      console.log(req.file);
+    db(`INSERT INTO empleado(nombre,estado,descripcion,idCentro,idFoto) 
+      VALUES(?,?,?,?,?)`,[req.body.nombre,
+      req.body.estado,req.body.descripcion,req.body.idCentro,req.file.path])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
         expressApp.post('/nuevaCategoria', function(req, res) {
 
     db(`INSERT INTO categoria(nombre,estado) 
