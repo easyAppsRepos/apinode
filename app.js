@@ -1750,7 +1750,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         expressApp.post('/nuevoServicio', (req, res) => {
 
     db(`INSERT INTO servicio(nombre,duracion,precio,estado, descripcion,idCategoria, idSubcategoria, idCentro) 
-      VALUES(?, ?, ?, ?, ?, ?, ?)`,[req.body.nombre,req.body.duracion,req.body.precio,req.body.estado,
+      VALUES(?, ?, ?, ?, ?, ?, ?,?)`,[req.body.nombre,req.body.duracion,req.body.precio,req.body.estado,
       req.body.descripcion,req.body.idCategoria,req.body.idSubcategoria,req.body.idCentro]).then((data) => {
       console.log(data);
       if (data) {
