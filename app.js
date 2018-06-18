@@ -1302,7 +1302,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   expressApp.post('/getCentroServiciosC', (req, res) => {
      Promise.all([db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.estado, s.idSubcategoria, s.idCategoria, s.descripcion, c.nombre as nombreCategoria, co.precioOferta, co.duracion as duracionOferta  
       FROM  categoria as c, servicio as s LEFT JOIN control_oferta AS co ON (co.idServicio = s.idServicio AND  co.fechaCaducidad > CURRENT_TIMESTAMP )  
-      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idCentro]),
      db(`SELECT * FROM control_oferta WHERE idCentro = ? AND estado = 0 AND fechaCaducidad > CURRENT_TIMESTAMP`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
@@ -1749,9 +1749,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
         expressApp.post('/nuevoServicio', (req, res) => {
 
-    db(`INSERT INTO servicio(nombre,duracion,precio,estado, descripcion,idCategoria, idCentro) 
+    db(`INSERT INTO servicio(nombre,duracion,precio,estado, descripcion,idCategoria, idSubcategoria, idCentro) 
       VALUES(?, ?, ?, ?, ?, ?, ?)`,[req.body.nombre,req.body.duracion,req.body.precio,req.body.estado,
-      req.body.descripcion,req.body.idCategoria,req.body.idCentro]).then((data) => {
+      req.body.descripcion,req.body.idCategoria,req.body.idSubcategoria,req.body.idCentro]).then((data) => {
       console.log(data);
       if (data) {
        return res.send({ insertId: data.insertId });
