@@ -1194,11 +1194,15 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       (SELECT COUNT(DISTINCT f.idCliente) FROM cliente as f, cita as h WHERE f.idCliente = h.idCliente AND h.estado = 3 AND h.idCentro = c.idCentro) as clientesActivos  
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro 
       WHERE c.idCentro = ?`,[req.body.idCentro]), 
-    db(`SELECT  c.nombre, c.email, c.idCliente, COUNT(r.idCita) as cantidad, 
-      SUM(r.precioEsperado) as total 
-      FROM cliente as c, cita as r 
-      WHERE r.idCentro = ? AND r.idCliente = c.idCliente 
-      AND r.estado = 3 GROUP BY c.idCliente`,[req.body.idCentro]),
+    db(`SELECT s.nombre, cc.nombre as nombreCategoria, cc.idFoto, 
+      sc.idServicio, COUNT(sc.idServicioCita) as cantidad 
+      FROM categoria as cc, servicio as s, servicio_cita as sc 
+      INNER JOIN cita as c ON sc.idCita = c.idCita 
+      AND c.idCentro = ? AND c.estado = 3 
+      WHERE s.idServicio = sc.idServicio 
+      AND cc.idCategoria = s.idCategoria 
+      GROUP BY sc.idServicio 
+      ORDER BY cantidad DESC LIMIT 5`,[req.body.idCentro]),
     db(`SELECT SUM(r.precioEsperado) as total, AVG(r.precioEsperado) as promedio 
       FROM cita as r WHERE r.idCentro = ? AND r.estado = 3`,[req.body.idCentro])])
       .then((data) => {
