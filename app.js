@@ -267,7 +267,8 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
 c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEstado, r.notaCita, r.horaInicio,r.horaFinalEsperado,
       r.estado, (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = r.idCuponCliente) as descuento FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
-      WHERE c.idCliente = r.idCliente AND r.idCentro = ? AND DATE(r.horaInicio) = ?`,[req.body.idCentro, req.body.fecha])
+      WHERE c.idCliente = r.idCliente AND r.idCentro = ? AND DATE(r.horaInicio) BETWEEN ?  
+      AND ?`,[req.body.idCentro, req.body.fecha, req.body.fechaF])
       .then((data) => {
         if (!data) res.send().status(500);
 
