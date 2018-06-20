@@ -911,6 +911,7 @@ var groups = _.groupBy(data[1], 'idCentro');
 (SELECT COUNT(xs.idUsuarioConsolaCentro) FROM usuario_consola_centro as xs WHERE xs.idUsuarioConsola = uc.idUsuarioConsola) as sucursales,
 (SELECT COUNT(r.idCita) FROM cita as r WHERE r.horaFinalEsperado > CURRENT_TIMESTAMP AND r.estado IN (1,2,5) AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as activos,
 (SELECT COUNT(r.idCita) FROM cita as r WHERE r.horaFinalEsperado < CURRENT_TIMESTAMP AND r.estado IN (1,2,5) AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as sincerrar,
+(SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 2 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola))*(SELECT valor/100 FROM parametros WHERE idParametro = 1) as comision,
 (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 3 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as completos
  FROM usuario_consola as uc WHERE uc.tipo = 1`)
       .then((data) => {
