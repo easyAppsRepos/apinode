@@ -925,7 +925,7 @@ var groups = _.groupBy(data[1], 'idCentro');
 
 
         expressApp.post('/cargaCentrosUserSA', (req, res) => {
-     Promise.all([db(` SELECT c.idCentro,c.telefono,c.nombre, c.idFoto, c.email, c.estado,
+     Promise.all([db(` SELECT c.*,
  (SELECT COUNT(r.idCita) FROM cita as r WHERE r.horaFinalEsperado > CURRENT_TIMESTAMP AND r.estado IN (1,2,5) AND r.idCentro = c.idCentro) as activos,
   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.horaFinalEsperado < CURRENT_TIMESTAMP AND r.estado IN (1,2,5) AND r.idCentro = c.idCentro) as sincerrar,
    (SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 3 AND r.idCentro = c.idCentro) as completos
