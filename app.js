@@ -1102,7 +1102,7 @@ var groups = _.groupBy(data[1], 'idCentro');
      Promise.all([db(`SELECT ec.idEvaluacionCentro, ec.estado, ec.comentario, ec.idCita, ec.puntuacion, ec.fechaCreacion, c.nombre as nombreCliente 
  FROM evaluacionCentro as ec, cliente as c, cita as cx  
  WHERE ec.idCentro=?  AND ec.estado IN (2,3) AND ec.idCita=cx.idCita AND c.idCliente=cx.idCliente`,[req.body.idCentro]),
-     db(`SELECT s.idServicio, s.estado, s.precioOferta,s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+     db(`SELECT s.idServicio, s.estado, s.precioOferta,s.nombre, s.duracion, s.precio, s.idCategoria, s.idSubcategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idCentro]),
       db(`SELECT *,  CAST(DATE(fechaCreacion) AS char) as soloFecha FROM control_centro WHERE idCentro = ? ORDER BY fechaCreacion DESC`,[req.body.idCentro]),
