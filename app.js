@@ -588,9 +588,11 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
     expressApp.post('/editarUC', (req, res) => {
-    db(`UPDATE usuario_consola set nombre=?,email=?,password=?,estado=? 
+    db(`UPDATE usuario_consola set nombre=?,email=?,password=?,estado=?,ruc=?,
+      inicioContrato=?,finContrato=?, tipoContrato=?
       WHERE idUsuarioConsola = ?`,[req.body.nombre,req.body.email,
-      req.body.password,req.body.estado,req.body.idUsuarioConsola])
+      req.body.password,req.body.estado,
+      req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato,req.body.idUsuarioConsola])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
