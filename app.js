@@ -754,9 +754,9 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   }); 
   
   expressApp.post('/editarCupon', (req, res) => {
-    db(`UPDATE cupon set nombre=?,codigo=?,porcentajeDescuento=?,fechaExpira=?,estado=?, tipo=?, tipoDescuento=? 
+    db(`UPDATE cupon set nombre=?,codigo=?,porcentajeDescuento=?,fechaExpira=?,estado=?, premio=?,tipo=?, tipoDescuento=? 
      WHERE idCupon = ?`,[req.body.nombre,req.body.codigo,
-      req.body.porcentajeDescuento,req.body.fechaExpira,req.body.estado,req.body.tipo, req.body.tipoDescuento,req.body.idCupon])
+      req.body.porcentajeDescuento,req.body.fechaExpira,req.body.estado,req.body.premio,req.body.tipo, req.body.tipoDescuento,req.body.idCupon])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
