@@ -1055,9 +1055,9 @@ var groups = _.groupBy(data[1], 'idCentro');
     Promise.all([db(`SELECT DISTINCT s.nombre,s.idServicio, s.precio, s.precioOferta FROM  servicio as s, cupon_centro as cc 
       INNER JOIN cupon_servicio as cs 
       ON  (cc.idCuponCentro = cs.idCuponCentro AND cs.idServicio)
-      WHERE s.idCentro = cc.idCentro AND  cc.idCuponCentro = 5 AND  
+      WHERE s.idCentro = cc.idCentro AND  cc.idCuponCentro = ? AND  
       s.idServicio IN (SELECT iss.idServicio FROM cupon_servicio as iss 
-      WHERE iss.idCuponCentro = ?)`,[req.body.idCuponCetro]),
+      WHERE iss.idCuponCentro = ?)`,[req.body.idCuponCetro,req.body.idCuponCetro]),
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, s.estado, c.nombre as nombreCategoria  
       FROM cupon_centro as f, servicio as s, categoria as c 
       WHERE f.idCuponCentro = ? AND s.idCentro = f.idCentro AND c.idCategoria = s.idCategoria AND s.estado =  1`,[req.body.idCuponCetro])])
