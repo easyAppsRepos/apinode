@@ -1821,12 +1821,12 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   });
         expressApp.post('/nuevoCupon', (req, res) => {
 
-    db(`INSERT INTO cupon(nombre,codigo,porcentajeDescuento, fechaExpira,estado, tipo, tipoDescuento) 
-      VALUES(?, ?, ?, ?, ?, ?,?)`,[req.body.nombre,req.body.codigo,req.body.porcentajeDescuento,
-      req.body.fechaExpira,req.body.estado,req.body.tipo, req.body.tipoDescuento]).then((data) => {
+    db(`INSERT INTO cupon(nombre,codigo,porcentajeDescuento, fechaExpira,estado, tipo, tipoDescuento,premio) 
+      VALUES(?, ?, ?, ?, ?, ?,?,?)`,[req.body.nombre,req.body.codigo,req.body.porcentajeDescuento,
+      req.body.fechaExpira,req.body.estado,req.body.tipo, req.body.tipoDescuento,req.body.premio]).then((data) => {
       console.log(data);
       if (data) {
-       return res.send({ insertId: data.insertId });
+       return res.send(data);
       }
       else{
         return res.send(err).status(500);
