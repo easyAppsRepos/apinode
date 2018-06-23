@@ -1616,7 +1616,27 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+    
 
+    expressApp.post('/cargarNegocios2', (req, res) => {
+      Promise.all([db(`SELECT cc.*, c.nombre FROM usuario_consola_centro as cc, centro as c  
+      WHERE cc.idUsuarioConsola = ? AND c.idCentro = cc.idCentro`,[req.body.idUsuarioConsola]),
+      db(`SELECT c.*, 
+      (SELECT ec.estado 
+      FROM usuario_seccion as ec 
+      WHERE ec.idSeccion = c.idSeccion 
+      AND ec.idUsuarioConsola = ?) as checked 
+      FROM seccion as c WHERE c.estado = 1`,[req.body.idUsuarioConsola])])
+
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+    //var groups = _.groupBy(data[0], 'nombreCategoria');
+
+
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
