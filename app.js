@@ -868,8 +868,10 @@ var groups = _.groupBy(data[1], 'idCentro');
     db(`SELECT c.idCliente, c.nombre, c.telefono, c.email, c.idGenero,
     c.estado, c.idFoto, c.imagenFb, 
     (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado IN (5,2,1)) as activas, 
-    (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as completadas
-     FROM cliente as c `,[req.body.idUsuario])
+    (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as completadas,
+    (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as exp,
+    (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
+     FROM cliente as c`,[req.body.idUsuario])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
