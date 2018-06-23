@@ -844,7 +844,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
         expressApp.post('/getSeccionesUsuario', (req, res) => {
     db(`SELECT GROUP_CONCAT(DISTINCT(ec.idSeccion)) as secciones FROM 
-  usuario_seccion as ec WHERE  ec.idUsuarioConsola = 1 AND ec.estado=1 GROUP BY
+  usuario_seccion as ec WHERE  ec.idUsuarioConsola = ? AND ec.estado=1 GROUP BY
   ec.idUsuarioConsola`,[req.body.idUsuarioConsola])
       .then((data) => {
         if (!data) res.send().status(500);
