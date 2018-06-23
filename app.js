@@ -432,7 +432,14 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
-
+  expressApp.post('/updateSeccionSA', (req, res) => {
+    db(`INSERT INTO usuario_seccion(idUsuarioConsola,idSeccion,estado) VALUES (?,?,?)
+  ON DUPLICATE KEY UPDATE estado= ?`,[req.body.idUsuarioConsola,req.body.idSeccion, req.body.estado,req.body.estado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
@@ -1616,7 +1623,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
-    
+
 
     expressApp.post('/cargarNegocios2', (req, res) => {
       Promise.all([db(`SELECT cc.*, c.nombre FROM usuario_consola_centro as cc, centro as c  
