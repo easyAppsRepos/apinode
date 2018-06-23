@@ -841,6 +841,18 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+        expressApp.post('/getSeccionesUsuario', (req, res) => {
+    db(`SELECT GROUP_CONCAT(DISTINCT(ec.idSeccion)) FROM 
+  usuario_seccion as ec WHERE  ec.idUsuarioConsola = 1 AND ec.estado=1 GROUP BY
+  ec.idUsuarioConsola`,[req.body.idUsuarioConsola])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
     expressApp.post('/getSubcategorias', (req, res) => {
     db(`SELECT * FROM subcategoria WHERE idCategoria = ?`,[req.body.idCategoria])
       .then((data) => {
