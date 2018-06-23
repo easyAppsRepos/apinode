@@ -806,26 +806,20 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
   expressApp.post('/getVentas', (req, res) => {
-     Promise.all([
-    db(`SELECT c.nombre, c.idCentro, c.estado, SUM(f.comision) as comision,
-       (SELECT SUM(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  AND co.fechaCreacion between ? 
-      AND LAST_DAY(?)) + (SELECT SUM(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  AND co.fechaCreacion between ? 
-      AND LAST_DAY(?)) AS extras, 
-      (SELECT n.estadoAsignado FROM control_centro as n 
-      WHERE n.fechaCreacion < ? 
-      AND n.idCentro=c.idCentro ORDER BY n.fechaCreacion DESC LIMIT 1 ) as estadoMomento  
-      FROM centro as c LEFT JOIN cita as f ON c.idCentro = f.idCentro AND
-       f.horaFinalEsperado between ? 
-      AND LAST_DAY(?) GROUP BY c.idCentro`,[req.body.fechaFixed,req.body.fechaFixed,req.body.fechaFixed,req.body.fechaFixed, req.body.fechaFixed,req.body.fechaFixed, req.body.fechaFixed]), 
-    db(`SELECT cc.* FROM control_centro as cc 
-      WHERE cc.fechaCreacion between ? 
-      AND LAST_DAY(?) 
-      ORDER BY cc.idControlCentro ASC`,[req.body.fechaFixed, req.body.fechaFixed])])
+
+    db(`SELECT c.nombre, c.idCentro, c.estado, SUM(f.comision) as comision, 
+      SUM(f.precioEsperado) as sumCitas,COUNT(f.idCita) as cantCitas,
+(SELECT SUM(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  
+      AND co.fechaCreacion between ? AND ?) as costoOferta, (SELECT COUNT(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  
+      AND co.fechaCreacion between ? AND ?) as cantOferta, (SELECT SUM(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
+      AND co.fechaCreacion between ? AND ?) as costoPaquete, (SELECT COUNT(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
+      AND co.fechaCreacion between ? AND ?) as cantPaquete FROM centro as c LEFT JOIN cita as f ON c.idCentro = f.idCentro 
+      AND f.horaFinalEsperado between ? AND ? AND f.estado = 3 GROUP BY c.idCentro`,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2])
       .then((data) => {
 
         if (!data) res.send().status(500);
-var groups = _.groupBy(data[1], 'idCentro');
-           return res.send({info:data[0], periodo:groups});
+
+           return res.send(data);
 
 
       }).catch(err => res.send(err).status(500));
