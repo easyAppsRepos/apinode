@@ -464,10 +464,37 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+  expressApp.post('/actualizarFechaEspecial', (req, res) => {
+    db(`UPDATE horario_especial set horaAbrir=?,horaCerrar=?,abierto=? 
+      WHERE idHorarioEspecial=?`,[req.body.horaAbrir,req.body.horaCerrar,req.body.abierto,req.body.idHorarioEspecial])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+  expressApp.post('/nuevaFechaEspecial', (req, res) => {
+    db(`INSERT INTO horario_especial(idCentro,fecha,horaAbrir,horaCerrar,abierto) VALUES (?,?,?,?,?)
+  ON DUPLICATE KEY UPDATE horaAbrir=?,horaCerrar=?,abierto=?`,[req.body.idCentro,
+  req.body.fecha,req.body.horaAbrir,req.body.horaCerrar,req.body.abierto,
+  req.body.horaAbrir,req.body.horaCerrar,req.body.abierto])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
+    expressApp.post('/borrarFechaEspecial', function(req, res) {
+     db(`DELETE FROM horario_especial WHERE idHorarioEspecial = ?`,[req.body.idHorarioEspecial])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
 
+      }).catch(err => res.send(err).status(500));
+  });
 
+    
   expressApp.post('/agregarOpinion', (req, res) => {
     db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2
      WHERE idEvaluacionCentro = ?`,[req.body.evaluacion, req.body.comentario,req.body.idEvaluacionCentro])
