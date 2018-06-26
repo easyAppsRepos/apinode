@@ -523,7 +523,17 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
-    
+   
+        expressApp.post('/eliminarCentro', function(req, res) {
+     db(`DELETE FROM centro WHERE idCentro = ?`,[req.body.idCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  }); 
+
+        
   expressApp.post('/agregarOpinion', (req, res) => {
     db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2
      WHERE idEvaluacionCentro = ?`,[req.body.evaluacion, req.body.comentario,req.body.idEvaluacionCentro])
