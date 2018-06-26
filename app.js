@@ -1196,7 +1196,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
   expressApp.post('/getOpinionesCentro', (req, res) => {
-    db(`SELECT * FROM evaluacionCentro WHERE idCentro = ? AND estado = 2 ORDER BY fechaCreacion DESC`,[req.body.idCentro])
+    db(`SELECT c.nombre AS nombreCliente, e.* 
+      FROM  evaluacionCentro as e, cliente AS c  
+      WHERE  c.idCliente = (SELECT u.idCliente FROM cita as u WHERE u.idCita = e.idCita) AND 
+      e.idCentro = ? AND e.estado = 2 ORDER BY e.fechaCreacion DESC`,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
