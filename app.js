@@ -1195,7 +1195,13 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
-
+  expressApp.post('/getOpinionesCentro', (req, res) => {
+    db(`SELECT * FROM evaluacionCentro WHERE idCentro = ? AND estado = 2 ORDER BY fechaCreacion DESC`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/getOpiniones', (req, res) => {
