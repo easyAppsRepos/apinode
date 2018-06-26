@@ -442,6 +442,14 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+  expressApp.post('/responderOpinion', (req, res) => {
+    db(`UPDATE evaluacionCentro set respuestaCentro = ? 
+      WHERE idEvaluacionCentro = ?`,[req.body.respuestaCentro,req.body.idEvaluacionCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/marcarEnOferta', (req, res) => {
