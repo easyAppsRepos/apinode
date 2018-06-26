@@ -502,6 +502,14 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
       }).catch(err => res.send(err).status(500));
   });
+        expressApp.post('/eliminarEmpleado', function(req, res) {
+     db(`DELETE FROM empleado WHERE idEmpleado = ?`,[req.body.idEmpleado])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
     
