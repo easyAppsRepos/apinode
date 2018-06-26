@@ -512,6 +512,17 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+
+        expressApp.post('/eliminarUC', function(req, res) {
+     db(`DELETE FROM usuario_consola WHERE idUsuarioConsola = ?`,[req.body.idUsuarioConsola])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
     
   expressApp.post('/agregarOpinion', (req, res) => {
     db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2
