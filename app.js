@@ -32,7 +32,7 @@ var moment = require('moment');
 
 
 
-//var sender = new gcm.Sender('AIzaSyB9NRBjhypcU9QZursZiiJuGJMulaCjEmA');
+var sender = new gcm.Sender('AIzaSyBH4d4XhTbiJDW2QYwkgABH6nmthapELd0');
 //var iap = require('in-app-purchase');
 
 const { database } = require('./config/credentials');
@@ -902,10 +902,43 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     db(`UPDATE cita set  estado=3,
       exp=(precioEsperado*(SELECT valor FROM parametros WHERE idParametro=2)) WHERE idCita = ?`,[req.body.idCita]), 
     db(`INSERT INTO evaluacionCentro (idCentro,idCita) 
-      VALUES((SELECT x.idCentro FROM cita as x WHERE x.idCita = ?), ?)`,[req.body.idCita,req.body.idCita])])
+      VALUES((SELECT x.idCentro FROM cita as x WHERE x.idCita = ?), ?)`,[req.body.idCita,req.body.idCita]),
+    db(`SELECT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'android'`,[req.body.idCita])])
       .then((data) => {
 
         if (!data) res.send().status(500);
+
+
+            if(data[2]){
+              var message = new gcm.Message({
+              data: { key1: 'Tu cita ha finalizado! Ya puedes valorar al negocio' },
+              notification: {
+              title: "Cita Finalizada",
+              icon: "ic_launcher",
+              body: "Tu cita ha finalizado. Ya puedes evaluar el servicio recibido!"
+              }
+              });
+
+              // Specify which registration IDs to deliver the message to
+              var regTokens = [];
+
+              data[2].forEach((elementw, index) => {
+              regTokens.push(elementw.pushKey);
+              });
+
+
+
+              //var regTokens = ['dY98OGfoOJE:APA91bFVAw74t-YO0Oh5DXYFOZbgLzhglyMMhSLsEb2jFpnqn44N6e-mt90V6NbMQ9TkYRUfN3kZw2G7D9Xuv1BKReiJ7khrt2zloVkTx3acZ6tcLevhlg3mb70YDocE0LGaeft7APh7yZYgTgAMErouTV5p3m9H0A'];
+
+              // Actually send the message
+              sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if (err) console.error(err);
+              else console.log(response);
+              });
+
+            }
 
            return res.send(data[0]);
 
