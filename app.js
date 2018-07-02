@@ -475,7 +475,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/actualizarHorarioEmpleado', (req, res) => {
     db(`INSERT INTO horarioEmpleado(idEmpleado,diaSemana,horaEntrar,horaSalir,estado) VALUES (?,?,?,?,?)
-  ON DUPLICATE KEY UPDATE diaSemana=?,horaEntrar=?,horaSalir=?,estado=?`,[req.body.idCentro,
+  ON DUPLICATE KEY UPDATE diaSemana=?,horaEntrar=?,horaSalir=?,estado=?`,[req.body.idEmpleado,
   req.body.diaSemana,req.body.horaEntrar,req.body.horaSalir,req.body.estado,req.body.diaSemana,
   req.body.horaEntrar,req.body.horaSalir,req.body.estado])
       .then((data) => {
