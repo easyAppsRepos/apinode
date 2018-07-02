@@ -1605,7 +1605,13 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   });
 
 
-
+        expressApp.post('/getHorarioEmpleado', (req, res) => {
+   Promise.all([db(`SELECT * FROM horarioEmpleado WHERE idEmpleado = ?`,[req.body.idEmpleado]),
+    db(`SELECT * FROM horario_especial_empleado WHERE idEmpleado = ?`,[req.body.idEmpleado])]).then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({horario:data[0], especiales:data[1]});
+      }).catch(err => res.send(err).status(500));
+  });
 
   expressApp.post('/getCuponesCentro', (req, res) => {
     db(`SELECT c.*,  CAST(DATE(c.fechaExpira) AS char) as soloFecha FROM cupon as c WHERE c.idCentro = ?`,[req.body.idCentro])
