@@ -472,6 +472,24 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+  expressApp.post('/actualizarHorarioEmpleado', (req, res) => {
+    db(`INSERT INTO horarioEmpleado(idEmpleado,diaSemana,horaEntrar,horaSalir,estado) VALUES (?,?,?,?,?)
+  ON DUPLICATE KEY UPDATE diaSemana=?,horaEntrar=?,horaSalir=?,estado=?`,[req.body.idCentro,
+  req.body.diaSemana,req.body.horaEntrar,req.body.horaSalir,req.body.estado,req.body.diaSemana,
+  req.body.horaEntrar,req.body.horaSalir,req.body.estado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+  
+
+
+
   expressApp.post('/actualizarFechaEspecial', (req, res) => {
     db(`UPDATE horario_especial set horaAbrir=?,horaCerrar=?,abierto=? 
       WHERE idHorarioEspecial=?`,[req.body.horaAbrir,req.body.horaCerrar,req.body.abierto,req.body.idHorarioEspecial])
