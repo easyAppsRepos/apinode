@@ -969,7 +969,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
     expressApp.post('/getCentrosUsuario', (req, res) => {
-    db(`SELECT a.idCentro, c.nombre FROM usuario_consola_centro as a, centro as c WHERE c.idCentro = a.idCentro
+    db(`SELECT a.idCentro, c.nombre FROM usuario_consola_centro as a, centro as c WHERE c.estado = 1 AND c.idCentro = a.idCentro
        AND a.idUsuarioConsola = ?`,[req.body.idUsuario])
       .then((data) => {
         if (!data) res.send().status(500);
