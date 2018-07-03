@@ -1097,7 +1097,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     db(`SELECT uc.*, 
 (SELECT COUNT(xs.idUsuarioConsolaCentro) FROM usuario_consola_centro as xs WHERE xs.idUsuarioConsola = uc.idUsuarioConsola) as sucursales,
 (SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 4 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as canceladas,
-(SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE  r.estado = 4 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as comisionCanceladas,
+(SELECT SUM(r.precioEsperado)ƒ FROM cita as r WHERE  r.estado = 4 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as comisionCanceladas,
 (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE  r.estado = 1 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as comisionPorConfirmar,
 (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE  r.estado = 5 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as comisionEConfirmar,
 (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE  r.estado = 2 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as comisionConfirmadas,
@@ -1135,6 +1135,30 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/cargaCentrosUserSA2', (req, res) => {
+     Promise.all([db(` SELECT c.*,
+       (SELECT SUM(r.comision) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as comision,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro) as canceladas,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro) as comisionCanceladas,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 1 AND r.idCentro = c.idCentro) as porconfirmar,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 1 AND r.idCentro = c.idCentro) as comisionPorConfirmar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro) as econfirmar,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro) as comisionEConfirmar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro) as confirmadas,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro) as comisionConfirmadas,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as completadas,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as comisionCompletadas 
+  FROM centro as c WHERE c.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = ?)`,[req.body.idUsuarioConsola]),
+     db("SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,df.idFoto, r.precioEsperado, r.comision, em.nombre as nombreEmpleado, r.idCita, r.idCentro, CONCAT(DATE_FORMAT(r.`horaInicio`, '%d/%m/%y %H:%i'), ' - ', DATE_FORMAT(r.`horaFinalEsperado`, '%H:%i')) as FechaCita, r.comentarioCita,r.comentarioEstado, r.notaCita, r.estado, (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = r.idCuponCliente) as descuento, (SELECT COUNT(sc.idServicioCita) FROM servicio_cita as sc WHERE sc.idCita = r.idCita AND sc.estado = 0) as totalServicios, (SELECT v.puntuacion FROM evaluacionCentro as v WHERE v.idCita = r.idCita LIMIT 1) as valoracion  FROM cliente as sx, centro as df, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado WHERE df.idCentro = r.idCentro AND r.idCentro IN (SELECT g.idCentro FROM usuario_consola_centro as g WHERE g.idUsuarioConsola = ? AND sx.idCliente = r.idCliente)",[req.body.idUsuarioConsola]),
+      db("SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision FROM cita as r WHERE r.estado = 3 AND r.idCentro IN (SELECT g.idCentro FROM usuario_consola_centro as g WHERE g.idUsuarioConsola = ?)",[req.body.idUsuarioConsola])
+     ]).then((data) => {
+        if (!data) res.send().status(500);
+
+            var groups = _.groupBy(data[1], 'estado');
+        var datav= {sucursales:data[0], info:groups, dataR:data[2]}
+        return res.send(datav);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/buscarOfertas', (req, res) => {
