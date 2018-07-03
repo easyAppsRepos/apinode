@@ -1097,6 +1097,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     db(`SELECT uc.*, 
 (SELECT COUNT(xs.idUsuarioConsolaCentro) FROM usuario_consola_centro as xs WHERE xs.idUsuarioConsola = uc.idUsuarioConsola) as sucursales,
 (SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 4 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as canceladas,
+(SELECT valor FROM parametros WHERE idParametro = 1) as valorComision,
 (SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 1 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as porconfirmar,
 (SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 5 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as econfirmar,
 (SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 2 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as confirmadas,
