@@ -1439,6 +1439,20 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+    expressApp.post('/agregarRegistroManual', (req, res) => {
+    db(`INSERT INTO control_centro(idCentro, estadoAsignado,mensaje) VALUES (?,3,?)`,[req.body.idCentro,req.body.mensaje ])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
   expressApp.post('/getInfoCentro', (req, res) => {
      Promise.all([
     db(`SELECT c.*, 
