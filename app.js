@@ -716,10 +716,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
     expressApp.post('/editarUC', (req, res) => {
     db(`UPDATE usuario_consola set nombre=?,email=?,password=?,estado=?,ruc=?,
-      inicioContrato=?,finContrato=?, tipoContrato=?
+      inicioContrato=?,finContrato=?, tipoContrato=?, observaciones=? 
       WHERE idUsuarioConsola = ?`,[req.body.nombre,req.body.email,
       req.body.password,req.body.estado,
-      req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato,req.body.idUsuarioConsola])
+      req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato,req.body.observaciones,req.body.idUsuarioConsola])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
@@ -1831,9 +1831,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         expressApp.post('/nuevoUsuarioCAD', function(req, res) {
 
     db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password, ruc, inicioContrato,
-      finContrato,tipoContrato) 
-      VALUES(?, ?,1,?,?,?,?,?,?)`,[req.body.email,req.body.nombre,req.body.estado,req.body.password,
-      req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato])
+      finContrato,tipoContrato,observaciones) 
+      VALUES(?, ?,1,?,?,?,?,?,?,?)`,[req.body.email,req.body.nombre,req.body.estado,req.body.password,
+      req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato,req.body.observaciones])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
