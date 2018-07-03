@@ -1093,6 +1093,25 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
+        expressApp.post('/cargaUsuariosConsolaSA2', (req, res) => {
+    db(`SELECT uc.*, 
+(SELECT COUNT(xs.idUsuarioConsolaCentro) FROM usuario_consola_centro as xs WHERE xs.idUsuarioConsola = uc.idUsuarioConsola) as sucursales,
+(SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 4 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as canceladas,
+(SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 1 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as porconfirmar,
+(SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 5 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as econfirmar,
+(SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 2 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as confirmadas,
+(SELECT COUNT(r.idCita) FROM cita as r WHERE  r.estado = 3 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola)) as completadas,
+(SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 2 AND r.idCentro IN (SELECT f.idCentro FROM usuario_consola_centro as f WHERE f.idUsuarioConsola = uc.idUsuarioConsola))*(SELECT valor/100 FROM parametros WHERE idParametro = 1) as comision
+ FROM usuario_consola as uc WHERE uc.tipo = 1`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
         expressApp.post('/cargaCentrosUserSA', (req, res) => {
      Promise.all([db(` SELECT c.*,
  (SELECT COUNT(r.idCita) FROM cita as r WHERE r.horaFinalEsperado > CURRENT_TIMESTAMP AND r.estado IN (1,2,5) AND r.idCentro = c.idCentro) as activos,
