@@ -1328,7 +1328,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   expressApp.post('/getOpinionesCentro', (req, res) => {
     db(`SELECT c.nombre AS nombreCliente, e.*,
       (SELECT nn.precioEsperado FROM cita as nn WHERE nn.idCita = e.idCita) as totalCita    
-      FROM  evaluacionCentro as e, cliente AS c, 
+      FROM  evaluacionCentro as e, cliente AS c  
       WHERE  c.idCliente = (SELECT u.idCliente FROM cita as u WHERE u.idCita = e.idCita) AND 
       e.idCentro = ? AND e.estado = 2 ORDER BY e.fechaCreacion DESC`,[req.body.idCentro])
       .then((data) => {
