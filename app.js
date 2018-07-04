@@ -1323,6 +1323,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+  
 
 
   expressApp.post('/getOpinionesCentro', (req, res) => {
