@@ -1859,7 +1859,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
         expressApp.post('/getServiciosCita4', function(req, res) {
 
-    db(`SELECT vv.precioEsperado, sc.idServicioCita, s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+    db(`SELECT vv.precioEsperado, sc.idServicioCita, sc.precioCobrado, s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM cita as vv, servicio as s, categoria as c, servicio_cita as sc  
       WHERE s.idServicio = sc.idServicio 
       AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND vv.idCita = ? AND s.estado = 1`,[req.body.idCita,req.body.idCita])
