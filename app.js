@@ -1332,7 +1332,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
   expressApp.post('/getCC', (req, res) => {
-    db(`SELECT c.*, k.porcentajeDescuento, k.nombre as nombreCupon,
+    db(`SELECT c.idCentro,c.idFoto,c.nombre, k.*,
       MAX(s.precio) as pMax, 
       MIN(s.precio) as pMin,COUNT(DISTINCT ec.puntuacion) as cantRate, 
       AVG(ec.puntuacion) as rate FROM  cupon as k, servicio as s, centro as c INNER JOIN cupon_centro AS cce ON cce.idCentro = c.idCentro AND cce.idCupon = ?
