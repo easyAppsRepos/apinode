@@ -2158,7 +2158,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
     db(`INSERT INTO cupon(nombre,codigo,porcentajeDescuento, fechaExpira,estado, tipo, tipoDescuento,premio) 
       VALUES(?, ?, ?, ?, ?, ?,?,?)`,[req.body.nombre,req.body.codigo,req.body.porcentajeDescuento,
-      req.body.fechaExpira,req.body.estado,req.body.tipo, req.body.tipoDescuento,req.body.premio]).then((data) => {
+      req.body.fechaExpira,1,req.body.tipo, req.body.tipoDescuento,req.body.premio]).then((data) => {
       console.log(data);
       if (data) {
        return res.send(data);
