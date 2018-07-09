@@ -1961,7 +1961,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
     expressApp.post('/login', (req, res) => {
 
-    db(`SELECT u.idUsuarioConsola, u.email, u.nombre, u.tipo FROM usuario_consola as u 
+    db(`SELECT u.idUsuarioConsola, u.email, u.nombre, u.tipo, u.estado FROM usuario_consola as u 
       WHERE u.email = ? AND u.password = ?`,[req.body.username,req.body.password]).then((data) => {
       console.log(data);
       if (data[0].idUsuarioConsola) {
