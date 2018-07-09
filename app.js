@@ -969,6 +969,9 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
     db(`SELECT c.nombre, c.idCentro, c.estado, SUM(f.comision) as comision, 
       SUM(f.precioEsperado) as sumCitas,COUNT(f.idCita) as cantCitas,
+      (SELECT k.nombre FROM usuario_consola as k, usuario_consola_centro as kk 
+      WHERE k.tipo = 1 AND kk.idCentro = c.idCentro 
+      AND k.idUsuarioConsola = kk.idUsuarioConsola) as nombreCentro,
 (SELECT SUM(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  
       AND co.fechaCreacion between ? AND ?) as costoOferta, (SELECT COUNT(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  
       AND co.fechaCreacion between ? AND ?) as cantOferta, (SELECT SUM(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
