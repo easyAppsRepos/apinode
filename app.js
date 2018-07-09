@@ -1347,6 +1347,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/getOpinionesCentro', (req, res) => {
     db(`SELECT c.nombre AS nombreCliente, e.*,
+      (SELECT jj.nombre FROM empleado as jj, cita as ss WHERE jj.idEmpleado = ss.idEmpleado AND ss.idCita = e.idCita) as nombreStaff,
       (SELECT nn.precioEsperado FROM cita as nn WHERE nn.idCita = e.idCita) as totalCita    
       FROM  evaluacionCentro as e, cliente AS c  
       WHERE  c.idCliente = (SELECT u.idCliente FROM cita as u WHERE u.idCita = e.idCita) AND 
