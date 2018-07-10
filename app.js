@@ -489,6 +489,20 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+    expressApp.post('/getBloques', (req, res) => {
+    db(`SELECT  rm.*, e.nombre FROM reservaManual as rm, 
+      empleado as e WHERE rm.idCentro = ? AND rm.estado = 1 
+      AND rm.horaInicio >= DATE(NOW()) 
+      AND e.idEmpleado = rm.idEmpleado`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
     expressApp.post('/verificarDispoStaff', (req, res) => {
       Promise.all([db(`SELECT rm.* FROM reservaManual as rm 
       WHERE rm.estado = 1 AND 
