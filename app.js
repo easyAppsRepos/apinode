@@ -478,6 +478,47 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+    expressApp.post('/agregarBloque', (req, res) => {
+    db(`INSERT INTO reservaManual(idEmpleado,idCentro,horaInicio, 
+      horaFinalEsperado, detalle) 
+      VALUES (?,?,?,?,?)`,[req.body.idEmpleado,req.body.idCentro,,req.body.horaInicio,,req.body.horaFinalEsperado,,req.body.detalle])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+    expressApp.post('/verificarDispoStaff', (req, res) => {
+      Promise.all([db(`SELECT rm.* FROM reservaManual as rm 
+      WHERE rm.estado = 1 AND 
+      rm.idEmpleado = ? AND 
+      ((? BETWEEN rm.horaInicio AND rm.horaFinalEsperado) 
+      OR  (? BETWEEN rm.horaInicio 
+      AND rm.horaFinalEsperado))`,[req.body.idEmpleado, req.body.fecha, req.body.fechaF]),
+      db(`SELECT r.idCita FROM  cita as r 
+        WHERE (r.idEmpleado = ? AND r.estado IN (1,2,5) 
+        AND ((? BETWEEN r.horaInicio 
+        AND r.horaFinalEsperado) 
+        OR  (? BETWEEN r.horaInicio 
+        AND r.horaFinalEsperado)))`,[req.body.idEmpleado, req.body.fecha, req.body.fechaF])])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+        var verif = 0;
+
+        if(data[0].length>0 || data[1].length>0){
+          verif = 1;
+        }
+
+        return res.send({disponible:verif});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
   expressApp.post('/updateCategoriaEmpleado', (req, res) => {
     db(`INSERT INTO empleado_categoria(idEmpleado,idCategoria,estado) VALUES (?,?,?)
   ON DUPLICATE KEY UPDATE estado= ?`,[req.body.idEmpleado,req.body.idCategoria, req.body.estado,req.body.estado])
