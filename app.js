@@ -497,10 +497,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       OR  (rm.horaFinalEsperado  BETWEEN ? AND ?))`,[req.body.idEmpleado, req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF]),
       db(`SELECT r.idCita FROM  cita as r 
         WHERE (r.idEmpleado = ? AND r.estado IN (1,2,5) 
-        AND ((? BETWEEN r.horaInicio 
-        AND r.horaFinalEsperado) 
-        OR  (? BETWEEN r.horaInicio 
-        AND r.horaFinalEsperado)))`,[req.body.idEmpleado, req.body.fecha, req.body.fechaF])])
+        AND ((r.horaInicio BETWEEN ? 
+        AND ?) 
+        OR  (r.horaFinalEsperado BETWEEN ? 
+        AND ?)))`,[req.body.idEmpleado, req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF])])
       .then((data) => {
 
         if (!data) res.send().status(500);
