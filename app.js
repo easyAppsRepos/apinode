@@ -641,6 +641,18 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+
+        expressApp.post('/borrarRmanual', function(req, res) {
+     db(`DELETE FROM reservaManual WHERE idReservaManual = ?`,[req.body.idReservaManual])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
         expressApp.post('/eliminarServicio', function(req, res) {
      db(`DELETE FROM servicio WHERE idServicio = ?`,[req.body.idServicio])
       .then((data) => {
