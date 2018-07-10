@@ -493,9 +493,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       Promise.all([db(`SELECT rm.* FROM reservaManual as rm 
       WHERE rm.estado = 1 AND 
       rm.idEmpleado = ? AND 
-      ((? BETWEEN rm.horaInicio AND rm.horaFinalEsperado) 
-      OR  (? BETWEEN rm.horaInicio 
-      AND rm.horaFinalEsperado))`,[req.body.idEmpleado, req.body.fecha, req.body.fechaF]),
+      ((rm.horaInicio BETWEEN ? AND ?) 
+      OR  (rm.horaFinalEsperado  BETWEEN ? AND ?))`,[req.body.idEmpleado, req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF]),
       db(`SELECT r.idCita FROM  cita as r 
         WHERE (r.idEmpleado = ? AND r.estado IN (1,2,5) 
         AND ((? BETWEEN r.horaInicio 
