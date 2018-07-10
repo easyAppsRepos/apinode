@@ -1697,6 +1697,16 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/getSAInfo', (req, res) => {
+    db(`SELECT email, password FROM usuario_consola WHERE idUsuarioConsola = 11`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/getParametrosFF', (req, res) => {
     db(`SELECT (SELECT valor FROM parametros WHERE idParametro = 3) AS duracionOferta, (SELECT valor FROM parametros WHERE idParametro = 4) AS costonOferta,  (SELECT valor FROM parametros WHERE idParametro = 5) AS duracionPaquete, (SELECT valor FROM parametros WHERE idParametro = 6) AS costoPaquete `)
       .then((data) => {
