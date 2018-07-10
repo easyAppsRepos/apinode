@@ -507,7 +507,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         if (!data) res.send().status(500);
 
         var verif = 0;
-
+        console.log(data[0].length);
+         console.log(data[1].length);
         if(data[0].length>0 || data[1].length>0){
           verif = 1;
         }
