@@ -361,12 +361,17 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.
 
 
     expressApp.post('/getCalendario2', (req, res) => {
-    db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, em.idEmpleado as idEmpleado, 
+     Promise.all([db(`SELECT c.nombre as nombreCliente, c.telefono, em.nombre as nombreEmpleado, em.idEmpleado as idEmpleado, 
 c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita, r.notaCita, r.horaInicio,
       r.horaFinalEsperado,r.estado, (SELECT GROUP_CONCAT(x.nombre) FROM servicio as x, servicio_cita as sc
 WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 ) as servicios FROM cliente as c, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
-      WHERE c.idCliente = r.idCliente AND (r.estado = 1 OR r.estado = 2) AND r.idCentro = ?`,[req.body.idCentro])
+      WHERE c.idCliente = r.idCliente AND 
+      (r.estado = 1 OR r.estado = 2) AND r.idCentro = ?`,[req.body.idCentro]),
+     db(`SELECT  rm.*, e.nombre FROM reservaManual as rm, 
+      empleado as e WHERE rm.idCentro = ? AND rm.estado = 1 
+      AND rm.horaInicio >= DATE(NOW()) 
+      AND e.idEmpleado = rm.idEmpleado`,[req.body.idCentro])])
       .then((data) => {
   //console.log('---s---');
        // console.log(req.body.idCentro);
@@ -375,7 +380,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
          let appointments = new Array();
 
-              data.forEach((item, index) => {
+              data[0].forEach((item, index) => {
 moment.locale('es');
         let appnt = {
         id: item['idCita']+'',
@@ -392,10 +397,34 @@ moment.locale('es');
 
         };
         console.log(appnt);
+
+
         //appointments.push(appointmentDataFields);    
         appointments.push(appnt);
 
         });
+
+
+      data[1].forEach((item, index) => {
+
+        moment.locale('es');
+        let manual = {
+        id: 'manual'+index,
+        description: '',
+        location: "",
+        detalle: 'Reserva Manual',
+        subject: 'Reserva Manual',
+        calendar: item['nombre'],
+        start: moment.utc(item['horaInicio']).format("YYYY-MM-DD HH:mm:ss"),
+        end: moment.utc(item['horaFinalEsperado']).format("YYYY-MM-DD HH:mm:ss")
+
+        };
+
+        appointments.push(manual);
+        
+       });
+
+
 
 
 
