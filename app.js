@@ -412,7 +412,7 @@ moment.locale('es');
         id: 'manual'+index,
         description: '',
         location: "",
-        detalle: (item['detalle'] || 'Reserva Manual'),
+        detalle: (item['detalle'] + '(Reserva Manual)'),
         subject: 'Reserva Manual',
         calendar: item['nombre'],
         start: moment.utc(item['horaInicio']).format("YYYY-MM-DD HH:mm:ss"),
