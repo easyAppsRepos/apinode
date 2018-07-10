@@ -447,6 +447,18 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+  expressApp.post('/actualizarDataSA', (req, res) => {
+    db(`UPDATE usuario_consola set password = ? WHERE idUsuarioConsola = 11 AND password = ?`,[req.body.nueva2,req.body.actual])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+  
+
+
   expressApp.post('/updateSeccionSA', (req, res) => {
     db(`INSERT INTO usuario_seccion(idUsuarioConsola,idSeccion,estado) VALUES (?,?,?)
   ON DUPLICATE KEY UPDATE estado= ?`,[req.body.idUsuarioConsola,req.body.idSeccion, req.body.estado,req.body.estado])
