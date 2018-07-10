@@ -1397,6 +1397,25 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+
+
+
+  expressApp.post('/getOpinionesCentroFiltro', (req, res) => {
+    db(`SELECT c.nombre AS nombreCliente, e.*,
+      (SELECT jj.nombre FROM empleado as jj, cita as ss WHERE jj.idEmpleado = ss.idEmpleado AND ss.idCita = e.idCita) as nombreStaff,
+      (SELECT nn.precioEsperado FROM cita as nn WHERE nn.idCita = e.idCita) as totalCita    
+      FROM  evaluacionCentro as e, cliente AS c  
+      WHERE  c.idCliente = (SELECT u.idCliente FROM cita as u WHERE u.idCita = e.idCita) AND 
+      e.idCentro = ? AND e.estado = 2 AND DATE(e.fechaCreacion) BETWEEN ?  
+      AND ? ORDER BY e.fechaCreacion DESC`,[req.body.idCentro, req.body.fecha, req.body.fechaF])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/getOpiniones', (req, res) => {
     db(`SELECT ec.idEvaluacionCentro, ec.estado, ec.comentario, ec.puntuacion, ec.fechaCreacion, ci.idCita, c.nombre, c.idFoto, ci.horaFinalEsperado, ci.precioEsperado
  FROM evaluacionCentro as ec, centro as c, cita as ci 
