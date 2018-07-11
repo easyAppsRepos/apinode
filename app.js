@@ -1842,9 +1842,12 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
   expressApp.post('/getServiciosCategoria', (req, res) => {
-     Promise.all([db(`SELECT * FROM servicio 
-      WHERE idCategoria = ? AND idCentro = ? 
-      AND estado = 1`,[req.body.idCategoria,req.body.idCentro]),
+     Promise.all([db(`SELECT ss.*,  
+      (SELECT co.precioOferta FROM control_oferta AS co 
+      WHERE co.idServicio = ss.idServicio AND co.idCentro = ? 
+      AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta FROM servicio as ss 
+      WHERE ss.idCategoria = ? AND ss.idCentro = ? 
+      AND ss.estado = 1`,[req.body.idCentro, req.body.idCategoria,req.body.idCentro]),
       db(`SELECT c.*, cl.idCuponCliente,
 (SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
 FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
