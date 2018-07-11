@@ -1842,7 +1842,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
   expressApp.post('/getServiciosCategoria', (req, res) => {
-    db(`SELECT * from servicio WHERE idCategoria = ? AND idCentro = ? AND estado = 1`)
+    db(`SELECT * FROM servicio WHERE idCategoria = ? AND idCentro = ? AND estado = 1`,[req.body.idCategoria,req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
