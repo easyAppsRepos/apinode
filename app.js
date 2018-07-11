@@ -1842,10 +1842,21 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
   expressApp.post('/getServiciosCategoria', (req, res) => {
-    db(`SELECT * FROM servicio WHERE idCategoria = ? AND idCentro = ? AND estado = 1`,[req.body.idCategoria,req.body.idCentro])
+     Promise.all([db(`SELECT * FROM servicio 
+      WHERE idCategoria = ? AND idCentro = ? 
+      AND estado = 1`,[req.body.idCategoria,req.body.idCentro]),
+      db(`SELECT c.*, cl.idCuponCliente,
+(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
+FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
+     FROM cupon as c 
+      INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
+      INNER JOIN cupon_cliente as cl ON (c.idCupon = cl.idCupon AND cl.idCliente = ? AND cl.estado = 1) 
+WHERE  c.fechaExpira > CURRENT_TIMESTAMP 
+AND c.estado = 1  
+ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send({servicios:data[0], cupon: data[1]});
       }).catch(err => res.send(err).status(500));
   });
 
