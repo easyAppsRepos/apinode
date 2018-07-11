@@ -1839,6 +1839,18 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+  expressApp.post('/getServiciosCategoria', (req, res) => {
+    db(`SELECT * from servicio WHERE idCategoria = ? AND idCentro = ? AND estado = 1`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/getSAInfo', (req, res) => {
     db(`SELECT email, password FROM usuario_consola WHERE idUsuarioConsola = 11`)
       .then((data) => {
