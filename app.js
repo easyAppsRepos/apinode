@@ -1567,9 +1567,11 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/getCuponesApp', (req, res) => {
     db(`SELECT (SELECT GROUP_CONCAT(gg.nombre) FROM centro as gg 
-WHERE gg.idCentro IN(SELECT cp.idCentro FROM cupon_centro as cp WHERE cp.idCupon = c.idCupon)) as nombresCentro, c.nombre as nombreCupon, 
- c.fechaExpira, cc.estado, cc.fechaUso, c.idCupon FROM cupon as c, cupon_cliente as cc
-WHERE c.idCupon = cc.idCupon AND cc.idCliente = ?`,[req.body.idCliente])
+WHERE gg.idCentro IN(SELECT cp.idCentro FROM cupon_centro as cp 
+WHERE cp.idCupon = c.idCupon)) as nombresCentro, 
+c.nombre as nombreCupon,c.fechaExpira, c.tipo, c.tipoDescuento, c.porcentajeDescuento, cc.estado, cc.fechaUso, c.idCupon 
+FROM cupon as c, cupon_cliente as cc WHERE c.idCupon = cc.idCupon 
+AND cc.idCliente = ?`,[req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
