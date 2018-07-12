@@ -1773,9 +1773,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         //
         req.body.servicios.forEach((elementw, index) => {
 
-            arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado) 
-            VALUES (?,?,0)
-            `,[data.insertId, elementw.idServicio]));
+            arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado) 
+            VALUES (?,?,0,?)
+            `,[data.insertId, elementw.idServicio,parseFloat(elementw.precioFinal)]));
 
           });
       Promise.all(arrayFunctions).then((data) => {
