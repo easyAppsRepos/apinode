@@ -1771,6 +1771,14 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         let arrayFunctions = [];
         idCita = data.insertId;
         //
+
+        if(req.body.idCuponCliente && req.body.idCuponCliente>0){
+
+      arrayFunctions.push(db(`UPDATE cupon_cliente set estado=2 WHERE idCuponCliente = ?`,[req.body.idCuponCliente]));
+
+        }
+
+
         req.body.servicios.forEach((elementw, index) => {
 
             arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado) 
