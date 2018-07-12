@@ -1720,8 +1720,7 @@ FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) 
      FROM cupon as c 
       INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
       INNER JOIN cupon_cliente as cl ON (c.idCupon = cl.idCupon AND cl.idCliente = ? AND cl.estado = 1) 
-WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente]),
-    db(`SELECT hhe.* FROM horario_especial as hhe WHERE hhe.idCentro = ? AND hhe.fecha > CURDATE()`,[req.body.idCentro])])
+WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente])])
       .then((data) => {
 
         if (!data) res.send().status(500);
@@ -1737,7 +1736,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
        
 
         var groups = _.groupBy(data[1], 'nombreCategoria');
-        return res.send({info:data[0],servicios:groups, comentarios:comentarios, cupon:data[3],horarioEspecial:data[4]});
+        return res.send({info:data[0],servicios:groups, comentarios:comentarios, cupon:data[3]});
       }).catch(err => res.send(err).status(500));
   });
 
@@ -1837,6 +1836,31 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         return res.send({servicios:data[0], empleados:data[1], horario:data[2]});
       }).catch(err => res.send(err).status(500));
   });
+
+
+    expressApp.post('/getCentroServicios2', (req, res) => {
+     Promise.all([
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+      FROM servicio as s, categoria as c 
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
+    db(`SELECT hhe.* FROM horario_especial as hhe WHERE hhe.idCentro = ? AND hhe.fecha > CURDATE()`,[req.body.idCentro]),
+    db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro])
+    ])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+
+
+
+       
+
+        //var groups = _.groupBy(data[0], 'nombreCategoria');
+        return res.send({servicios:data[0], horarioEspecial:data[1], horario:data[2]});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.post('/getCentroServiciosC', (req, res) => {
      Promise.all([db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.estado, s.idSubcategoria, s.idCategoria, s.descripcion, c.nombre as nombreCategoria, co.precioOferta, co.duracion as duracionOferta  
