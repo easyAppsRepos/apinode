@@ -501,6 +501,25 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+    expressApp.post('/getEmpleadosDisponibles', (req, res) => {
+    db(`SELECT e.nombre, e.descripcion, e.idFoto, 
+      e.idEmpleado FROM empleado as e 
+      WHERE  e.idCentro = ? AND e.estado = 1 AND ? IN (SELECT ec.idCategoria FROM empleado_categoria as ec WHERE ec.idEmpleado = e.idEmpleado AND ec.estado = 1) AND (SELECT COUNT(rm.idReservaManual) FROM reservaManual as rm 
+      WHERE rm.estado = 1 AND 
+      rm.idEmpleado = e.idEmpleado AND 
+      ((rm.horaInicio BETWEEN ? AND ? ) 
+      OR  (rm.horaFinalEsperado  BETWEEN ? AND ?)))<1 AND (SELECT COUNT(r.idCita) FROM  cita as r 
+        WHERE (r.idEmpleado = e.idEmpleado AND r.estado IN (1,2,5) 
+        AND ((r.horaInicio BETWEEN ? AND ?) 
+        OR  (r.horaFinalEsperado BETWEEN ? AND ?))))<1`,[req.body.idCentro,req.body.idCategoria, req.body.fecha, req.body.fechaF,
+        req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
+        req.body.fecha, req.body.fechaF])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
     expressApp.post('/verificarDispoStaff', (req, res) => {
