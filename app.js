@@ -504,16 +504,26 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     expressApp.post('/getEmpleadosDisponibles', (req, res) => {
     db(`SELECT e.nombre, e.descripcion, e.idFoto, 
       e.idEmpleado FROM empleado as e 
-      WHERE  e.idCentro = ? AND e.estado = 1 AND ? IN (SELECT ec.idCategoria FROM empleado_categoria as ec WHERE ec.idEmpleado = e.idEmpleado AND ec.estado = 1) AND (SELECT COUNT(rm.idReservaManual) FROM reservaManual as rm 
+      WHERE  e.idCentro = ? AND e.estado = 1 
+      AND ? IN (SELECT ec.idCategoria FROM empleado_categoria as ec 
+      WHERE ec.idEmpleado = e.idEmpleado AND ec.estado = 1) AND (SELECT COUNT(rm.idReservaManual) FROM reservaManual as rm 
       WHERE rm.estado = 1 AND 
       rm.idEmpleado = e.idEmpleado AND 
       ((rm.horaInicio BETWEEN ? AND ? ) 
       OR  (rm.horaFinalEsperado  BETWEEN ? AND ?)))<1 AND (SELECT COUNT(r.idCita) FROM  cita as r 
         WHERE (r.idEmpleado = e.idEmpleado AND r.estado IN (1,2,5) 
         AND ((r.horaInicio BETWEEN ? AND ?) 
-        OR  (r.horaFinalEsperado BETWEEN ? AND ?))))<1`,[req.body.idCentro,req.body.idCategoria, req.body.fecha, req.body.fechaF,
+        OR  (r.horaFinalEsperado BETWEEN ? AND ?))))<1 
+        AND (SELECT COUNT(he.idHorarioEmpleado) 
+        FROM horarioEmpleado as he WHERE he.diaSemana = ? 
+        AND he.idEmpleado = e.idEmpleado AND he.estado = 0)<1 
+        AND (SELECT (hh.idHorarioEmpleado) 
+        FROM horarioEmpleado as hh 
+        WHERE hh.horaEntrar <= ? 
+        AND hh.horaSalir >= ? 
+        AND hh.estado = 1 AND hh.idEmpleado = e.idEmpleado AND hh.diaSemana = ?)>0`,[req.body.idCentro,req.body.idCategoria, req.body.fecha, req.body.fechaF,
         req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
-        req.body.fecha, req.body.fechaF])
+        req.body.fecha, req.body.fechaF,req.body.diaN,req.body.soloHI,req.body.soloHF,req.body.diaN])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
