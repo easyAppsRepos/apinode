@@ -1707,7 +1707,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       FROM usuario_favorito WHERE idCentro = ? AND idCliente = ? AND estado = 1) as favorito
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
       GROUP BY c.idCentro`,[req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
-    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, c.nombre as nombreCategoria, 
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
       (SELECT co.precioOferta FROM control_oferta AS co WHERE co.idServicio = s.idServicio AND co.idCentro = ? AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro,req.body.idCentro]),
@@ -1874,8 +1874,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
      Promise.all([db(`SELECT ss.*,  
       (SELECT co.precioOferta FROM control_oferta AS co 
       WHERE co.idServicio = ss.idServicio AND co.idCentro = ? 
-      AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta FROM servicio as ss 
-      WHERE ss.idCategoria = ? AND ss.idCentro = ? 
+      AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta, c.idFoto as imagenCategoria FROM servicio as ss, categoria as c  
+      WHERE ss.idCategoria = ? AND ss.idCentro = ? AND c.idCategoria = ss.idCategoria 
       AND ss.estado = 1`,[req.body.idCentro, req.body.idCategoria,req.body.idCentro]),
       db(`SELECT c.*, cl.idCuponCliente,
 (SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
