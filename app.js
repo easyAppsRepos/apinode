@@ -1465,9 +1465,9 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     db(`      SELECT c.*, 
       MAX(s.precio) as pMax, 
       MIN(s.precio) as pMin, 
-      (SELECT  GROUP_CONCAT(DISTINCT xs.idCategoria SEPARATOR ', ') FROM
+      (SELECT  GROUP_CONCAT(DISTINCT xs.idCategoria SEPARATOR ',') FROM
       servicio as xs WHERE xs.idCentro = s.idCentro ) as categoriasCentro,
-            (SELECT  GROUP_CONCAT(DISTINCT xss.idsubcategoria SEPARATOR ', ') FROM
+            (SELECT  GROUP_CONCAT(DISTINCT xss.idsubcategoria SEPARATOR ',') FROM
       servicio as xss WHERE xss.idCentro = s.idCentro ) as categoriasCentro,
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
       AVG(ec.puntuacion) as rate,
