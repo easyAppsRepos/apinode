@@ -1460,6 +1460,35 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
+
+  expressApp.post('/favoritosGPS2', (req, res) => {
+    db(`      SELECT c.*, 
+      MAX(s.precio) as pMax, 
+      MIN(s.precio) as pMin, 
+      (SELECT  GROUP_CONCAT(DISTINCT xs.idCategoria SEPARATOR ', ') FROM
+      servicio as xs WHERE xs.idCentro = s.idCentro ) as categoriasCentro,
+            (SELECT  GROUP_CONCAT(DISTINCT xss.idsubcategoria SEPARATOR ', ') FROM
+      servicio as xss WHERE xss.idCentro = s.idCentro ) as categoriasCentro,
+      COUNT(DISTINCT ec.puntuacion) as cantRate, 
+      AVG(ec.puntuacion) as rate,
+       ( 6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
+   * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
+   * sin( radians(c.latitud)))) AS distance 
+          FROM usuario_favorito as uf, servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
+      WHERE c.idCentro = s.idCentro 
+      AND s.idCentro = uf.idCentro AND uf.idCliente=? AND uf.estado = 1
+      AND s.estado = 1 
+      GROUP BY c.idCentro
+      `,[req.body.lat, req.body.lon, req.body.lat, req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
   expressApp.post('/getCentrosCuponSA', (req, res) => {
     db(`SELECT c.nombre, c.idCentro, c.idFoto, cc.idCuponCentro, (SELECT COUNT(f.idCuponServicio) FROM cupon_centro as s, cupon_servicio as f WHERE f.idCuponCentro = s.idCuponCentro AND s.idCupon = cc.idCupon AND s.idCentro = c.idCentro) as cantServicios  FROM centro as c 
       INNER JOIN cupon_centro as cc ON cc.idCentro = c.idCentro AND cc.idCupon = ?
