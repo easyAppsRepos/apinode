@@ -19,6 +19,16 @@ const storage = multer.diskStorage({
 
 
 
+const transport = nodemailer.createTransport("SMTP", {
+        service: 'Gmail',
+        auth: {
+            user: "test.nodemailer@gmail.com",
+            pass: "Nodemailer123"
+        }
+    });
+
+
+
 const upload = multer({storage: storage});
 
 
@@ -29,6 +39,15 @@ const Bcrypt = require('bcrypt');
 const db = require('./config/db');
 var moment = require('moment');
 
+function makeid() {
+  var text = "";
+  var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
 
 
 
@@ -109,6 +128,58 @@ expressApp.get('/categoriasActivas', function(req, res) {
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+  expressApp.post('/recuperarPass', (req, res) => {
+
+
+
+    var claveNeva = makeid();
+    var resultadoEmail=1;
+
+    db(`UPDATE cliente set password=? WHERE email=?`,[claveNeva,req.body.email])
+      .then((dataf) => {
+
+
+
+        if (!dataf) {res.send().status(500)}
+        else{
+
+            var message = {
+
+              // sender info
+              from: 'Sender Name <sender@example.com>',
+
+              // Comma separated list of recipients
+              to: '"Receiver Name" <'+req.body.email+'>',
+
+              // Subject of the message
+              subject: 'Recuperacion de contraseña', 
+
+              // plaintext body
+              text: 'Hemos recuperado tu contraseña! Tu contraseña yourBeaty nueva es:'+claveNeva
+
+              // HTML body
+              /*
+              html:'<p><b>Hello</b> to myself <img src="cid:note@node"/></p>'+
+                   '<p>Here\'s a nyan cat for you as an embedded attachment:<br/></p>'
+              */
+            };
+
+            transport.sendMail(message, (error)=>{
+            if(error){
+            console.log('Error occured');
+            console.log(error.message);
+            //return;
+            resultadoEmail=0;
+            }
+
+             return res.send({data:dataf,email:resultadoEmail});
+
+          });
+        }
+        //return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
 
