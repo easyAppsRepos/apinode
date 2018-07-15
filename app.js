@@ -2374,7 +2374,9 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     expressApp.post('/doLoginApi', (req, res) => {
 
     db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, 
-      u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
+      u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
+       (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp
+        FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
       WHERE u.email = ? AND u.password = ? GROUP BY u.idCliente`,[req.body.username,req.body.password]).then((data) => {
       console.log(data);
       if (data) {
