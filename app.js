@@ -2405,10 +2405,11 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     }).catch(err => res.send(err).status(500));
   });
 
-        expressApp.post('/addNegocio', (req, res) => {
 
-    db(`INSERT INTO centro(nombre,nombreTitular,telefono,email, estado) 
-      VALUES(?, ?, ?, ?, 2)`,[req.body.nombre,req.body.nombre2,req.body.telefono,req.body.email]).then((data) => {
+        expressApp.post('/addNegocio2', (req, res) => {
+
+    db(`INSERT INTO solicitud_centro(nombreNegocio,nombreContacto,telefono,email, estado,comentario) 
+      VALUES(?, ?, ?, ?, 1,?)`,[req.body.nombre,req.body.nombre2,req.body.telefono,req.body.email,req.body.comentario]).then((data) => {
       console.log(data);
       if (data) {
        return res.send({ insertId: data.insertId });
@@ -2419,6 +2420,17 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       
     }).catch(err => res.send(err).status(500));
   });
+
+
+
+        expressApp.post('/addNegocio', (req, res) => {
+
+
+       return res.send({ insertId: 0 });
+
+      
+    }).catch(err => res.send(err).status(500));
+  
 
         expressApp.post('/addNegocioSA', (req, res) => {
 
