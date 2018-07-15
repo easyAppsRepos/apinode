@@ -152,7 +152,8 @@ expressApp.get('/categoriasActivas', function(req, res) {
   expressApp.post('/recuperarPass', (req, res) => {
 
 
-    var claveNeva = makeid();
+ //   var claveNeva = makeid();
+ var claveNeva = 'asdasd';
     var resultadoEmail=1;
     db(`UPDATE cliente set password=? WHERE email=?`,[claveNeva,req.body.email])
       .then((dataf) => {
