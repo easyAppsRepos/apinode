@@ -32,6 +32,8 @@ const transport = nodemailer.createTransport("SMTP", {
 
 // Generate test SMTP service account from ethereal.email
 // Only needed if you don't have a real mail account for testing
+
+/*
 nodemailer.createTestAccount((err, account) => {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
@@ -44,7 +46,7 @@ nodemailer.createTestAccount((err, account) => {
         }
     });
   });
-
+*/
 const upload = multer({storage: storage});
 
 
@@ -150,41 +152,36 @@ expressApp.get('/categoriasActivas', function(req, res) {
   expressApp.post('/recuperarPass', (req, res) => {
 
 
-
     var claveNeva = makeid();
     var resultadoEmail=1;
-
     db(`UPDATE cliente set password=? WHERE email=?`,[claveNeva,req.body.email])
       .then((dataf) => {
-
-
-
         if (!dataf) {res.send().status(500)}
         else{
 
-            var message = {
+          nodemailer.createTestAccount((err, account) => {
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: account.user, // generated ethereal user
+            pass: account.pass // generated ethereal password
+        }
+    });
 
-              // sender info
-              from: 'yourBeauty <sender@example.com>',
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: '"yourBeauty" <foo@example.com>', // sender address
+        to: req.body.email, // list of receivers
+        subject: 'Recuperacion de contraseña ✔', // Subject line
+        text: 'Hemos recuperado tu contraseña! Tu contraseña yourBeaty nueva es:'+claveNeva
+    };
 
-              // Comma separated list of recipients
-              to: ''+req.body.email+'',
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
 
-              // Subject of the message
-              subject: 'Recuperacion de contraseña', 
-
-              // plaintext body
-              text: 'Hemos recuperado tu contraseña! Tu contraseña yourBeaty nueva es:'+claveNeva
-
-              // HTML body
-              /*
-              html:'<p><b>Hello</b> to myself <img src="cid:note@node"/></p>'+
-                   '<p>Here\'s a nyan cat for you as an embedded attachment:<br/></p>'
-              */
-            };
-
-
-            transport.sendMail(message, (error)=>{
             if(error){
             console.log('Error occured');
             console.log(error.message);
@@ -192,9 +189,14 @@ expressApp.get('/categoriasActivas', function(req, res) {
             resultadoEmail=0;
             }
 
-             return res.send({data:dataf,email:resultadoEmail});
+           return res.send({data:dataf,email:resultadoEmail});
 
-          });
+
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    });
+});
+
         }
         //return res.send(data);
       }).catch(err => res.send(err).status(500));
