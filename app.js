@@ -3,7 +3,10 @@ const bodyParser = require('body-parser');
 const gcm = require('node-gcm');
 
 //const mail = require("nodemailer").mail;
-const nodemailer = require("nodemailer");
+//const nodemailer = require("nodemailer");
+var nodemailer = require('nodemailer');
+//var nodemailer = require("nodemailer").mail;
+
 const path = require('path');
 const multer  =   require('multer');
 
