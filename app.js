@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const gcm = require('node-gcm');
 
-const mail = require("nodemailer").mail;
+//const mail = require("nodemailer").mail;
+const nodemailer = require("nodemailer").mail;
 const path = require('path');
 const multer  =   require('multer');
 
@@ -19,7 +20,7 @@ const storage = multer.diskStorage({
 
 
 
-const transport = mail.createTransport("SMTP", {
+const transport = nodemailer.createTransport("SMTP", {
         service: 'Gmail',
         auth: {
             user: "test.nodemailer@gmail.com",
