@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 
 
-const transport = nodemailer.createTransport("SMTP", {
+const transport = mail.createTransport("SMTP", {
         service: 'Gmail',
         auth: {
             user: "test.nodemailer@gmail.com",
