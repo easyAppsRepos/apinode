@@ -2429,7 +2429,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
        return res.send({ insertId: 0 });
 
       
-    }).catch(err => res.send(err).status(500));
+    });
   
 
         expressApp.post('/addNegocioSA', (req, res) => {
