@@ -19,6 +19,47 @@ const storage = multer.diskStorage({
 });
 
 
+
+
+
+          nodemailer.createTestAccount((err, account) => {
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: account.user, // generated ethereal user
+            pass: account.pass // generated ethereal password
+        }
+    });
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: '"yourBeauty" <foo@example.com>', // sender address
+        to:'easyappsinfo@gmail.com', // list of receivers
+        subject: 'Recuperacion de contraseña ✔', // Subject line
+        text: 'Hemos recuperado tu contraseña! Tu contraseña yourBeaty nueva es:'
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+
+            if(error){
+            console.log('Error occured');
+            console.log(error.message);
+            //return;
+      
+            }
+
+          console.log(info);
+
+
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    });
+});
+
 /*
 const transport = nodemailer.createTransport("SMTP", {
         service: 'Gmail',
@@ -160,44 +201,8 @@ expressApp.get('/categoriasActivas', function(req, res) {
         if (!dataf) {res.send().status(500)}
         else{
 
-          nodemailer.createTestAccount((err, account) => {
-    // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-            user: account.user, // generated ethereal user
-            pass: account.pass // generated ethereal password
-        }
-    });
 
-    // setup email data with unicode symbols
-    let mailOptions = {
-        from: '"yourBeauty" <foo@example.com>', // sender address
-        to: req.body.email, // list of receivers
-        subject: 'Recuperacion de contraseña ✔', // Subject line
-        text: 'Hemos recuperado tu contraseña! Tu contraseña yourBeaty nueva es:'+claveNeva
-    };
-
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-
-            if(error){
-            console.log('Error occured');
-            console.log(error.message);
-            //return;
-            resultadoEmail=0;
-            }
-
-           return res.send({data:dataf,email:resultadoEmail});
-
-
-        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-    });
-});
-
+          console.log(dataf);
         }
         //return res.send(data);
       }).catch(err => res.send(err).status(500));
