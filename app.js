@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 });
 
 
-
+/*
 const transport = nodemailer.createTransport("SMTP", {
         service: 'Gmail',
         auth: {
@@ -28,7 +28,21 @@ const transport = nodemailer.createTransport("SMTP", {
         }
     });
 
+*/
 
+// Generate test SMTP service account from ethereal.email
+// Only needed if you don't have a real mail account for testing
+nodemailer.createTestAccount((err, account) => {
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: account.user, // generated ethereal user
+            pass: account.pass // generated ethereal password
+        }
+    });
 
 const upload = multer({storage: storage});
 
@@ -150,10 +164,10 @@ expressApp.get('/categoriasActivas', function(req, res) {
             var message = {
 
               // sender info
-              from: 'Sender Name <sender@example.com>',
+              from: 'yourBeauty <sender@example.com>',
 
               // Comma separated list of recipients
-              to: '"Receiver Name" <'+req.body.email+'>',
+              to: ''+req.body.email+'',
 
               // Subject of the message
               subject: 'Recuperacion de contraseña', 
@@ -167,6 +181,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
                    '<p>Here\'s a nyan cat for you as an embedded attachment:<br/></p>'
               */
             };
+
 
             transport.sendMail(message, (error)=>{
             if(error){
