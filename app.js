@@ -43,6 +43,7 @@ nodemailer.createTestAccount((err, account) => {
             pass: account.pass // generated ethereal password
         }
     });
+  });
 
 const upload = multer({storage: storage});
 
