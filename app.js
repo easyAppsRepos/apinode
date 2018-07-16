@@ -127,6 +127,27 @@ expressApp.get('/categoriasHome', function(req, res) {
     }).catch(err => res.send(err).status(500));
 });
 
+
+
+    expressApp.post('/editarCF', upload.single('ionicfile'),(req, res) => {
+      console.log(req.file);
+
+    /*
+    db(`UPDATE categoria set nombre = ?, estado = ?, idFoto=?  
+      WHERE idCategoria = ?`,[req.body.nombre,
+      req.body.estado,req.file.path,req.body.idCategoria])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+
+      */
+      
+  });
+
+
+
+
 expressApp.get('/categoriasHome2', function(req, res) {
     db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 `).then((data) => {
       console.log(data);
