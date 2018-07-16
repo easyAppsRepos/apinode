@@ -132,17 +132,22 @@ expressApp.get('/categoriasHome', function(req, res) {
     expressApp.post('/editarCF', upload.single('ionicfile'),(req, res) => {
       console.log(req.file);
 
-    /*
-    db(`UPDATE categoria set nombre = ?, estado = ?, idFoto=?  
-      WHERE idCategoria = ?`,[req.body.nombre,
-      req.body.estado,req.file.path,req.body.idCategoria])
+    
+     db(`UPDATE cliente set nombre=?,
+      telefono=?,genero=?, idFoto=? 
+     WHERE idCliente = ?`,[req.body.nombre, req.body.telefono,req.body.genero,
+     req.file.path,req.body.idCliente])
       .then((data) => {
+
         if (!data) res.send().status(500);
-        return res.send(data);
+
+        return res.send({data:data,idFoto:req.file.path});
+
+
       }).catch(err => res.send(err).status(500));
 
-      */
       
+
   });
 
 
