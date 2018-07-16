@@ -1615,7 +1615,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   expressApp.post('/ofertasActivas', (req, res) => {
     db(`SELECT s.*, co.precioOferta as precio2,co.fechaCaducidad, c.nombre as nombreCentro, 
-      c.idFoto as imagenCentro, ca.idFoto as imagenCategoria FROM servicio as s, control_oferta as co, 
+      c.idFoto as imagenCentro, ca.nombre as nombreCategoria FROM servicio as s, control_oferta as co, 
       centro as c, categoria as ca WHERE ca.idCategoria = s.idCategoria AND co.idServicio = s.idServicio 
       AND co.fechaCaducidad > CURRENT_TIMESTAMP 
       AND co.estado = 1 AND c.idCentro = s.idCentro ORDER BY co.fechaCaducidad ASC`)
