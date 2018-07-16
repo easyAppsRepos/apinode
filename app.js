@@ -2021,7 +2021,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
-    db(`SELECT hhe.* FROM horario_especial as hhe WHERE hhe.idCentro = ? AND hhe.fecha > CURDATE()`,[req.body.idCentro]),
+    db(`SELECT hhe.* FROM horario_especial as hhe WHERE hhe.idCentro = ? AND hhe.fecha >= CURDATE()`,[req.body.idCentro]),
     db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro])
     ])
       .then((data) => {
