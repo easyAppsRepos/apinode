@@ -1720,7 +1720,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
   expressApp.post('/getOpiniones', (req, res) => {
-    db(`SELECT ec.idEvaluacionCentro, ec.estado, ec.comentario, ec.puntuacion, ec.fechaCreacion, ci.idCita, c.nombre, c.idFoto, ci.horaFinalEsperado, ci.precioEsperado
+    db(`SELECT ec.idEvaluacionCentro, ec.estado, ec.comentario, ec.respuestaCentro,ec.puntuacion, ec.fechaCreacion, ci.idCita, c.nombre, c.idFoto, ci.horaFinalEsperado, ci.precioEsperado
  FROM evaluacionCentro as ec, centro as c, cita as ci 
  WHERE ec.idCentro = c.idCentro AND ec.idCita = ci.idCita AND  ci.idCliente = ?`,[req.body.idCliente])
       .then((data) => {
