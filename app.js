@@ -1715,7 +1715,20 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       WHERE  c.idCliente = (SELECT u.idCliente FROM cita as u WHERE u.idCita = e.idCita) AND 
       e.idCentro = ? AND e.estado = 2 ORDER BY e.fechaCreacion DESC`,[req.body.idCentro])
       .then((data) => {
+
+
+
+
         if (!data) res.send().status(500);
+
+                data = data.map((i, index) => {
+          console.log(i);
+
+        i.timeAgo =  moment(i.fechaCreacion).fromNow();
+        // console.log(i);
+        return i;});
+
+                
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
