@@ -1721,15 +1721,15 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
         if (!data) res.send().status(500);
 
-                data = data.map((i, index) => {
+                datsa = data.map((i, index) => {
           console.log(i);
 
         i.timeAgo =  moment(i.fechaCreacion).fromNow();
         // console.log(i);
         return i;});
 
-                
-        return res.send(data);
+
+        return res.send(datsa);
       }).catch(err => res.send(err).status(500));
   });
 
