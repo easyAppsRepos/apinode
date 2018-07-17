@@ -1881,7 +1881,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       (SELECT co.precioOferta FROM control_oferta AS co WHERE co.idServicio = s.idServicio AND co.idCentro = ? AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro,req.body.idCentro]),
-    db(`SELECT ev.*, u.nombre as nombreUsuario 
+    db(`SELECT ev.*, u.nombre as nombreUsuario, u.idFoto as fotoUsuario  
       FROM evaluacionCentro as ev, cliente as u, cita as c 
       WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCita = ev.idCita`,[req.body.idCentro]),
     db(`SELECT c.*, cl.idCuponCliente,
