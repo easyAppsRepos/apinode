@@ -21,24 +21,6 @@ const storage = multer.diskStorage({
   }
 });
 
-moment.updateLocale('en', {
-    relativeTime : {
-        future: " %s",
-        past:   "%s ",
-        s  : 'hace segundos',
-        ss : 'hace %d s',
-        m:  "hace un minuto",
-        mm: "hace %d m",
-        h:  "hace una hora",
-        hh: "hace %d h",
-        d:  "hace un dia",
-        dd: "hace %d d",
-        M:  "hace un mes",
-        MM: "hace %d m",
-        y:  "a year",
-        yy: "hace %d a"
-    }
-});
 
 
 
@@ -79,6 +61,28 @@ const Bcrypt = require('bcrypt');
 
 const db = require('./config/db');
 var moment = require('moment');
+
+
+moment.updateLocale('en', {
+    relativeTime : {
+        future: " %s",
+        past:   "%s ",
+        s  : 'hace segundos',
+        ss : 'hace %d s',
+        m:  "hace un minuto",
+        mm: "hace %d m",
+        h:  "hace una hora",
+        hh: "hace %d h",
+        d:  "hace un dia",
+        dd: "hace %d d",
+        M:  "hace un mes",
+        MM: "hace %d m",
+        y:  "a year",
+        yy: "hace %d a"
+    }
+});
+
+
 
 function makeid() {
   var text = "";
