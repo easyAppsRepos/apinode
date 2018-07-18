@@ -264,7 +264,10 @@ expressApp.get('/categoriasActivas', function(req, res) {
           console.log(dataf);
         }
         //return res.send(data);
-      }).catch(err => res.send(err).status(500));
+      }).catch(err => {
+        console.log(err);
+        res.send(err).status(500);
+      });
   });
 
 
