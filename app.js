@@ -2734,6 +2734,14 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
         return res.send({ insertId: data.insertId });
       }).catch(err => res.send(err).status(500));
   });
+  expressApp.post('/cerrarS', (req, res) => {
+    db(`UPDATE  pushHandler set logOut = CURRENT_TIMESTAMP WHERE idCliente = ?`,[req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
 
