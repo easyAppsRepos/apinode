@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const gcm = require('node-gcm');
-
+const apn = require('apn');
 //const mail = require("nodemailer").mail;
 //const nodemailer = require("nodemailer");
 //var nodemailer = require('nodemailer');
@@ -10,7 +10,16 @@ var nodemailer = require("nodemailer");
 const path = require('path');
 const multer  =   require('multer');
 
+var options = {
+  token: {
+    key: "../AuthKey_2GCKPR3W9T.p8",
+    keyId: "2GCKPR3W9T",
+    teamId: "USR86W3X3G"
+  },
+  production: false
+};
 
+const apnProvider = new apn.Provider(options);
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -1230,11 +1239,37 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       VALUES((SELECT x.idCentro FROM cita as x WHERE x.idCita = ?), ?)`,[req.body.idCita,req.body.idCita]),
     db(`SELECT p.pushKey FROM pushHandler as p 
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
-      AND p.logOut IS NULL AND p.so = 'android'`,[req.body.idCita])])
+      AND p.logOut IS NULL AND p.so = 'Android'`,[req.body.idCita]),
+     db(`SELECT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'iOS'`,[req.body.idCita])])
       .then((data) => {
 
         if (!data) res.send().status(500);
 
+            if(data[3]){
+
+              var note = new apn.Notification();
+
+              note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+    
+              note.sound = "ping.aiff";
+              note.alert = "Tu cita ha finalizado!";
+              note.payload = {'messageFrom': 'John Appleseed'};
+              note.topic = "com.ionicframework.beyou";
+
+                 var regTokens = [];
+
+              data[3].forEach((elementwa, index) => {
+
+                  apnProvider.send(note, elementwa.pushKey).then( (result) => {
+                  console.log(result);
+                  });
+
+              });
+
+
+            }
 
             if(data[2]){
               var message = new gcm.Message({
