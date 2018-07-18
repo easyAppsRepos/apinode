@@ -5,7 +5,8 @@ const apn = require('apn');
 //const mail = require("nodemailer").mail;
 //const nodemailer = require("nodemailer");
 //var nodemailer = require('nodemailer');
-var nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
+
 
 const path = require('path');
 const multer  =   require('multer');
