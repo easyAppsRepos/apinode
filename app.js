@@ -254,7 +254,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
             //return;
             resultadoEmail=0;
             }
-
+            console.log(info);
            return res.send({data:dataf,email:resultadoEmail});
 
 
