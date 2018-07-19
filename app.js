@@ -240,7 +240,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'raalfagui@hotmail.com>', // sender address
+        from: 'easyappsinfo@gmail.com>', // sender address
         to: req.body.email, // list of receivers
         subject: 'Recuperacion de contraseña yourBeauty', // Subject line
         text: 'Hemos recuperado tu contraseña! Tu contraseña yourBeaty nueva es: '+claveNeva
