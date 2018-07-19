@@ -233,8 +233,8 @@ expressApp.get('/categoriasActivas', function(req, res) {
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-            user: account.user, // generated ethereal user
-            pass: account.pass // generated ethereal password
+            user: 'beyourself_sender@outlook.com', // generated ethereal user
+            pass: 'be123456789' // generated ethereal password
         }
     });
 
