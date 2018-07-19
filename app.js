@@ -226,8 +226,8 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
           nodemailer.createTestAccount((err, account) => {
             console.log(err);
-            /*
     // create reusable transporter object using the default SMTP transport
+    /*
     let transporter = nodemailer.createTransport({
         name: 'yourBeauty',
         host: 'smtp.ethereal.email',
@@ -239,14 +239,15 @@ expressApp.get('/categoriasActivas', function(req, res) {
         }
     });
 */
-        var transporter = nodemailer.createTransport({
-        service: 'Gmail', // sets automatically host, port and connection security settings
-        auth: {
-            user: account.user, 
-            pass: account.password  
-        }
-    });
-
+      const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+                user: account.user, // generated ethereal user
+                pass: account.pass // generated ethereal password
+            }
+  });
 
 
     // setup email data with unicode symbols
