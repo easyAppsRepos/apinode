@@ -226,6 +226,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
 
           nodemailer.createTestAccount((err, account) => {
             console.log(err);
+            /*
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
         name: 'yourBeauty',
@@ -237,6 +238,16 @@ expressApp.get('/categoriasActivas', function(req, res) {
             pass: account.pass // generated ethereal password
         }
     });
+*/
+        var transporter = nodemailer.createTransport({
+        service: 'Gmail', // sets automatically host, port and connection security settings
+        auth: {
+            user: account.user, 
+            pass: account.password  
+        }
+    });
+
+
 
     // setup email data with unicode symbols
     let mailOptions = {
