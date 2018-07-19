@@ -228,6 +228,7 @@ expressApp.get('/categoriasActivas', function(req, res) {
             console.log(err);
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
+        name: 'yourBeauty',
         host: 'smtp.ethereal.email',
         port: 587,
         secure: false, // true for 465, false for other ports
@@ -241,8 +242,8 @@ expressApp.get('/categoriasActivas', function(req, res) {
     let mailOptions = {
         from: '"yourBeauty" <foo@example.com>', // sender address
         to: req.body.email, // list of receivers
-        subject: 'Recuperacion de contraseña ✔', // Subject line
-        text: 'Hemos recuperado tu contraseña! Tu contraseña yourBeaty nueva es:'
+        subject: 'Recuperacion de contraseña yourBeauty', // Subject line
+        text: 'Hemos recuperado tu contraseña! Tu contraseña yourBeaty nueva es: '+claveNeva
     };
 
     // send mail with defined transport object
