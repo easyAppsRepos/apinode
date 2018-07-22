@@ -191,6 +191,18 @@ expressApp.get('/categoriasHome2', function(req, res) {
     }).catch(err => res.send(err).status(500));
 });
 
+expressApp.get('/categoriasHome3', function(req, res) {
+      Promise.all([db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 `),
+        db(`SELECT  d.* FROM subcategoria as d WHERE d.estado = 1 `)]).then((data) => {
+      console.log(data);
+      //res.json(data);
+        var groups = _.groupBy(data[1], 'idCategoria');
+      return res.send({categorias:data[0],subcategorias:groups});
+    }).catch(err => res.send(err).status(500));
+});
+
+
+
 
 expressApp.get('/categoriasActivas', function(req, res) {
     db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1`).then((data) => {
