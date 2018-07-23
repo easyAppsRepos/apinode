@@ -216,7 +216,7 @@ expressApp.get('/horaMinMax', function(req, res) {
     db(`SELECT (SELECT horaAbrir FROM 
       horarioCentro WHERE estado=1 ORDER BY horaAbrir ASC LIMIT 1) as minHora, 
       (SELECT horaCerrar FROM 
-      orarioCentro WHERE estado=1 ORDER BY horaCerrar DESC LIMIT 1) as maxHora`).then((data) => {
+      horarioCentro WHERE estado=1 ORDER BY horaCerrar DESC LIMIT 1) as maxHora`).then((data) => {
       if (!data) res.send().status(500);
       return res.send(data);
     }).catch(err => res.send(err).status(500));
