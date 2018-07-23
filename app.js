@@ -211,6 +211,16 @@ expressApp.get('/categoriasActivas', function(req, res) {
     }).catch(err => res.send(err).status(500));
 });
 
+
+expressApp.get('/horaMinMax', function(req, res) {
+    db(`SELECT (SELECT horaAbrir FROM 
+      horarioCentro WHERE estado=1 ORDER BY horaAbrir ASC LIMIT 1) as minHora, 
+      (SELECT horaCerrar FROM 
+      orarioCentro WHERE estado=1 ORDER BY horaCerrar DESC LIMIT 1) as maxHora`).then((data) => {
+      if (!data) res.send().status(500);
+      return res.send(data);
+    }).catch(err => res.send(err).status(500));
+});
   expressApp.post('/buscarServicios', (req, res) => {
     db(`SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
