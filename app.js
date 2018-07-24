@@ -355,10 +355,44 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
  WHERE c.idCentro = hh.idCentro AND hh.diaSemana=`+req.body.diaSemana+` AND hh.horaAbrir<='`+req.body.horaSemana+`' 
   AND hh.horaCerrar>='`+req.body.horaSemana+`') > 0 `; 
       }
+
+      if(req.body.horaSeleccionadaDesde){
+
+        if(req.body.filtroFecha){
+
+          stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as mm 
+          WHERE c.idCentro = mm.idCentro AND
+           mm.horaAbrir<='`+req.body.horaSeleccionadaDesde+`' 
+           AND mm.diaSemana=WEEKDAY('`+req.body.filtroFecha+`') AND mm.estado=1) > 0 AND
+
+           (SELECT COUNT(*) FROM horario_especial as cc 
+          WHERE c.idCentro = cc.idCentro 
+          AND cc.fecha='`+req.body.filtroFecha+`' AND cc.abierto=0 AND cc.estado=1) <= 0 AND
+
+           (SELECT COUNT(*) FROM horario_especial as csc 
+          WHERE c.idCentro = csc.idCentro AND
+           csc.horaAbrir>='`+req.body.horaSeleccionadaDesde+`' 
+           AND csc.fecha='`+req.body.filtroFecha+`' AND csc.abierto=1 AND csc.estado=1) <= 0`; 
+
+        }
+        else{
+          stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as mm 
+          WHERE c.idCentro = mm.idCentro AND
+           mm.horaAbrir<='`+req.body.horaSeleccionadaDesde+`' 
+           AND mm.diaSemana=`+req.body.diaSemana+` AND mm.estado=1) > 0 `; 
+        }  
+
+
+
+      }
+
+
       if(req.body.disponible){
         stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
  WHERE c.idCentro = hh.idCentro AND hh.diaSemana=`+req.body.diaSemana+`) > 0 `; 
       }
+
+
 
  stringQuery += ` GROUP BY c.idCentro`; 
 
