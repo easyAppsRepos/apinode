@@ -2275,7 +2275,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
     db(`SELECT hhe.* FROM horario_especial as hhe WHERE hhe.idCentro = ? AND hhe.fecha >= CURDATE()`,[req.body.idCentro]),
-    db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro])
+    db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro]),
+    db(`SELECT tipoReserva FROM centro WHERE idCentro = ?`,[req.body.idCentro])
     ])
       .then((data) => {
 
@@ -2287,7 +2288,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
        
 
         //var groups = _.groupBy(data[0], 'nombreCategoria');
-        return res.send({servicios:data[0], horarioEspecial:data[1], horario:data[2]});
+        return res.send({servicios:data[0], horarioEspecial:data[1], horario:data[2],tipoReserva:data[3]});
       }).catch(err => res.send(err).status(500));
   });
 
