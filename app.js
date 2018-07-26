@@ -467,6 +467,84 @@ else{
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+
+
+
+    expressApp.post('/getHorasDispo', (req, res) => {
+
+      var fecha = req.body.fechaSeleccionada;//2018-07-30
+      var duracion = parseInt(req.body.duracion); //30
+      var horarioDisponible=[];
+
+var inicioCita = moment({year:fecha.split('-')[0],month:fecha.split('-')[1],
+day:fecha.split('-')[2], hours: req.body.horaAbrir.split(':')[0], 
+minutes: req.body.horaAbrir.split(':')[1]});
+
+
+var horaCerrar = moment({year:fecha.split('-')[0],month:fecha.split('-')[1],
+day:fecha.split('-')[2], hours: req.body.horaCerrar.split(':')[0], 
+minutes: req.body.horaCerrar.split(':')[1]});
+
+var finCita = moment({year:fecha.split('-')[0],month:fecha.split('-')[1],
+day:fecha.split('-')[2], hours: req.body.horaAbrir.split(':')[0], minutes: req.body.horaAbrir.split(':')[1]}).add(duracion,'m');
+
+var funcionesBase = [];
+var idCategoria = req.body.idCategoria;
+var idCentro =   req.body.idCentro;
+
+//console.log(time.format("HH:mm"));
+//mientras que la hora de cerrar del centro sea mayor o igual que la hora final de la cita
+while (moment(finCita).isSameOrBefore(horaCerrar)) {
+
+   // text += "The number is " + i;
+    //i++;
+
+funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles FROM empleado as e 
+        LEFT JOIN cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (1,2,5) 
+        AND ((? BETWEEN c.horaInicio  AND c.horaFinalEsperado)  
+        OR  (? BETWEEN c.horaInicio  AND c.horaFinalEsperado)))
+        WHERE e.idEmpleado IN (SELECT ec.idEmpleado FROM empleado_categoria as ec 
+        WHERE ec.idCategoria = ? AND ec.estado = 1) AND e.idCentro = ? 
+        AND c.idCita IS NULL`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
+        finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
+        finCita.format("YYYY-MM-DD HH:mm:ss"), idCategoria,idCentro]));
+
+    inicioCita = finCita;
+    finCita.add(duracion,'m');
+    
+}
+
+  Promise.all(funcionesBase).then((data) => {
+
+    if (!data) res.send().status(500);
+
+        var disponibleTodas=1;
+        data.forEach((item, index) => {
+            if(item[0].disponibles<1){
+              disponibleTodas=0;
+            }
+        });
+/*
+
+    data[0].forEach((item, index) => {
+
+      })
+        if (!data) res.send().status(500);
+
+        var verif = 0;
+        console.log(data[0].length);
+         console.log(data[1].length);
+        if(data[0].length>0 || data[1].length>0){
+          verif = 1;
+        }
+*/
+        return res.send({disponible:disponibleTodas, horasDispo:data});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/categoriaEmpleados', (req, res) => {
     db(`SELECT c.*, 
       (SELECT ec.estado 
