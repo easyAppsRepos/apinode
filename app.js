@@ -510,7 +510,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"), idCategoria,idCentro]));
   
-    inicioCita = finCita;
+    inicioCita = moment(finCita);
   console.log(inicioCita);
     finCita.add(duracion,'m');
     
