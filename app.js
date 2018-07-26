@@ -477,16 +477,16 @@ else{
       var duracion = parseInt(req.body.duracion); //30
       var horarioDisponible=[];
 
-var inicioCita = moment({year:fecha.split('-')[0],month:fecha.split('-')[1],
+var inicioCita = moment({year:fecha.split('-')[0],month:(parseInt(fecha.split('-')[1])-1),
 day:fecha.split('-')[2], hours: req.body.horaAbrir.split(':')[0], 
 minutes: req.body.horaAbrir.split(':')[1]});
 
 
-var horaCerrar = moment({year:fecha.split('-')[0],month:fecha.split('-')[1],
+var horaCerrar = moment({year:fecha.split('-')[0],month:(parseInt(fecha.split('-')[1])-1),
 day:fecha.split('-')[2], hours: req.body.horaCerrar.split(':')[0], 
 minutes: req.body.horaCerrar.split(':')[1]});
 
-var finCita = moment({year:fecha.split('-')[0],month:fecha.split('-')[1],
+var finCita = moment({year:fecha.split('-')[0],month:(parseInt(fecha.split('-')[1])-1),
 day:fecha.split('-')[2], hours: req.body.horaAbrir.split(':')[0], minutes: req.body.horaAbrir.split(':')[1]}).add(duracion,'m');
 
 var funcionesBase = [];
