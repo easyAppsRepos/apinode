@@ -509,9 +509,9 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         AND c.idCita IS NULL`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"), idCategoria,idCentro]));
-
-    inicioCita =Object.create(finCita);
-     finCita =Object.create(finCita);
+  
+    inicioCita = finCita;
+  console.log(inicioCita);
     finCita.add(duracion,'m');
     
 }
