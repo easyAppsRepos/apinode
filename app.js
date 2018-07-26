@@ -499,7 +499,7 @@ while (moment(finCita).isSameOrBefore(horaCerrar)) {
 
    // text += "The number is " + i;
     //i++;
-
+//8 830
 funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles FROM empleado as e 
         LEFT JOIN cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (1,2,5) 
         AND ((? BETWEEN c.horaInicio  AND c.horaFinalEsperado)  
@@ -510,7 +510,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"), idCategoria,idCentro]));
 
-    inicioCita = _.clone(finCita);
+    inicioCita =Object.create(finCita);
     finCita.add(duracion,'m');
     
 }
