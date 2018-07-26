@@ -511,7 +511,8 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         finCita.format("YYYY-MM-DD HH:mm:ss"), idCategoria,idCentro]));
 
     inicioCita =Object.create(finCita);
-    finCita = Object.create(finCita.add(duracion,'m')); 
+     finCita =Object.create(finCita);
+    finCita.add(duracion,'m');
     
 }
 
