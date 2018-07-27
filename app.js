@@ -460,8 +460,13 @@ else{
 
 
   expressApp.post('/reservasUser', (req, res) => {
-    db(`SELECT c.nombre as nombreCentro, c.idFoto, r.idCita, r.idCentro, r.horaInicio,
-      r.estado FROM centro as c, cita as r WHERE c.idCentro = r.idCentro AND r.idCliente = ?`,[req.body.idCliente])
+    db(`SELECT c.nombre as nombreCentro, c.idFoto, r.idCita, r.idCentro, r.horaInicio, ee.nombre as nombreEmpleado,
+      (SELECT COUNT(sc.idServicioCita) FROM servicio_cita as sc WHERE sc.idCita = r.idCita) as cantServicios,
+      (SELECT m.nombre FROM servicio as m WHERE m.idServicio IN 
+      (SELECT idServicio FROM servicio_cita as ccc WHERE ccc.idCita = r.idCita ORDER BY ccc.idServicioCita ASC) LIMIT 1) as servicioMain,
+      r.estado FROM centro as c, cita as r 
+      LEFT JOIN empleado as ee ON ee.idEmpleado = r.idEmpleado 
+      WHERE c.idCentro = r.idCentro AND r.idCliente = ?`,[req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
