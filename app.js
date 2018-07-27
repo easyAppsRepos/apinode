@@ -849,7 +849,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     LEFT JOIN cita as r ON (r.idEmpleado = e.idEmpleado AND r.estado IN (1,2,5) AND 
     ((? BETWEEN r.horaInicio AND r.horaFinalEsperado ) OR  (? BETWEEN r.horaInicio AND r.horaFinalEsperado) OR (? < r.horaInicio AND r.horaFinalEsperado < ?)))
     
-    LEFT JOIN horarioEmpelado as he ON (he.idEmpleado = e.idEmpleado AND he.diaSemana = ? AND (he.estado = 0 OR (he.estado = 1 AND ? < he.horaEntrar  OR ? > he.horaSalir)))
+    LEFT JOIN horarioEmpleado as he ON (he.idEmpleado = e.idEmpleado AND he.diaSemana = ? AND (he.estado = 0 OR (he.estado = 1 AND ? < he.horaEntrar  OR ? > he.horaSalir)))
     
   WHERE  e.idCentro = ? AND e.estado = 1 AND ? IN (SELECT ec.idCategoria FROM empleado_categoria as ec WHERE ec.idEmpleado = e.idEmpleado AND ec.estado = 1) 
   AND rm.idReservaManual IS NULL 
