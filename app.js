@@ -534,10 +534,16 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
     if (!data) res.send().status(500);
 
         var disponibleTodas=1;
+         var horariosDisponibles=0;
         data.forEach((item, index) => {
+
             if(item[0].disponibles<1){
               disponibleTodas=0;
             }
+            if(item[0].disponibles>1){
+              horariosDisponibles=1;
+            }
+
         });
 /*
 
@@ -553,7 +559,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
           verif = 1;
         }
 */
-        return res.send({disponible:disponibleTodas, horasDispo:data});
+        return res.send({disponible:disponibleTodas, horasDispo:data,horariosDispo:horariosDisponibles});
       }).catch(err => res.send(err).status(500));
   });
 
