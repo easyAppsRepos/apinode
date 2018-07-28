@@ -1873,6 +1873,23 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
 
+  expressApp.post('/ofertasActivas2', (req, res) => {
+    db(`SELECT s.*, co.precioOferta as precio2,co.fechaCaducidad, c.nombre as nombreCentro, 
+    (SELECT  COUNT(DISTINCT ec.puntuacion) FROM evaluacionCentro as ec WHERE ec.idCentro = c.idCentro  AND ec.estado = 2 ) as cantRate,
+    (SELECT  AVG(esc.puntuacion) FROM evaluacionCentro as esc WHERE esc.idCentro = c.idCentro AND esc.estado = 2 ) as rate,
+    (SELECT (6371 * acos( cos( radians(2) ) * cos( radians( c.latitud ) ) 
+   * cos( radians(c.longitud) - radians(1)) + sin(radians(2)) 
+   * sin( radians(c.latitud))))) AS distance,
+      c.idFoto as imagenCentro FROM servicio as s, control_oferta as co, 
+      centro as c WHERE co.idServicio = s.idServicio 
+      AND co.fechaCaducidad > CURRENT_TIMESTAMP 
+      AND co.estado = 1 AND c.idCentro = s.idCentro ORDER BY co.fechaCaducidad ASC`,[req.body.lat,req.body.lon,req.body.lat])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
 
   expressApp.post('/getCentrosCuponSA', (req, res) => {
     db(`SELECT c.nombre, c.idCentro, c.idFoto, cc.idCuponCentro, (SELECT COUNT(f.idCuponServicio) FROM cupon_centro as s, cupon_servicio as f WHERE f.idCuponCentro = s.idCuponCentro AND s.idCupon = cc.idCupon AND s.idCentro = c.idCentro) as cantServicios  FROM centro as c 
