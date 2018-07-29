@@ -2690,7 +2690,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
     expressApp.post('/doLoginApi', (req, res) => {
 
-    db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, u.imagenFb, 
+    db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, u.imagenFb, u.fechaNacimiento,
       u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
        (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
