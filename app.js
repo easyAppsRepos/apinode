@@ -1105,6 +1105,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
     expressApp.post('/editarUsuario', (req, res) => {
+
+      if(req.body.fechaNacimiento){
+        req.body.fechaNacimiento = req.body.fechaNacimiento.split('T')[0];
+      }
     db(`UPDATE cliente set nombre=?,telefono=?,genero=?, fechaNacimiento = ? 
      WHERE idCliente = ?`,[req.body.nombre, req.body.telefono,req.body.genero,req.body.fechaNacimiento,
      req.body.idCliente])
