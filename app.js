@@ -1105,8 +1105,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
     expressApp.post('/editarUsuario', (req, res) => {
-    db(`UPDATE cliente set nombre=?,telefono=?,genero=?
-     WHERE idCliente = ?`,[req.body.nombre, req.body.telefono,req.body.genero,
+    db(`UPDATE cliente set nombre=?,telefono=?,genero=?, fechaNacimiento = ? 
+     WHERE idCliente = ?`,[req.body.nombre, req.body.telefono,req.body.genero,req.body.fechaNacimiento,
      req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
