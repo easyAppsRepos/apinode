@@ -2162,7 +2162,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro,req.body.idCentro]),
     db(`SELECT ev.*, u.nombre as nombreUsuario, u.idFoto as fotoUsuario, u.imagenFb as fotoFb   
       FROM evaluacionCentro as ev, cliente as u, cita as c 
-      WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCita = ev.idCita`,[req.body.idCentro]),
+      WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCita = ev.idCita ORDER BY ev.fechaCreacion ASC`,[req.body.idCentro]),
     db(`SELECT c.*, cl.idCuponCliente,
 (SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
 FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
@@ -2175,7 +2175,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         if (!data) res.send().status(500);
 
         let comentarios = data[2].map((i, index) => {
-          console.log(i);
+          //console.log(i);
 
         i.timeAgo =  moment(i.fechaCreacion).fromNow();
          console.log(i);
