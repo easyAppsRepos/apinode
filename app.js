@@ -1783,7 +1783,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       WHERE c.idCentro = s.idCentro 
       AND s.idSubcategoria IN (`+req.body.idSubcategoria+`)  
       AND s.estado = 1 
-      GROUP BY c.idCentro ORDER BY distance ASC LIMIT ?,2`,[req.body.lat, req.body.lon, req.body.lat, req.body.pagina])
+      GROUP BY c.idCentro ORDER BY -distance ASC LIMIT ?,2`,[req.body.lat, req.body.lon, req.body.lat, req.body.pagina])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
