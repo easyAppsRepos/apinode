@@ -2779,6 +2779,20 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/verificarCuenta', (req, res) => {
+
+    db(`UPDATE cliente set estado = 1 WHERE idCliente = ? and verificacionKey = ?`,
+      [req.body.email,req.body.codigo]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send({ data: data });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
 
         expressApp.post('/addNegocio2', (req, res) => {
 
