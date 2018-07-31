@@ -2731,6 +2731,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     db(`INSERT INTO cliente(nombre,email,telefono,password, verificacionKey) 
       VALUES(?, ?, ?, ?,?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.password,hashEmail]).then((data) => {
       console.log(data);
+      var numss='123456789';
       if (data) {
 
           nodemailer.createTestAccount((err, account) => {
@@ -2741,8 +2742,8 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
           port: 587,
           secure: false, // true for 465, false for other ports
           auth: {
-          user: 'beyourself_sender@outlook.com', // generated ethereal user
-          pass: 'be123456789' // generated ethereal password
+          user: 'yourBeauty_service@email.com', // generated ethereal user
+          pass: 'be'+numss; // generated ethereal password
           }
           });
 
