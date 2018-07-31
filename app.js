@@ -104,6 +104,15 @@ function makeid() {
   return text;
 }
 
+function makeidEmail() {
+  var text = "";
+  var possible = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRS";
+
+  for (var i = 0; i < 7; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
 
 
 var sender = new gcm.Sender('AIzaSyBH4d4XhTbiJDW2QYwkgABH6nmthapELd0');
@@ -2716,11 +2725,51 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 //"INSERT INTO Usuarios(nombre, email, fbId, imagenFB) values(?, ?, ?, ?)"
     expressApp.post('/addUserEmail', (req, res) => {
 
-    db(`INSERT INTO cliente(nombre,email,telefono,password) 
-      VALUES(?, ?, ?, ?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.password]).then((data) => {
+      var hashEmail = makeid();
+
+
+    db(`INSERT INTO cliente(nombre,email,telefono,password, verificacionKey) 
+      VALUES(?, ?, ?, ?,?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.password,hashEmail]).then((data) => {
       console.log(data);
       if (data) {
-       return res.send({ insertId: data.insertId });
+
+          nodemailer.createTestAccount((err, account) => {
+          console.log(err);
+          // create reusable transporter object using the default SMTP transport
+          let transporter = nodemailer.createTransport({
+          host: 'smtp-mail.outlook.com',
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+          user: 'beyourself_sender@outlook.com', // generated ethereal user
+          pass: 'be123456789' // generated ethereal password
+          }
+          });
+
+
+          // setup email data with unicode symbols
+          let mailOptions = {
+          from: 'beyourself_sender@outlook.com', // sender address
+          to: req.body.email, // list of receivers
+          subject: 'Verifica tu cuenta yourBeauty', // Subject line
+          text: 'Tu codigo de verificacion es: '+hashEmail
+          };
+
+          // send mail with defined transport object
+          transporter.sendMail(mailOptions, (error, info) => {
+
+          if(error){
+          console.log('Error send email occured');
+          console.log(error.message);
+          }
+          return res.send({ insertId: data.insertId });
+
+          // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+          // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+          });
+          });
+
+       
       }
       else{
         return res.send(err).status(500);
