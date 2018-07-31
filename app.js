@@ -2738,11 +2738,11 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
           console.log(err);
           // create reusable transporter object using the default SMTP transport
           let transporter = nodemailer.createTransport({
-
+          host: 'smtp.gmail.com',
           port: 587,
           secure: false, // true for 465, false for other ports
           auth: {
-          user: 'yourBeauty_service@email.com', // generated ethereal user
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
           pass: 'be'+numss // generated ethereal password
           }
           });
