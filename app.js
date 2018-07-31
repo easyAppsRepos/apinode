@@ -2743,7 +2743,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
           secure: false, // true for 465, false for other ports
           auth: {
           user: 'yourBeauty_service@email.com', // generated ethereal user
-          pass: 'be'+numss; // generated ethereal password
+          pass: 'be'+numss // generated ethereal password
           }
           });
 
