@@ -2728,8 +2728,8 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       var hashEmail = makeid();
 
 
-    db(`INSERT INTO cliente(nombre,email,telefono,password, verificacionKey) 
-      VALUES(?, ?, ?, ?,?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.password,hashEmail]).then((data) => {
+    db(`INSERT INTO cliente(nombre,email,telefono,password, verificacionKey, estado) 
+      VALUES(?, ?, ?, ?,?,?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.password,hashEmail,0]).then((data) => {
       console.log(data);
       var numss='123456789';
       if (data) {
@@ -2986,7 +2986,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     expressApp.post('/verificarFBLog', (req, res) => {
 
     db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, 
-      u.fbId, u.idFoto, u.estado FROM cliente as u WHERE u.fbId = ? AND u.estado = 1`,[req.body.userId]).then((data) => {
+      u.fbId, u.idFoto, u.estado FROM cliente as u WHERE u.fbId = ?`,[req.body.userId]).then((data) => {
       console.log(data);
       if (data) {
         return res.send({
