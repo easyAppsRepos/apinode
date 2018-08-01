@@ -1811,7 +1811,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       .then((data) => {
         if (!data) res.send().status(500);
 
-        return res.send(cercania:data[0], favoritos:data[1]);
+        return res.send({cercania:data[0], favoritos:data[1]});
 
 
       }).catch(err => res.send(err).status(500));
