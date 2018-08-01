@@ -1807,7 +1807,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       AND c.idCentro IN (SELECT bb.idCentro FROM usuario_favorito as bb WHERE bb.idCliente = ? 
       AND estado = 1)  
       AND s.estado = 1   
-      GROUP BY c.idCentro ORDER BY -distance DESC`,[req.body.lat, req.body.lon, req.body.lat,req.body.idCliente])
+      GROUP BY c.idCentro ORDER BY -distance DESC`,[req.body.lat, req.body.lon, req.body.lat,req.body.idCliente])])
       .then((data) => {
         if (!data) res.send().status(500);
 
