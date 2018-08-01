@@ -308,8 +308,8 @@ expressApp.get('/horaMinMax', function(req, res) {
 
 var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, 
 COUNT(DISTINCT ec.puntuacion) as cantRate, 
-(6371 * acos( cos( radians(`+req.body.lat+`) ) * cos( radians( c.latitud ) ) 
-         * cos( radians(c.longitud) - radians(`+req.body.long+`)) + sin(radians(`+req.body.lat+`)) 
+(6371 * acos( cos( radians(`+(req.body.lat || 0)+`) ) * cos( radians( c.latitud ) ) 
+         * cos( radians(c.longitud) - radians(`+(req.body.long || 0)+`)) + sin(radians(`+(req.body.lat || 0)+`)) 
          * sin( radians(c.latitud)))) AS distance,
 AVG(ec.puntuacion) as rate
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
