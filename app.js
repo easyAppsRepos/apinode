@@ -1780,7 +1780,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
   });
 
   expressApp.post('/buscarServiciosGPS2', (req, res) => {
-    db(`SELECT c.*, 
+     Promise.all([db(`SELECT c.*, 
       MAX(s.precio) as pMax, 
       MIN(s.precio) as pMin, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
@@ -1792,10 +1792,28 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       WHERE c.idCentro = s.idCentro 
       AND s.idSubcategoria IN (`+req.body.idSubcategoria+`)  
       AND s.estado = 1   
-      GROUP BY c.idCentro HAVING distance < 25 ORDER BY -distance DESC LIMIT ?,10`,[req.body.lat, req.body.lon, req.body.lat, req.body.pagina])
+      GROUP BY c.idCentro HAVING distance < 25 ORDER BY -distance DESC LIMIT ?,10`,[req.body.lat, req.body.lon, req.body.lat, req.body.pagina]),
+     db(`SELECT c.*, 
+      MAX(s.precio) as pMax, 
+      MIN(s.precio) as pMin, 
+      COUNT(DISTINCT ec.puntuacion) as cantRate, 
+      AVG(ec.puntuacion) as rate, 
+      ( 6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
+   * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
+   * sin( radians(c.latitud)))) AS distance 
+      FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
+      WHERE c.idCentro = s.idCentro 
+      AND s.idSubcategoria IN (`+req.body.idSubcategoria+`)  
+      AND c.idCentro IN (SELECT bb.idCentro FROM usuario_favorito as bb WHERE bb.idCliente = ? 
+      AND estado = 1)  
+      AND s.estado = 1   
+      GROUP BY c.idCentro ORDER BY -distance DESC`,[req.body.lat, req.body.lon, req.body.lat,req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+
+        return res.send(cercania:data[0], favoritos:data[1]);
+
+
       }).catch(err => res.send(err).status(500));
   });
 
