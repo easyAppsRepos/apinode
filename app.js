@@ -306,12 +306,17 @@ expressApp.get('/horaMinMax', function(req, res) {
 
   expressApp.post('/buscarServiciosFiltro', (req, res) => {
 
-var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COUNT(DISTINCT ec.puntuacion) as cantRate, AVG(ec.puntuacion) as rate
+var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, 
+COUNT(DISTINCT ec.puntuacion) as cantRate, 
+(6371 * acos( cos( radians(`+req.body.lat+`) ) * cos( radians( c.latitud ) ) 
+         * cos( radians(c.longitud) - radians(`+req.body.long+`)) + sin(radians(`+req.body.lat+`)) 
+         * sin( radians(c.latitud)))) AS distance,
+AVG(ec.puntuacion) as rate
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
       WHERE c.idCentro = s.idCentro 
       AND s.estado = 1 AND c.estado = 1 `;
 
-     
+     /*
 
          if(req.body.lat && req.body.long){
 
@@ -320,7 +325,7 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
          * sin( radians(c.latitud)))) < 20 `;
 
       }
-
+*/
 
       if(req.body.palabra){
         stringQuery += ` AND c.sobreNosotros LIKE '%`+req.body.palabra+`%'`; 
@@ -435,7 +440,7 @@ var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, MIN(s.precio) as pMin, COU
 
 
 
- stringQuery += ` GROUP BY c.idCentro`; 
+ stringQuery += ` GROUP BY c.idCentro HAVING distance < 25 `; 
 
   if(req.body.ordenOpiniones){
         //stringQuery += ` ORDER BY pMax `+req.body.orden+` `; 
