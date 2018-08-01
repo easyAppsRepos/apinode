@@ -1791,8 +1791,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
       WHERE c.idCentro = s.idCentro 
       AND s.idSubcategoria IN (`+req.body.idSubcategoria+`)  
-      AND s.estado = 1 HAVING distance < 25  
-      GROUP BY c.idCentro ORDER BY -distance DESC LIMIT ?,10`,[req.body.lat, req.body.lon, req.body.lat, req.body.pagina])
+      AND s.estado = 1   
+      GROUP BY c.idCentro HAVING distance < 25 ORDER BY -distance DESC LIMIT ?,10`,[req.body.lat, req.body.lon, req.body.lat, req.body.pagina])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
