@@ -2222,6 +2222,22 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   });
 
 
+        expressApp.post('/reproCitaApp', (req, res) => {
+
+    db(`UPDATE cita set horaInicio = ?, horaFinalEsperado=?,
+    idEmpleado=? WHERE idCita = ? `,
+      [req.body.fechaInicio,
+        req.body.fechaFinal, req.body.idEmpleado, req.body.idCita]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send(data);
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/addCita', (req, res) => {
