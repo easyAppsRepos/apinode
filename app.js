@@ -1197,11 +1197,74 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
     expressApp.post('/reprogramarCita2', (req, res) => {
-    db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?,comentarioEstado=?, estado=5  WHERE idCita = ?`,[req.body.fechaCompleta,
-      req.body.horaFinalEsperado,req.body.comentarioEstado,req.body.idCita])
+     Promise.all([db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?,comentarioEstado=?, estado=5  WHERE idCita = ?`,[req.body.fechaCompleta,
+      req.body.horaFinalEsperado,req.body.comentarioEstado,req.body.idCita]),
+       db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'Android'`,[req.body.idCita]),
+     db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'iOS'`,[req.body.idCita])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+
+                            if(data[2]){
+
+              var note = new apn.Notification();
+
+              note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+    
+              note.sound = "ping.aiff";
+              note.alert = "El centro ha solicitado la reprogramacion del a cita.";
+              note.payload = {'tipoNoti': 3};
+              note.topic = "com.ionicframework.beyou";
+
+                 var regTokens = [];
+
+              data[2].forEach((elementwa, index) => {
+
+                  apnProvider.send(note, elementwa.pushKey).then( (result) => {
+                  console.log(result);
+                  });
+
+              });
+
+
+            }
+
+            if(data[1]){
+              var message = new gcm.Message({
+              data: { tipoNoti: 3 },
+              notification: {
+              title: "Reprogramada",
+              icon: "ic_launcher",
+              body: "El centro ha solicitado la reprogramacion del a cita."
+              }
+              });
+
+              // Specify which registration IDs to deliver the message to
+              var regTokens = [];
+
+              data[1].forEach((elementw, index) => {
+              regTokens.push(elementw.pushKey);
+              });
+
+
+
+              //var regTokens = ['dY98OGfoOJE:APA91bFVAw74t-YO0Oh5DXYFOZbgLzhglyMMhSLsEb2jFpnqn44N6e-mt90V6NbMQ9TkYRUfN3kZw2G7D9Xuv1BKReiJ7khrt2zloVkTx3acZ6tcLevhlg3mb70YDocE0LGaeft7APh7yZYgTgAMErouTV5p3m9H0A'];
+
+              // Actually send the message
+              sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if (err) console.error(err);
+              else console.log(response);
+              });
+
+            }
+
+
+
+
+        return res.send(data[0]);
       }).catch(err => res.send(err).status(500));
   });
 
@@ -1419,10 +1482,72 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
   expressApp.post('/confirmarCita', (req, res) => {
-    db(`UPDATE cita set  estado=2 WHERE idCita = ?`,[req.body.idCita])
+     Promise.all([db(`UPDATE cita set  estado=2 WHERE idCita = ?`,[req.body.idCita]),
+      db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'Android'`,[req.body.idCita]),
+     db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'iOS'`,[req.body.idCita])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+
+
+                    if(data[2]){
+
+              var note = new apn.Notification();
+
+              note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+    
+              note.sound = "ping.aiff";
+              note.alert = "Felicidades! Tu cita ha sido confirmada";
+              note.payload = {'tipoNoti': 1};
+              note.topic = "com.ionicframework.beyou";
+
+                 var regTokens = [];
+
+              data[2].forEach((elementwa, index) => {
+
+                  apnProvider.send(note, elementwa.pushKey).then( (result) => {
+                  console.log(result);
+                  });
+
+              });
+
+
+            }
+
+            if(data[1]){
+              var message = new gcm.Message({
+              data: { tipoNoti: 1 },
+              notification: {
+              title: "Cita confirmada",
+              icon: "ic_launcher",
+              body: "Felicidades! Tu cita ha sido confirmada"
+              }
+              });
+
+              // Specify which registration IDs to deliver the message to
+              var regTokens = [];
+
+              data[1].forEach((elementw, index) => {
+              regTokens.push(elementw.pushKey);
+              });
+
+
+
+              //var regTokens = ['dY98OGfoOJE:APA91bFVAw74t-YO0Oh5DXYFOZbgLzhglyMMhSLsEb2jFpnqn44N6e-mt90V6NbMQ9TkYRUfN3kZw2G7D9Xuv1BKReiJ7khrt2zloVkTx3acZ6tcLevhlg3mb70YDocE0LGaeft7APh7yZYgTgAMErouTV5p3m9H0A'];
+
+              // Actually send the message
+              sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if (err) console.error(err);
+              else console.log(response);
+              });
+
+            }
+
+
+        return res.send(data[0]);
       }).catch(err => res.send(err).status(500));
   });
 
@@ -1446,10 +1571,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       comision=(precioEsperado*((SELECT valor FROM parametros WHERE idParametro=1)/100)) WHERE idCita = ?`,[req.body.idCita]), 
     db(`INSERT INTO evaluacionCentro (idCentro,idCita) 
       VALUES((SELECT x.idCentro FROM cita as x WHERE x.idCita = ?), ?)`,[req.body.idCita,req.body.idCita]),
-    db(`SELECT p.pushKey FROM pushHandler as p 
+    db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
       AND p.logOut IS NULL AND p.so = 'Android'`,[req.body.idCita]),
-     db(`SELECT p.pushKey FROM pushHandler as p 
+     db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
       AND p.logOut IS NULL AND p.so = 'iOS'`,[req.body.idCita])])
       .then((data) => {
@@ -1463,8 +1588,8 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     
               note.sound = "ping.aiff";
-              note.alert = "Tu cita ha finalizado!";
-              note.payload = {'messageFrom': 'John Appleseed'};
+              note.alert = "Felicidades! Tu cita ha sido completada. Valora al negocio";
+              note.payload = {'tipoNoti': 2};
               note.topic = "com.ionicframework.beyou";
 
                  var regTokens = [];
@@ -1482,11 +1607,11 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
             if(data[2]){
               var message = new gcm.Message({
-              data: { key1: 'Tu cita ha finalizado! Ya puedes valorar al negocio' },
+              data: { tipoNoti: 2 },
               notification: {
               title: "Cita Finalizada",
               icon: "ic_launcher",
-              body: "Tu cita ha finalizado. Ya puedes evaluar el servicio recibido!"
+              body: "Felicidades! Tu cita ha sido completada. Valora al negocio"
               }
               });
 
