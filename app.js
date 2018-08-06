@@ -2308,7 +2308,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
     db(`SELECT c.*, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
       AVG(ec.puntuacion) as rate, 
-      (SELECT CONCAT(DATE_FORMAT(xxz.horaAbrir, '%H:%i'), ' - ', DATE_FORMAT(xxz.horaCerrar, '%H:%i')) FROM horarioCentro as xxz WHERE xxz.idCentro = ? AND xxz.diaSemana = ? AND xxz.estado = 1) as horarioHoy,
+      (SELECT CONCAT(DATE_FORMAT(xxz.horaAbrir, '%r'), ' - ', DATE_FORMAT(xxz.horaCerrar, '%r')) FROM horarioCentro as xxz WHERE xxz.idCentro = ? AND xxz.diaSemana = ? AND xxz.estado = 1) as horarioHoy,
       (SELECT idUsuarioFavorito 
       FROM usuario_favorito WHERE idCentro = ? AND idCliente = ? AND estado = 1) as favorito
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
