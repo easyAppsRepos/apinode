@@ -1618,7 +1618,7 @@ where  exists (SELECT SUM(f.exp) as sss FROM
                 var idCC = 0;
 
                 if(data[5].insertId > 0){
-                  var idCC = data[5].insertId;
+                   idCC = data[5].insertId;
                 }
             if(data[3]){
 
