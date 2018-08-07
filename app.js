@@ -1628,6 +1628,7 @@ data.additionalData.puntosGanados,
               notification: {
               title: "Cita Finalizada",
               icon: "ic_launcher",
+              content-available: "1"
               body: "Felicidades! Tu cita ha sido completada. Valora al negocio"
               }
               });
