@@ -1624,12 +1624,12 @@ data.additionalData.puntosGanados,
 
        
               var message = new gcm.Message({
-              data: { tipoNoti: 2,puntosGanados:pg,totalExc:te,puntosActual:pa },
-              notification: {
-              title: "Cita Finalizada",
-              icon: "ic_launcher",
-              content-available: "1",
-              body: "Felicidades! Tu cita ha sido completada. Valora al negocio"
+              "data": { tipoNoti: 2,puntosGanados:pg,totalExc:te,puntosActual:pa },
+              "notification": {
+              "title": "Cita Finalizada",
+              "icon": "ic_launcher",
+              "content-available": "1",
+              "body": "Felicidades! Tu cita ha sido completada. Valora al negocio"
               }
               });
 
