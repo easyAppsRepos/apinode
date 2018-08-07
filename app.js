@@ -1634,13 +1634,14 @@ data.additionalData.puntosGanados,
               });
               */
                          var message = new gcm.Message({
-              "title": "Cita Finalizada",
-              "icon": "ic_launcher",
-              "body": "Felicidades! Tu cita ha sido completada. Valora al negocio",
-              "tipoNoti": "2","puntosGanados":pg,
-              "totalExc":te,"puntosActual":pa
-              
-              });
+                          "data":{
+                                       "title": "Cita Finalizada",
+                                       "icon": "ic_launcher",
+                                       "body": "Felicidades! Tu cita ha sido completada. Valora al negocio",
+                                       "tipoNoti": "2","puntosGanados":pg,
+                                       "totalExc":te,"puntosActual":pa
+                                       
+                                       }});
 
               // Specify which registration IDs to deliver the message to
               var regTokens = [];
