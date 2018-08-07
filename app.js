@@ -1501,7 +1501,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     
               note.sound = "ping.aiff";
               note.alert = "Felicidades! Tu cita ha sido confirmada";
-              note.payload = {'tipoNoti': 1};
+              note.payload = {'tipoNoti': 1,"idCita":req.body.idCita};
               note.topic = "com.ionicframework.beyou";
 
                  var regTokens = [];
@@ -1526,6 +1526,16 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
               body: "Felicidades! Tu cita ha sido confirmada"
               }
               });
+
+              var message = new gcm.Message({
+                          "data":{
+                                       "title": "Cita confirmada",
+                                       "icon": "ic_launcher",
+                                       "body": "Felicidades! Tu cita ha sido confirmada",
+                                       "tipoNoti": "1", "idCita":req.body.idCita}
+                                     });
+
+
 
               // Specify which registration IDs to deliver the message to
               var regTokens = [];
