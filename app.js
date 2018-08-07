@@ -1576,12 +1576,19 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       AND p.logOut IS NULL AND p.so = 'Android'`,[req.body.idCita]),
      db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
-      AND p.logOut IS NULL AND p.so = 'iOS'`,[req.body.idCita])])
+      AND p.logOut IS NULL AND p.so = 'iOS'`,[req.body.idCita]),
+      db(`SELECT (SELECT valor FROM parametros WHERE idParametro = 7) as max,
+(SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3) as expCliente,
+(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?) as expCita`,[req.body.idCita,req.body.idCita])])
       .then((data) => {
 
         if (!data) res.send().status(500);
 
             if(data[3]){
+
+              var pg = data[4][0].expCita;
+               var te = data[4][0].max;
+                var pa = parseInt(data[4][0].expCliente) - parseInt(data[4][0].expCita);
 
               var note = new apn.Notification();
 
@@ -1589,9 +1596,14 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     
               note.sound = "ping.aiff";
               note.alert = "Felicidades! Tu cita ha sido completada. Valora al negocio";
-              note.payload = {'tipoNoti': 2};
+              note.payload = {'tipoNoti': 2, 'puntosGanados':pg,'totalExc':te,'puntosActual':pa};
               note.topic = "com.ionicframework.beyou";
 
+/*
+data.additionalData.puntosGanados,
+                                data.additionalData.totalExc,
+                                data.additionalData.puntosActual
+                                */
                  var regTokens = [];
 
               data[3].forEach((elementwa, index) => {
