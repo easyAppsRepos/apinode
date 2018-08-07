@@ -11,6 +11,9 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const multer  =   require('multer');
 
+
+require('events').EventEmitter.defaultMaxListeners = 15;
+
 var options = {
   token: {
     key: "../AuthKey_2GCKPR3W9T.p8",
