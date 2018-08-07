@@ -1605,9 +1605,9 @@ where  exists (SELECT SUM(f.exp) as sss FROM
  cita as f 
  WHERE f.idCliente = 
  (SELECT gm.idCliente FROM cita as gm 
- WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3 
- HAVING sss>(SELECT valor FROM parametros WHERE idParametro = 7))`,
- [req.body.idCita,req.body.idCita])])
+ WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3 AND f.idCita != ? 
+ HAVING (sss+(SELECT exp FROM cita WHERE idCita = ?))>(SELECT valor FROM parametros WHERE idParametro = 7))`,
+ [req.body.idCita,req.body.idCita,req.body.idCita,req.body.idCita])])
       .then((data) => {
 
         if (!data) res.send().status(500);
