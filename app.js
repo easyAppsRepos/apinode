@@ -1639,7 +1639,7 @@ data.additionalData.puntosGanados,
               "body": "Felicidades! Tu cita ha sido completada. Valora al negocio",
               "tipoNoti": "2","puntosGanados":pg,
               "totalExc":te,"puntosActual":pa
-              }
+              
               });
 
               // Specify which registration IDs to deliver the message to
