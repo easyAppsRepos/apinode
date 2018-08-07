@@ -1584,12 +1584,15 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
         if (!data) res.send().status(500);
 
-            if(data[3]){
-
-              var pg = data[4][0].expCita;
+           var pg = data[4][0].expCita;
                var te = data[4][0].max;
                 var pa = parseInt(data[4][0].expCliente) - parseInt(data[4][0].expCita);
 
+
+
+            if(data[3]){
+
+           
               var note = new apn.Notification();
 
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
@@ -1618,8 +1621,10 @@ data.additionalData.puntosGanados,
             }
 
             if(data[2]){
+
+       
               var message = new gcm.Message({
-              data: { tipoNoti: 2 },
+              data: { tipoNoti: 2,puntosGanados:pg,totalExc:te,puntosActual:pa },
               notification: {
               title: "Cita Finalizada",
               icon: "ic_launcher",
