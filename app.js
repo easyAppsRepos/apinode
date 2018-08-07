@@ -1622,14 +1622,23 @@ data.additionalData.puntosGanados,
 
             if(data[2]){
 
-                     
+                   /*  
               var message = new gcm.Message({
-              "data": {"content-available": "1", "tipoNoti": "2","puntosGanados":pg,
+              "data": {"tipoNoti": "2","puntosGanados":pg,
               "totalExc":te,"puntosActual":pa },
               "notification": {
               "title": "Cita Finalizada",
               "icon": "ic_launcher",
               "body": "Felicidades! Tu cita ha sido completada. Valora al negocio"
+              }
+              });
+              */
+                         var message = new gcm.Message({
+              "title": "Cita Finalizada",
+              "icon": "ic_launcher",
+              "body": "Felicidades! Tu cita ha sido completada. Valora al negocio",
+              "tipoNoti": "2","puntosGanados":pg,
+              "totalExc":te,"puntosActual":pa
               }
               });
 
