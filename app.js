@@ -1216,7 +1216,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     
               note.sound = "ping.aiff";
               note.alert = "El centro ha solicitado la reprogramacion del a cita.";
-              note.payload = {'tipoNoti': 3};
+              note.payload = {'tipoNoti': 3,"idCita":req.body.idCita};
               note.topic = "com.ionicframework.beyou";
 
                  var regTokens = [];
@@ -1233,14 +1233,19 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
             }
 
             if(data[1]){
-              var message = new gcm.Message({
-              data: { tipoNoti: 3 },
-              notification: {
-              title: "Reprogramada",
-              icon: "ic_launcher",
-              body: "El centro ha solicitado la reprogramacion del a cita."
-              }
-              });
+
+
+            var message = new gcm.Message({
+          "data":{
+                       "title": "Reprogramada",
+                       "icon": "ic_launcher",
+                       "body": "El centro ha solicitado la reprogramacion de la cita.",
+                       "tipoNoti": "1", "idCita":req.body.idCita}
+                     });
+
+
+
+
 
               // Specify which registration IDs to deliver the message to
               var regTokens = [];
@@ -1589,7 +1594,20 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       AND p.logOut IS NULL AND p.so = 'iOS'`,[req.body.idCita]),
       db(`SELECT (SELECT valor FROM parametros WHERE idParametro = 7) as max,
 (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3) as expCliente,
-(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?) as expCita`,[req.body.idCita,req.body.idCita])])
+(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?) as expCita`,[req.body.idCita,req.body.idCita]),
+
+       db(`INSERT IGNORE INTO cupon_cliente(idCliente, idCupon,estado,regalo, fechaActivacion)
+select (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?),
+ (SELECT idc.idCupon FROM cupon as idc WHERE idc.estado = 1 
+ AND idc.premio = 1 ORDER BY RAND() LIMIT 1), 
+ 1,1, CURRENT_TIMESTAMP cupon_cliente
+where  exists (SELECT SUM(f.exp) as sss FROM
+ cita as f 
+ WHERE f.idCliente = 
+ (SELECT gm.idCliente FROM cita as gm 
+ WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3 
+ HAVING sss>(SELECT valor FROM parametros WHERE idParametro = 7))`,
+ [req.body.idCita,req.body.idCita])])
       .then((data) => {
 
         if (!data) res.send().status(500);
@@ -1597,9 +1615,11 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
            var pg = data[4][0].expCita;
                var te = data[4][0].max;
                 var pa = parseInt(data[4][0].expCliente) - parseInt(data[4][0].expCita);
+                var idCC = 0;
 
-
-
+                if(data[5].insertId > 0){
+                  var idCC = data[5].insertId;
+                }
             if(data[3]){
 
            
@@ -1609,7 +1629,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     
               note.sound = "ping.aiff";
               note.alert = "Felicidades! Tu cita ha sido completada. Valora al negocio";
-              note.payload = {'tipoNoti': 2, 'puntosGanados':pg,'totalExc':te,'puntosActual':pa};
+              note.payload = {'tipoNoti': 2, 'puntosGanados':pg,'totalExc':te,'puntosActual':pa,'idCC':idCC};
               note.topic = "com.ionicframework.beyou";
 
 /*
@@ -1649,7 +1669,7 @@ data.additionalData.puntosGanados,
                                        "icon": "ic_launcher",
                                        "body": "Felicidades! Tu cita ha sido completada. Valora al negocio",
                                        "tipoNoti": "2","puntosGanados":pg,
-                                       "totalExc":te,"puntosActual":pa
+                                       "totalExc":te,"puntosActual":pa,'idCC':idCC
                                        
                                        }});
 
