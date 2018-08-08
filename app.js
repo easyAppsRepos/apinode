@@ -35,6 +35,15 @@ const storage = multer.diskStorage({
 });
 
 
+const storage2 = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb) {
+    cb(null,  file.fieldname + 'banner');
+  }
+});
+
 
 
 /*
@@ -66,6 +75,7 @@ nodemailer.createTestAccount((err, account) => {
   });
 */
 const upload = multer({storage: storage});
+const upload2 = multer({storage: storage2});
 
 
 const cors = require('cors');
@@ -1160,6 +1170,21 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
+
+
+    expressApp.post('/subirImagen2', upload.single(('image'+req.body.num)),(req, res) => {
+      console.log(req.file);
+    return res.send(res);
+/*    db(`UPDATE cliente set nombre=?,telefono=?,genero=?
+     WHERE idCliente = ?`,[req.body.nombre, req.body.telefono,req.body.genero,
+     req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));*/
+
+
+  });
 
     expressApp.post('/subirImagen', upload.single('imageU'),(req, res) => {
       console.log(req.file);
