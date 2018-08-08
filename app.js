@@ -1172,7 +1172,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
-    expressApp.post('/subirImagen2', upload.single('image'),(req, res) => {
+    expressApp.post('/subirImagen2', upload2.single('image'),(req, res) => {
       console.log(req.file);
     return res.send(res);
 /*    db(`UPDATE cliente set nombre=?,telefono=?,genero=?
