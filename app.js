@@ -40,7 +40,7 @@ const storage2 = multer.diskStorage({
     cb(null, './uploads/');
   },
   filename: function(req, file, cb) {
-    cb(null,  file.fieldname + 'banner');
+    cb(null,  req.num + 'banner');
   }
 });
 
@@ -1172,7 +1172,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
-    expressApp.post('/subirImagen2', upload.single(('image'+req.body.num)),(req, res) => {
+    expressApp.post('/subirImagen2', upload.single('image'),(req, res) => {
       console.log(req.file);
     return res.send(res);
 /*    db(`UPDATE cliente set nombre=?,telefono=?,genero=?
