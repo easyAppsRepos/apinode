@@ -2109,7 +2109,7 @@ data.additionalData.puntosGanados,
 
 
   expressApp.post('/paquetesActivos', (req, res) => {
-    db(`SELECT ps.idPaqueteServicio, pc.nombre as nombrePaquete, pc.tiempo as duracionPaquete, 
+    db(`SELECT ps.idPaqueteServicio, pc.idPaqueteCentro, pc.nombre as nombrePaquete, pc.tiempo as duracionPaquete, 
       pc.precioTotal as precioPaquete, 
       (SELECT  AVG(esc.puntuacion) FROM evaluacionCentro as esc WHERE esc.idCentro = c.idCentro AND esc.estado = 2 ) as rate,
       (SELECT (6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
