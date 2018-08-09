@@ -2125,9 +2125,9 @@ data.additionalData.puntosGanados,
 
         var groupss = _.groupBy(data, 'idPaqueteCentro');
 
-        var dataE = [];
- 
 
+ 
+/*
     for (var k in groupss) {
 
             dataE.push({
@@ -2144,10 +2144,10 @@ data.additionalData.puntosGanados,
 
 
     }
+*/
 
 
-
-        return res.send(dataE);
+        return res.send(groupss);
 
       }).catch(err => res.send(err).status(500));
   });
