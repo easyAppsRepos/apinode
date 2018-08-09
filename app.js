@@ -2112,15 +2112,14 @@ data.additionalData.puntosGanados,
     db(`SELECT ps.idPaqueteServicio, pc.nombre as nombrePaquete, pc.tiempo as duracionPaquete, 
       pc.precioTotal as precioPaquete, 
       (SELECT  AVG(esc.puntuacion) FROM evaluacionCentro as esc WHERE esc.idCentro = c.idCentro AND esc.estado = 2 ) as rate,
-      (SELECT (6371 * acos( cos( radians(2) ) * cos( radians( c.latitud ) ) 
-      * cos( radians(c.longitud) - radians(1)) + sin(radians(2)) 
+      (SELECT (6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
+      * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
       * sin( radians(c.latitud))))) AS distance,
     c.idCentro, c.nombre as nombreCentro, s.nombre as nombreServicio, s.idServicio, s.idCategoria, s.idSubcategoria, s.precio as precioServicio   
     FROM paquete_servicio as ps, paquete_centro as pc, centro as c, servicio as s  
     WHERE pc.idPaqueteCentro = ps.idPaqueteCentro 
     AND s.idServicio = ps.idServicio 
-    AND pc.idCentro = c.idCentro 
-    AND pc.fechaVencimiento > CURRENT_TIMESTAMP`,[req.body.lat,req.body.lon,req.body.lat])
+    AND pc.idCentro = c.idCentro `,[req.body.lat,req.body.lon,req.body.lat])
       .then((data) => {
         if (!data) res.send().status(500);
 
