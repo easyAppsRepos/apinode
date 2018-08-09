@@ -2109,19 +2109,24 @@ data.additionalData.puntosGanados,
 
 
   expressApp.post('/paquetesActivos', (req, res) => {
-    db(`SELECT s.*, co.precioOferta as precio2,co.fechaCaducidad, c.nombre as nombreCentro, 
-    (SELECT  COUNT(DISTINCT ec.puntuacion) FROM evaluacionCentro as ec WHERE ec.idCentro = c.idCentro  AND ec.estado = 2 ) as cantRate,
-    (SELECT  AVG(esc.puntuacion) FROM evaluacionCentro as esc WHERE esc.idCentro = c.idCentro AND esc.estado = 2 ) as rate,
-    (SELECT (6371 * acos( cos( radians(2) ) * cos( radians( c.latitud ) ) 
-   * cos( radians(c.longitud) - radians(1)) + sin(radians(2)) 
-   * sin( radians(c.latitud))))) AS distance,
-      c.idFoto as imagenCentro FROM servicio as s, control_oferta as co, 
-      centro as c WHERE co.idServicio = s.idServicio 
-      AND co.fechaCaducidad > CURRENT_TIMESTAMP 
-      AND co.estado = 1 AND c.idCentro = s.idCentro ORDER BY co.fechaCaducidad ASC`,[req.body.lat,req.body.lon,req.body.lat])
+    db(`SELECT ps.idPaqueteServicio, pc.nombre as nombrePaquete, pc.tiempo as duracionPaquete, 
+      pc.precioTotal as precioPaquete, 
+      (SELECT  AVG(esc.puntuacion) FROM evaluacionCentro as esc WHERE esc.idCentro = c.idCentro AND esc.estado = 2 ) as rate,
+      (SELECT (6371 * acos( cos( radians(2) ) * cos( radians( c.latitud ) ) 
+      * cos( radians(c.longitud) - radians(1)) + sin(radians(2)) 
+      * sin( radians(c.latitud))))) AS distance,
+    c.idCentro, c.nombre as nombreCentro, s.nombre as nombreServicio, s.idServicio, s.idCategoria, s.idSubcategoria, s.precio as precioServicio   
+    FROM paquete_servicio as ps, paquete_centro as pc, centro as c, servicio as s  
+    WHERE pc.idPaqueteCentro = ps.idPaqueteCentro 
+    AND s.idServicio = ps.idServicio 
+    AND pc.idCentro = c.idCentro 
+    AND pc.fechaVencimiento > CURRENT_TIMESTAMP`,[req.body.lat,req.body.lon,req.body.lat])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+
+        var groups = _.groupBy(data, 'idPaqueteCentro');
+        return res.send({paquetes:groups});
+
       }).catch(err => res.send(err).status(500));
   });
 
