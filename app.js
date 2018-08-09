@@ -2126,21 +2126,26 @@ data.additionalData.puntosGanados,
         var groupss = _.groupBy(data, 'idPaqueteCentro');
 
         var dataE = [];
-        groupss.forEach((item, index)=>{
+ 
 
-          dataE.push({
-            'idPaqueteCentro':item[0].idPaqueteCentro,
-            'nombrePaquete':item[0].nombrePaquete,
-            'duracionPaquete':item[0].duracionPaquete,
-            'precioPaquete':item[0].precioPaquete,
-            'nombreCentro':item[0].nombreCentro,
-            'idCentro':item[0].idCentro,
-            'distance':item[0].distance,
-            'servicios':item
+    for (var k in groupss) {
 
-          })
+            dataE.push({
+            'idPaqueteCentro':groupss[k][0].idPaqueteCentro,
+            'nombrePaquete':groupss[k][0].nombrePaquete,
+            'duracionPaquete':groupss[k][0].duracionPaquete,
+            'precioPaquete':groupss[k][0].precioPaquete,
+            'nombreCentro':groupss[k][0].nombreCentro,
+            'idCentro':groupss[k][0].idCentro,
+            'distance':groupss[k][0].distance,
+            'servicios':item[k]
 
-        });
+          });
+
+
+    }
+
+
 
         return res.send(dataE);
 
