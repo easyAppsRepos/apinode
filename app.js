@@ -2123,9 +2123,9 @@ data.additionalData.puntosGanados,
       .then((data) => {
         if (!data) res.send().status(500);
 
-        var groups = _.groupBy(data, 'idPaqueteCentro');
-        
-        return res.send(groups);
+        var groupss = _.groupBy(data, 'idPaqueteCentro');
+
+        return res.send(groupss);
 
       }).catch(err => res.send(err).status(500));
   });
