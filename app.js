@@ -924,7 +924,10 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     });
 
 
-    Promise.all([db(`UPDATE paquete_centro set estado = 1 WHERE idPaqueteCentro = ?`,[req.body.idPaqueteCentro]),
+    Promise.all([db(`UPDATE paquete_centro set estado = 1,
+      nombre=?, tiempo=?, precioTotal = ? 
+      WHERE idPaqueteCentro = ?`,[req.body.nombre,req.body.duracion,
+      req.body.precio,req.body.idPaqueteCentro]),
     db(`INSERT INTO paquete_servicio(idPaqueteCentro,idServicio) VALUES `+insertQ+` `)])
       .then((data) => {
         if (!data) res.send().status(500);
