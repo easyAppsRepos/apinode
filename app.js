@@ -1789,7 +1789,7 @@ data.additionalData.puntosGanados,
       FROM servicio AS f WHERE f.idServicio
        IN (SELECT g.idServicio FROM paquete_servicio AS g 
        WHERE g.idPaqueteCentro = b.idPaqueteCentro) GROUP BY f.idCentro) as listaServicios 
-       FROM paquete_centro AS b WHERE b.idCentro = ?  `,[req.body.idCentro]),
+       FROM paquete_centro AS b WHERE b.idCentro = ?  AND b.fechaVencimiento > CURRENT_TIMESTAMP`,[req.body.idCentro]),
     db(`SELECT s.nombre, co.* FROM control_oferta AS co LEFT JOIN servicio AS s 
       ON s.idServicio = co.idServicio WHERE co.idCentro = ? AND co.fechaCaducidad > CURRENT_TIMESTAMP`,[req.body.idCentro])])
       .then((data) => {
