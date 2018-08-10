@@ -2641,10 +2641,11 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
      Promise.all([db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.estado, s.idSubcategoria, s.idCategoria, s.descripcion, c.nombre as nombreCategoria, co.precioOferta, co.duracion as duracionOferta  
       FROM  categoria as c, servicio as s LEFT JOIN control_oferta AS co ON (co.idServicio = s.idServicio AND  co.fechaCaducidad > CURRENT_TIMESTAMP )  
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idCentro]),
-     db(`SELECT * FROM control_oferta WHERE idCentro = ? AND estado = 0 AND fechaCaducidad > CURRENT_TIMESTAMP`,[req.body.idCentro])])
+     db(`SELECT * FROM control_oferta WHERE idCentro = ? AND estado = 0 AND fechaCaducidad > CURRENT_TIMESTAMP`,[req.body.idCentro]),
+     db(`SELECT * FROM paquete_centro WHERE idCentro = ? AND estado = 0 AND fechaCaducidad > CURRENT_TIMESTAMP`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send({servicios:data[0], ofertas:data[1]});
+        return res.send({servicios:data[0], ofertas:data[1], paquetes:data[2]});
       }).catch(err => res.send(err).status(500));
   });
 
