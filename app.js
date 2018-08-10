@@ -902,7 +902,35 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/agregarPaqueteSA', (req, res) => {
 
+    var insertQ = ''; 
+
+    req.body.servicios.forEach((item, index)=>{
+
+      if(index==0){
+
+          insertQ += ' ('+req.body.idPaqueteCentro+','+item.idServicio+')';
+
+       }
+       else{
+
+          insertQ += ',('+req.body.idPaqueteCentro+','+item.idServicio+')';
+
+       }
+
+    
+
+    });
+
+
+    Promise.all([db(`UPDATE paquete_centro set estado = 1 WHERE idPaqueteCentro = ?`,[req.body.idPaqueteCentro]),
+    db(`INSERT INTO paquete_servicio(idPaqueteCentro,idServicio) VALUES `+insertQ+` `)])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data[0]);
+      }).catch(err => res.send(err).status(500));
+  });
 
     expressApp.post('/verificarDispoStaff', (req, res) => {
       Promise.all([db(`SELECT rm.* FROM reservaManual as rm 
