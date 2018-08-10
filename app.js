@@ -2150,7 +2150,7 @@ data.additionalData.puntosGanados,
     FROM paquete_servicio as ps, paquete_centro as pc, centro as c, servicio as s LEFT JOIN categoria as ca ON ca.idCategoria = s.idCategoria    
     WHERE pc.idPaqueteCentro = ps.idPaqueteCentro 
     AND s.idServicio = ps.idServicio 
-    AND pc.idCentro = c.idCentro AND pc.fechaVencimiento > CURRENT_TIMESTAMP`,[req.body.lat,req.body.lon,req.body.lat])
+    AND pc.idCentro = c.idCentro AND pc.fechaVencimiento > CURRENT_TIMESTAMP HAVING distance < 25`,[req.body.lat,req.body.lon,req.body.lat])
       .then((data) => {
         if (!data) res.send().status(500);
 
