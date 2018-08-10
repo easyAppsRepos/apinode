@@ -2580,7 +2580,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
             arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado) 
             VALUES (?,?,0,?)
-            `,[data.insertId, elementw.idServicio,parseFloat(elementw.precioFinal)]));
+            `,[data.insertId, elementw.idServicio,(parseFloat(elementw.precioFinal) || 0)]));
 
           });
       Promise.all(arrayFunctions).then((data) => {
