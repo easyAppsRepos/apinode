@@ -2140,14 +2140,14 @@ data.additionalData.puntosGanados,
 
 
   expressApp.post('/paquetesActivos', (req, res) => {
-    db(`SELECT ps.idPaqueteServicio, pc.idPaqueteCentro, pc.nombre as nombrePaquete, pc.tiempo as duracionPaquete, 
+    db(`SELECT ps.idPaqueteServicio, ca.idFoto as imagenCategoria,pc.idPaqueteCentro, pc.nombre as nombrePaquete, pc.tiempo as duracionPaquete, 
       pc.precioTotal as precioPaquete, 
       (SELECT  AVG(esc.puntuacion) FROM evaluacionCentro as esc WHERE esc.idCentro = c.idCentro AND esc.estado = 2 ) as rate,
       (SELECT (6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
       * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
       * sin( radians(c.latitud))))) AS distance,
     c.idCentro, c.nombre as nombreCentro, s.nombre as nombreServicio, s.idServicio, s.idCategoria, s.idSubcategoria, s.precio as precioServicio   
-    FROM paquete_servicio as ps, paquete_centro as pc, centro as c, servicio as s  
+    FROM paquete_servicio as ps, paquete_centro as pc, centro as c, servicio as s LEFT JOIN categoria as ca ON ca.idCategoria = s.idCategoria    
     WHERE pc.idPaqueteCentro = ps.idPaqueteCentro 
     AND s.idServicio = ps.idServicio 
     AND pc.idCentro = c.idCentro AND pc.fechaVencimiento > CURRENT_TIMESTAMP`,[req.body.lat,req.body.lon,req.body.lat])
