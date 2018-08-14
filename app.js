@@ -2071,6 +2071,10 @@ data.additionalData.puntosGanados,
     db(`SELECT c.nombre, c.idFoto, c.latitud, c.longitud, c.idCentro, 
       MAX(s.precio) as pMax, 
       MIN(s.precio) as pMin, 
+       (SELECT  GROUP_CONCAT(DISTINCT xs.idCategoria SEPARATOR ',') FROM
+      servicio as xs WHERE xs.idCentro = s.idCentro ) as categoriasCentro,
+            (SELECT  GROUP_CONCAT(DISTINCT xss.idsubcategoria SEPARATOR ',') FROM
+      servicio as xss WHERE xss.idCentro = s.idCentro ) as subcategoriasCentro,
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
       AVG(ec.puntuacion) as rate, 
       ( 6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
