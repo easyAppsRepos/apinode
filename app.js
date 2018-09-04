@@ -3031,7 +3031,26 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+    expressApp.post('/loginNC', (req, res) => {
 
+    db(`SELECT u.idUsuarioConsola, u.email, u.nombre, u.tipo, u.estado FROM usuario_consola as u 
+      WHERE u.email = ? AND u.password = ?`,[req.body.email,req.body.password]).then((data) => {
+      console.log(data);
+
+      if (data[0].idUsuarioConsola) {
+        //data.status=true;
+        var dataSend = data[0];
+        dataSend.accessToken='access-token-' + Math.random();
+        dataSend.refreshToken='access-token-' + Math.random();
+        dataSend.roles=["ADMIN"];
+        return res.send(dataSend);
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
 
     expressApp.post('/login', (req, res) => {
 
