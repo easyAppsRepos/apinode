@@ -2948,6 +2948,28 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+        expressApp.post('/addStaffNC', function(req, res) {
+
+    var insertQ = ''; 
+    req.body.staff.forEach((item, index)=>{
+      if(index==0){
+    insertQ +='('+item.idCentro+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+item.telefono+'","'+item.email+'")';
+       }
+       else{
+          insertQ +=', ('+item.idCentro+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+item.telefono+'","'+item.email+'")';
+       }
+    });
+
+
+    db(`INSERT INTO empleado(idCentro,nombre,tipo,descripcion,telefono,email) VALUES `+insertQ+` `)
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
         expressApp.post('/nuevoUsuarioCAD', function(req, res) {
 
     db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password, ruc, inicioContrato,
