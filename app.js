@@ -2970,6 +2970,35 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+
+
+
+        expressApp.post('/actulizarHorarioNC', function(req, res) {
+
+    var insertQ = ''; 
+    req.body.forEach((item, index)=>{
+      if(index==0){
+    insertQ +='('+item.idCentro+','+item.diaSemana+',"'+item.horaAbrir+'","'+item.horaCerrar+'","'+item.estado+'")';
+       }
+       else{
+          insertQ +=',('+item.idCentro+','+item.diaSemana+',"'+item.horaAbrir+'","'+item.horaCerrar+'","'+item.estado+'")';
+       }
+    });
+
+
+    db(`INSERT INTO horarioCentro(idCentro,diaSemana,horaAbrir,horaCerrar,estado) VALUES `+insertQ+` 
+      ON DUPLICATE KEY UPDATE diaSemana=values(diaSemana),horaAbrir=values(horaAbrir),
+  horaCerrar=values(horaCerrar),estado=values(estado)`)
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
         expressApp.post('/nuevoUsuarioCAD', function(req, res) {
 
     db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password, ruc, inicioContrato,
