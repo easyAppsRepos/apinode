@@ -2951,7 +2951,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
         expressApp.post('/addStaffNC', function(req, res) {
 
     var insertQ = ''; 
-    req.body.staff.forEach((item, index)=>{
+    req.body.forEach((item, index)=>{
       if(index==0){
     insertQ +='('+item.idCentro+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+item.telefono+'","'+item.email+'")';
        }
