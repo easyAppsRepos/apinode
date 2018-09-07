@@ -2981,10 +2981,10 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     var insertQ = ''; 
     req.body.horario.forEach((item, index)=>{
       if(index==0){
-    insertQ +='('+req.body.idCentro+','+item.diaSemana+',"'+(item.abrir || '00:00:00')+'","'+(item.cerrar || '00:00:00')+',1)';
+    insertQ +='('+req.body.idCentro+','+item.diaSemana+',"'+(item.abrir || '00:00:00')+'","'+(item.cerrar || '00:00:00')+'",1)';
        }
        else{
-          insertQ +=',('+req.body.idCentro+','+item.diaSemana+',"'+(item.abrir || '00:00:00')+'","'+(item.cerrar || '00:00:00')+',1)';
+          insertQ +=',('+req.body.idCentro+','+item.diaSemana+',"'+(item.abrir || '00:00:00')+'","'+(item.cerrar || '00:00:00')+'",1)';
        }
     });
 
