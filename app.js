@@ -2949,6 +2949,20 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/serviciosC', function(req, res) {
+
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+      FROM servicio as s, categoria as c 
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]).then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
         expressApp.post('/nuevoUsuarioNC', function(req, res) {
 
     Promise.all([db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular) 
