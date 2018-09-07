@@ -2977,6 +2977,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
         expressApp.post('/addInfoCentroNC', function(req, res) {
 
+    var direccionC = req.body.direccion || '';
     var insertQ = ''; 
     req.body.horario.forEach((item, index)=>{
       if(index==0){
@@ -2987,15 +2988,30 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
        }
     });
 
+    if(req.body.horario.length>0){
 
-    db(`INSERT INTO horarioCentro(idCentro,diaSemana,horaAbrir,horaCerrar,estado) VALUES `+insertQ+` 
-      ON DUPLICATE KEY UPDATE diaSemana=values(diaSemana),horaAbrir=values(horaAbrir),
-  horaCerrar=values(horaCerrar),estado=values(estado)`)
+      Promise.all([db(`INSERT INTO horarioCentro(idCentro,diaSemana,horaAbrir,horaCerrar,estado) VALUES `+insertQ+` `),
+     db(`UPDATE centro set direccion = ?, latitud=?, longitud=?,telefono=?,fbLink=? 
+      WHERE idCentro = ?`,
+      [direccionC,req.body.latitud,req.body.longitud,req.body.telefono,req.body.fbLink,req.body.idCentro])])
       .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data[1]);
+
+      }).catch(err => res.send(err).status(500));
+
+    }
+    else{
+
+      db(`UPDATE centro set direccion = ?, latitud=?, longitud=?,telefono=?,fbLink=? 
+      WHERE idCentro = ?`,
+      [direccionC,req.body.latitud,req.body.longitud,req.body.telefono,req.body.fbLink,req.body.idCentro]).then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
 
       }).catch(err => res.send(err).status(500));
+    }  
+
   });
 
 
