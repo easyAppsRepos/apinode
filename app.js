@@ -2984,6 +2984,27 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/addServiciosNC', function(req, res) {
+
+    var insertQ = ''; 
+    req.body.servicios.forEach((item, index)=>{
+      if(index==0){
+    insertQ +='('+req.body.idCentro+',"'+item.nombreServicio+'",'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
+       }
+       else{
+          insertQ +=', ('+req.body.idCentro+',"'+item.nombreServicio+'",'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
+       }
+    });
+
+
+    db(`INSERT INTO servicio(idCentro, nombre, idCategoria, idSubcategoria, duracion, precio, estado ) 
+      VALUES `+insertQ+` `)
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
