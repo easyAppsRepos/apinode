@@ -2991,9 +2991,9 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     if(req.body.horario.length>0){
 
       Promise.all([db(`INSERT INTO horarioCentro(idCentro,diaSemana,horaAbrir,horaCerrar,estado) VALUES `+insertQ+` `),
-     db(`UPDATE centro set direccion = ?, latitud=?, longitud=?,telefono=?,fbLink=? 
+     db(`UPDATE centro set direccion = ?, latitud=?, longitud=?,telefono=?,fbLink=?, estado=1  
       WHERE idCentro = ?`,
-      [direccionC,req.body.latitud,req.body.longitud,req.body.telefono,req.body.fbLink,req.body.idCentro])])
+      [direccionC,req.body.latitud,req.body.longitud,req.body.telefono,req.body.webUsuario,req.body.idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data[1]);
@@ -3003,9 +3003,9 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     }
     else{
 
-      db(`UPDATE centro set direccion = ?, latitud=?, longitud=?,telefono=?,fbLink=? 
+      db(`UPDATE centro set direccion = ?, latitud=?, longitud=?,telefono=?,fbLink=?, estado=1  
       WHERE idCentro = ?`,
-      [direccionC,req.body.latitud,req.body.longitud,req.body.telefono,req.body.fbLink,req.body.idCentro]).then((data) => {
+      [direccionC,req.body.latitud,req.body.longitud,req.body.telefono,req.body.webUsuario,req.body.idCentro]).then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
 
