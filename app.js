@@ -2938,11 +2938,13 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
         expressApp.post('/nuevoUsuarioNC', function(req, res) {
 
-    db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular) 
-      VALUES(?, ?,1,?,?)`,[req.body.correoElectronico,req.body.nombreNegocio,req.body.password,req.body.nombreUsuario])
+    Promise.all([db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular) 
+      VALUES(?, ?,1,?,?)`,[req.body.correoElectronico,req.body.nombreNegocio,req.body.password,req.body.nombreUsuario]),
+      db(`INSERT INTO centro(nombre,email,nombreTitular) 
+      VALUES(?, ?,?)`,[req.body.nombreNegocio,req.body.correoElectronico,req.body.nombreUsuario])])
       .then((data) => {
          if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send(data[1]);
 
       }).catch(err => res.send(err).status(500));
   });
@@ -2973,15 +2975,15 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
 
-        expressApp.post('/actulizarHorarioNC', function(req, res) {
+        expressApp.post('/addInfoCentroNC', function(req, res) {
 
     var insertQ = ''; 
-    req.body.forEach((item, index)=>{
+    req.body.horario.forEach((item, index)=>{
       if(index==0){
-    insertQ +='('+item.idCentro+','+item.diaSemana+',"'+item.horaAbrir+'","'+item.horaCerrar+'","'+item.estado+'")';
+    insertQ +='('+req.body.idCentro+','+item.diaSemana+',"'+item.horaAbrir+'","'+item.horaCerrar+'","'+item.estado+'")';
        }
        else{
-          insertQ +=',('+item.idCentro+','+item.diaSemana+',"'+item.horaAbrir+'","'+item.horaCerrar+'","'+item.estado+'")';
+          insertQ +=',('+req.body.idCentro+','+item.diaSemana+',"'+item.horaAbrir+'","'+item.horaCerrar+'","'+item.estado+'")';
        }
     });
 
