@@ -2951,9 +2951,9 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
         expressApp.post('/serviciosC', function(req, res) {
 
-    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
-      FROM servicio as s, categoria as c 
-      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]).then((data) => {
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria, cs.nombre as nombreSubcategoria   
+      FROM servicio as s, categoria as c, subcategoria as cs  
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND AND cs.idSubcategoria = s.idSubcategoria AND s.estado = 1`,[req.body.idCentro]).then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
 
