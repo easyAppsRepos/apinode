@@ -3043,6 +3043,49 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
 
+        expressApp.post('/updateServicioNC', function(req, res) {
+
+          var duracion = req.body.duracionH + req.body.duracionM;
+          var arrayEmpleadoServicio = req.body.horario.filter(emp => (emp.idServicioEmpleado > 0 || emp.check));
+          var insertQ = ''; 
+          arrayEmpleadoServicio.forEach((item, index)=>{
+            var estado = item.check ? 1 : 0;
+            if(index==0){
+                insertQ +='('+arrayEmpleadoServicio.idEmpleado+','+req.body.idServicio+','+estado+')';
+             }
+             else{
+                insertQ +=',('+arrayEmpleadoServicio.idEmpleado+','+req.body.idServicio+','+estado+')';
+             }
+          });
+
+    if(arrayEmpleadoServicio.length>0){
+
+      Promise.all([db(`INSERT INTO servicioEmpleado (idEmpleado, idServicio, estado)
+      VALUES `+insertQ+` ON DUPLICATE KEY UPDATE estado=VALUES(estado)`),
+     db(`UPDATE servicio set nombre = ?, idCategoria=?, idSubcategoria=?,duracion=?,precio=? 
+        WHERE idServicio = ?`,
+      [req.body.nombre,req.body.idCategoria,req.body.idSubcategoria,
+      duracion,req.body.precio, req.body.idServicio])]).then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data[1]);
+      }).catch(err => res.send(err).status(500));
+    }
+    else{
+      db(`UPDATE servicio set nombre = ?, idCategoria=?, idSubcategoria=?,duracion=?,precio=? 
+        WHERE idServicio = ?`,
+      [req.body.nombre,req.body.idCategoria,req.body.idSubcategoria,
+      duracion,req.body.precio, req.body.idServicio]).then((data) => {
+         if (!data) res.send().status(500);
+         return res.send(data);
+      }).catch(err => res.send(err).status(500));
+    }  
+
+  });
+
+
+
+
+
         expressApp.post('/addInfoCentroNC', function(req, res) {
 
     var direccionC = req.body.direccion || '';
