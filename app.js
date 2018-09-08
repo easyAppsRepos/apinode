@@ -2963,6 +2963,26 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
 
+        expressApp.post('/getServicioNC', function(req, res) {
+
+    Promise.all([db(`SELECT s.idServicio, s.idCentro, s.idCategoria, s.idSubcategoria,
+      s.nombre, s.duracion, s.precio, co.precioOferta FROM servicio as s 
+      LEFT JOIN control_oferta AS co ON (co.idServicio = s.idServicio AND co.fechaCaducidad > CURRENT_TIMESTAMP ) 
+       WHERE s.idServicio = ?`,[req.body.idServicio]),
+      db(`SELECT  e.idEmpleado, e.nombre, e.idFoto, e.descripcion  
+       FROM empleado as e LEFT JOIN servicioEmpleado as se 
+       ON (se.idEmpleado = e.idEmpleado AND se.idServicio = ?)
+       WHERE e.idCentro = ?`,[req.body.idServicio, req.body.idCentro])])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data[1]);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
         expressApp.post('/nuevoUsuarioNC', function(req, res) {
 
     Promise.all([db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular) 
