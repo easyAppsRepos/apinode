@@ -3046,7 +3046,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
         expressApp.post('/updateServicioNC', function(req, res) {
 
           var duracion = req.body.duracionH + req.body.duracionM;
-          var arrayEmpleadoServicio = req.body.horario.filter(emp => (emp.idServicioEmpleado > 0 || emp.check));
+          var arrayEmpleadoServicio = req.body.empleados.filter(emp => (emp.idServicioEmpleado > 0 || emp.check));
           var insertQ = ''; 
           arrayEmpleadoServicio.forEach((item, index)=>{
             var estado = item.check ? 1 : 0;
