@@ -2969,7 +2969,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       s.nombre, s.duracion, s.precio, co.precioOferta FROM servicio as s 
       LEFT JOIN control_oferta AS co ON (co.idServicio = s.idServicio AND co.fechaCaducidad > CURRENT_TIMESTAMP ) 
        WHERE s.idServicio = ?`,[req.body.idServicio]),
-      db(`SELECT  e.idEmpleado, e.nombre, e.idFoto, e.descripcion, se.idServicioEmpleado    
+      db(`SELECT  e.idEmpleado, e.nombre, e.idFoto, e.descripcion, se.idServicioEmpleado, se.idServicioEmpleado as check     
        FROM empleado as e LEFT JOIN servicioEmpleado as se 
        ON (se.idEmpleado = e.idEmpleado AND se.idServicio = ?)
        WHERE e.idCentro = ?`,[req.body.idServicio, req.body.idCentro])])
