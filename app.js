@@ -3051,10 +3051,10 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
           arrayEmpleadoServicio.forEach((item, index)=>{
             var estado = item.checke ? 1 : 0;
             if(index==0){
-                insertQ +='('+arrayEmpleadoServicio.idEmpleado+','+req.body.idServicio+','+estado+')';
+                insertQ +='('+item.idEmpleado+','+req.body.idServicio+','+estado+')';
              }
              else{
-                insertQ +=',('+arrayEmpleadoServicio.idEmpleado+','+req.body.idServicio+','+estado+')';
+                insertQ +=',('+item.idEmpleado+','+req.body.idServicio+','+estado+')';
              }
           });
 
