@@ -2975,7 +2975,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
        WHERE e.idCentro = ?`,[req.body.idServicio, req.body.idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
-        return res.send(data[1]);
+        return res.send({servicio:data[0],empleados:data[1]});
 
       }).catch(err => res.send(err).status(500));
   });
