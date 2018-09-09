@@ -3018,6 +3018,47 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+  expressApp.post('/addServicioNC', function(req, res) {
+
+    var insertQ = ''; 
+    var duracion = req.body.duracionH + req.body.duracionM;
+     db(`INSERT INTO servicio(idCentro, nombre, idCategoria, idSubcategoria, duracion, precio ) 
+      VALUES (?,?,?,?,?,?)`,[req.body.idCentro,req.body.nombre,req.body.idCategoria,
+      req.body.idSubcategoria,duracion,req.body.precio]).then((data) => {
+
+         if (!data) {res.send().status(500);}
+       
+          if(req.body.empleados.length>0){
+              var servicioId = data.insertId;
+              req.body.empleados.forEach((item, index)=>{
+              if(index==0){
+              insertQ+= '('+item.idEmpleado+','+servicioId+', 1)';
+              }
+              else{
+              insertQ+= ',('+item.idEmpleado+','+servicioId+', 1)';
+              }
+              });
+
+              
+              db(`INSERT INTO servicioEmpleado (idEmpleado, idServicio, estado)
+              VALUES `+insertQ+` `).then((datas) => {
+
+                return res.send(datas);
+
+              });
+
+               
+          }
+          else{
+            return res.send(data);
+          }
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
         expressApp.post('/addServiciosNC', function(req, res) {
 
     var insertQ = ''; 
