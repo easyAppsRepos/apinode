@@ -2978,6 +2978,20 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
 
+  expressApp.post('/marcarEnOfertaNC', (req, res) => {
+    db(`INSERT INTO control_oferta(idServicio,precioOferta,
+      fechaCaducidad,idCentro, costo, estado) 
+      VALUES(?,?,(DATE_ADD(NOW(), INTERVAL (SELECT valor FROM parametros WHERE idParametro = 3) DAY)),
+      (SELECT idCentro FROM servicio WHERE idServicio = ?),
+      (SELECT valor FROM parametros WHERE idParametro = 4),
+      1)`,[req.body.idServicio,req.body.precioOferta,req.body.idServicio]).then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
         expressApp.post('/getServicioNC', function(req, res) {
 
     Promise.all([db(`SELECT s.idServicio, s.idCentro, s.idCategoria, s.idSubcategoria,
