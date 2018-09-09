@@ -3014,10 +3014,10 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     expressApp.post('/getInfoEmpleadoNC', function(req, res) {
 
     Promise.all([db(`SELECT s.idServicio, s.idCentro, s.idCategoria, 
-      s.idSubcategoria, s.nombre, s.duracion, s.precio, 
+      s.idSubcategoria, s.nombre, s.duracion, s.precio, c.nombre as nombreCategoria, 
       (SELECT se.idServicioEmpleado FROM servicioEmpleado as se 
       WHERE se.idServicio = s.idServicio AND se.idEmpleado = ? AND se.estado = 1) as idServicioEmpleado 
-      FROM servicio as s WHERE s.idCentro = ?`,[req.body.idEmpleado, req.body.idCentro]),
+      FROM servicio as s, categoria as c WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idEmpleado, req.body.idCentro]),
       db(`SELECT * FROM horarioEmpleado WHERE idEmpleado = ?`,[req.body.idEmpleado]),
       db(`SELECT * FROM horario_especial_empleado WHERE idEmpleado = ?`,[req.body.idEmpleado])])
       .then((data) => {
