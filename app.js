@@ -3022,7 +3022,10 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       db(`SELECT * FROM horario_especial_empleado WHERE idEmpleado = ?`,[req.body.idEmpleado])])
       .then((data) => {
          if (!data) res.send().status(500);
-        return res.send({servicios:data[0],horario:data[1],horarioEspecial:data[2]});
+
+        var groups = _.groupBy(data, 'nombreCategoria');
+
+        return res.send({servicios:groups,horario:data[1],horarioEspecial:data[2]});
 
       }).catch(err => res.send(err).status(500));
   });
