@@ -3011,6 +3011,23 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/getInfoEmpleadoNC', function(req, res) {
+
+    Promise.all([db(`SELECT s.idServicio, s.idCentro, s.idCategoria, 
+      s.idSubcategoria, s.nombre, s.duracion, s.precio, 
+      (SELECT se.idServicioEmpleado FROM servicioEmpleado as se 
+      WHERE se.idServicio = s.idServicio AND se.idEmpleado = ? AND se.estado = 1) as idServicioEmpleado 
+      FROM servicio as s WHERE s.idCentro = ?`,[req.body.idEmpleado, req.body.idCentro]),
+      db(`SELECT * FROM horarioEmpleado WHERE idEmpleado = ?`,[req.body.idEmpleado]),
+      db(`SELECT * FROM horario_especial_empleado WHERE idEmpleado = ?`,[req.body.idEmpleado])])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send({servicios:data[0],horario:data[1],horarioEspecial:data[2]});
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
 
 
