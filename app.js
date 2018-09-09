@@ -3025,7 +3025,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     var insertQ = ''; 
     var duracion = req.body.duracionH + req.body.duracionM;
      db(`INSERT INTO servicio(idCentro, nombre, idCategoria, idSubcategoria, duracion, precio ) 
-      VALUES (?,?,?,?,?,?)`,[req.body.idCentro,req.body.nombre,req.body.idCategoria,
+      VALUES (?,?,?,?,?,?)`,[req.body.idCentro,req.body.nombreServicio,req.body.idCategoria,
       req.body.idSubcategoria,duracion,req.body.precio]).then((data) => {
 
          if (!data) {res.send().status(500);}
