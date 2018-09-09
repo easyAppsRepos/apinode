@@ -2964,7 +2964,9 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
         expressApp.post('/serviciosGroupNC', function(req, res) {
 
-    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria, cs.nombre as nombreSubcategoria   
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, 
+      c.nombre as nombreCategoria, cs.nombre as nombreSubcategoria, 
+      (SELECT idControlOferta FROM control_oferta as co WHERE co.idServicio = s.idServicio AND co.fechaCaducidad>CURRENT_TIMESTAMP  LIMIT 1) as oferta   
       FROM servicio as s, categoria as c, subcategoria as cs  
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND cs.idSubcategoria = s.idSubcategoria AND s.estado = 1`,[req.body.idCentro]).then((data) => {
          if (!data) res.send().status(500);
