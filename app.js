@@ -3106,6 +3106,22 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+              expressApp.post('/agregarHENC', function(req, res) {
+
+    db(`INSERT INTO horario_especial(idCentro,horaAbrir,horaCerrar,fecha,abierto) 
+      VALUES(?,?,?,?,?)`,[req.body.idCentro,
+      req.body.horaAbrir,req.body.horaCerrar,req.body.fecha,1])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
     expressApp.post('/deleteLibresNC', function(req, res) {
 
     db(`DELETE FROM empleadoBloqueLibre WHERE 
