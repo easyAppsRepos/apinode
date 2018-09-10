@@ -2943,7 +2943,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
         expressApp.post('/guardarHorarioNC', function(req, res) {
 
               var insertQ = ''; 
-              var idEmpleado = data.idEmpleado;
+              var idEmpleado = req.body.idEmpleado;
 
               req.body.horario.forEach((item, index)=>{
 
