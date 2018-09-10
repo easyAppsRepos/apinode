@@ -3178,6 +3178,19 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+        expressApp.post('/addStaffNC2', function(req, res) {
+
+          var telefono = req.body.telefono || '';
+    db(`INSERT INTO empleado(idCentro,nombre,tipo,descripcion,telefono,email) 
+      VALUES (?,?,?,?,?,?)`,[req.body.idCentro,req.body.nombre,req.body.tipo,
+      req.body.descripcion,telefono,req.body.email])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
   expressApp.post('/addServicioNC', function(req, res) {
 
