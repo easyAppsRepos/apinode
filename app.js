@@ -3006,6 +3006,37 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+        expressApp.post('/guardarHorarioCentroNC', function(req, res) {
+
+              var insertQ = ''; 
+              var idCentro = req.body.idCentro;
+
+              req.body.horario.forEach((item, index)=>{
+
+              var horaEntrar = item.horaAbrir || '00:00:00';
+              var horaSalir = item.horaCerrar || '00:00:00';
+              var estado = item.estado ? 1 : 0;
+
+              if(index==0){
+              insertQ+= '('+idCentro+','+item.diaSemana+',"'+horaEntrar+'","'+horaSalir+'",'+estado+')';
+              }
+              else{
+              insertQ+= ',('+idCentro+','+item.diaSemana+',"'+horaEntrar+'","'+horaSalir+'",'+estado+')';
+              }
+              });
+
+
+
+    db(`INSERT INTO horarioCentro(idCentro,diaSemana,horaAbrir, horaCerrar, estado) 
+      VALUES `+insertQ+` ON DUPLICATE KEY UPDATE horaAbrir=VALUES(horaAbrir),
+      horaCerrar=VALUES(horaCerrar), estado=VALUES(estado)`)
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
 
