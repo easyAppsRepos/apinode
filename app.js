@@ -2832,7 +2832,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
    expressApp.post('/updateCICN', (req, res) => {
 
-      var direccion = req.body.telefono || '';
+      var direccion = req.body.direccion || '';
       var telefono = req.body.telefono || '';
         var nombre = req.body.nombre || '';
        var fbLink = req.body.fbLink || '';
