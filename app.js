@@ -2822,12 +2822,31 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
     expressApp.post('/getCentroInfoNC', (req, res) => {
-   db(`SELECT nombre, telefono, fbLink, imagenBanner, idFoto, direccion, latitud, longitud 
+   db(`SELECT idCentro, nombre, telefono, fbLink, imagenBanner, idFoto, direccion, latitud, longitud 
      FROM centro WHERE idCentro = ?`,[req.body.idCentro]).then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+
+   expressApp.post('/updateCICN', (req, res) => {
+
+      var direccion = req.body.telefono || '';
+      var telefono = req.body.telefono || '';
+        var nombre = req.body.nombre || '';
+       var fbLink = req.body.fbLink || '';
+
+    db(`UPDATE centro set nombre = ?, telefono = ?, direccion = ?, fbLink=?, latitud=?, longitud=? 
+      WHERE idCentro = ?`,[nombre,telefono,direccion,
+      fbLink,req.body.latitud,req.body.longitud,req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
         expressApp.post('/getHorario2', (req, res) => {
    Promise.all([db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro]),
