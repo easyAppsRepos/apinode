@@ -2811,8 +2811,19 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+
     expressApp.post('/getHorario', (req, res) => {
    db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro]).then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+    expressApp.post('/getCentroInfoNC', (req, res) => {
+   db(`SELECT nombre, telefono, fbLink, imagenBanner, idFoto, latitud, longitud 
+     FROM centro WHERE idCentro = ?`,[req.body.idCentro]).then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
       }).catch(err => res.send(err).status(500));
