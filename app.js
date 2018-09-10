@@ -2776,6 +2776,15 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/getStaffIndi', (req, res) => {
+    db(`SELECT e.nombre, e.descripcion, e.email, e.idFoto, e.estado, e.tipo, e.idEmpleado FROM empleado as e WHERE
+       e.idEmpleado = ?`,[req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
 
