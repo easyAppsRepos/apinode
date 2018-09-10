@@ -3094,7 +3094,8 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       WHERE se.idServicio = s.idServicio AND se.idEmpleado = ? AND se.estado = 1) as idServicioEmpleado 
       FROM servicio as s, categoria as c WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria`,[req.body.idEmpleado, req.body.idCentro]),
       db(`SELECT * FROM horarioEmpleado WHERE idEmpleado = ?`,[req.body.idEmpleado]),
-      db(`SELECT * FROM empleadoBloqueLibre WHERE idEmpleado = ?`,[req.body.idEmpleado])])
+      db(`SELECT idEmpleadoBloqueLibre, idEmpleado, DATE_FORMAT(fechaInicio,'%Y-%m-%d') as fechaInicio, 
+        DATE_FORMAT(fechaFinal,'%Y-%m-%d') as fechaFinal FROM empleadoBloqueLibre WHERE idEmpleado = ?`,[req.body.idEmpleado])])
       .then((data) => {
          if (!data) res.send().status(500);
 
