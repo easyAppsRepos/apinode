@@ -1230,6 +1230,13 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
 
+    expressApp.post('/actualizarFotoNC', upload.single('imageU'),(req, res) => {
+    db(`UPDATE centro set idFoto = ? WHERE idCentro = ?`,[req.file.path,req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
     expressApp.post('/subirImagen', upload.single('imageU'),(req, res) => {
       console.log(req.file);
