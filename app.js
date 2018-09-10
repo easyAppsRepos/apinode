@@ -3023,7 +3023,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       .then((data) => {
          if (!data) res.send().status(500);
 
-        var groups = _.groupBy(data, 'nombreCategoria');
+        var groups = _.groupBy(data[0], 'nombreCategoria');
 
         return res.send({servicios:groups,horario:data[1],horarioEspecial:data[2]});
 
