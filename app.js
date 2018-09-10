@@ -2789,9 +2789,10 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     expressApp.post('/editarStafNC', (req, res) => {
 
       var tipo = parseInt(req.body.tipo);
+      var telefono = req.body.telefono || '';
 
     db(`UPDATE empleado set nombre = ?, telefono = ?, email = ?, descripcion=?, tipo=? 
-      WHERE idEmpleado = ?`,[req.body.nombre,req.body.email,
+      WHERE idEmpleado = ?`,[req.body.nombre,telefono,req.body.email,
       req.body.descripcion,tipo,req.body.idEmpleado])
       .then((data) => {
         if (!data) res.send().status(500);
