@@ -2985,6 +2985,34 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
 
+
+        expressApp.post('/addDiasLibresNC', function(req, res) {
+
+    db(`INSERT INTO empleadoBloqueLibre(idEmpleado,fechaInicio,fechaFinal) 
+      VALUES(?,?,?)`,[req.body.idEmpleado,req.body.inicio,req.body.fin])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+    expressApp.post('/deleteLibresNC', function(req, res) {
+
+    db(`DELETE FROM empleadoBloqueLibre WHERE 
+      idEmpleadoBloqueLibre = ?`,[req.body.idEmpleadoBloqueLibre])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
         expressApp.post('/nuevoUsuarioC', function(req, res) {
 
     db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password, parentUser) 
