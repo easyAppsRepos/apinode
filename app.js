@@ -2938,6 +2938,22 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
 
+
+
+
+        expressApp.post('/cambiarEstadoSE', function(req, res) {
+
+    db(`INSERT INTO servicioEmpleado(idServicio,idEmpleado,estado) 
+      VALUES(?, ?,?) ON DUPLICATE KEY UPDATE estado=VALUES(estado)`,[req.body.idServicio,req.body.idEmpleado,req.body.estado])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
         expressApp.post('/nuevoUsuarioC', function(req, res) {
 
     db(`INSERT INTO usuario_consola(email,nombre,tipo,estado,password, parentUser) 
