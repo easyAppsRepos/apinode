@@ -2940,6 +2940,37 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
 
+        expressApp.post('/guardarHorarioNC', function(req, res) {
+
+              var insertQ = ''; 
+              var idEmpleado = data.idEmpleado;
+
+              req.body.horario.forEach((item, index)=>{
+
+              var horaEntrar = item.horaEntrar || '00:00:00';
+              var horaSalir = item.horaSalir || '00:00:00';
+              var estado = item.estado ? 1 : 0;
+
+              if(index==0){
+              insertQ+= '('+idEmpleado+','+item.dia+',"'+horaEntrar+'","'+horaSalir+'",'+estado+')';
+              }
+              else{
+              insertQ+= ',('+idEmpleado+','+item.dia+',"'+horaEntrar+'","'+horaSalir+'",'+estado+')';
+              }
+              });
+
+
+
+    db(`INSERT INTO horarioEmpleado(idEmpleado,diaSemana,horaEntrar, horaSalir, estado) 
+      VALUES `+insertQ+` ON DUPLICATE KEY UPDATE horaEntrar=VALUES(horaEntrar),
+      horaSalir=VALUES(horaSalir), estado=VALUES(estado)`)
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
         expressApp.post('/cambiarEstadoSE', function(req, res) {
 
