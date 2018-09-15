@@ -3236,13 +3236,23 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
         expressApp.post('/nuevoUsuarioNC', function(req, res) {
 
-    Promise.all([db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular) 
-      VALUES(?, ?,1,?,?)`,[req.body.correoElectronico,req.body.nombreNegocio,req.body.password,req.body.nombreUsuario]),
-      db(`INSERT INTO centro(nombre,email,nombreTitular) 
-      VALUES(?, ?,?)`,[req.body.nombreNegocio,req.body.correoElectronico,req.body.nombreUsuario])])
+   db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular) 
+      VALUES(?, ?,1,?,?)`,[req.body.correoElectronico,req.body.nombreNegocio,req.body.password,req.body.nombreUsuario])
       .then((data) => {
          if (!data) res.send().status(500);
-        return res.send(data[1]);
+         else{
+
+          db(`INSERT INTO centro(nombre,email,nombreTitular,webAccess) 
+      VALUES(?, ?,?,?)`,[req.body.nombreNegocio,req.body.correoElectronico,req.body.nombreUsuario, req.body.accesoweb]).then((datas) => {
+          
+          return res.send(datas);
+
+      }).catch(err => res.send(err).status(500));;
+
+         }
+       
+
+
 
       }).catch(err => res.send(err).status(500));
   });
