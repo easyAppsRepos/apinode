@@ -3159,6 +3159,15 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/verificarEmail', function(req, res) {
+
+    db(`SELECT email FROM usuario_consola WHERE  email = ?`,[req.body.email]).then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
         expressApp.post('/serviciosGroupNC', function(req, res) {
