@@ -2837,7 +2837,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
     expressApp.post('/getCentroInfoNC', (req, res) => {
-   db(`SELECT idCentro, nombre, telefono, fbLink, imagenBanner, idFoto, direccion, latitud, longitud 
+   db(`SELECT idCentro, nombre, telefono, fbLink, imagenBanner, idFoto, sobreNosotros, direccion, latitud, longitud 
      FROM centro WHERE idCentro = ?`,[req.body.idCentro]).then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
@@ -2851,10 +2851,11 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       var telefono = req.body.telefono || '';
         var nombre = req.body.nombre || '';
        var fbLink = req.body.fbLink || '';
+           var sobreNosotros = req.body.sobreNosotros || '';
 
-    db(`UPDATE centro set nombre = ?, telefono = ?, direccion = ?, fbLink=?, latitud=?, longitud=? 
+    db(`UPDATE centro set nombre = ?, telefono = ?, direccion = ?, fbLink=?, latitud=?, longitud=?, sobreNosotros=?  
       WHERE idCentro = ?`,[nombre,telefono,direccion,
-      fbLink,req.body.latitud,req.body.longitud,req.body.idCentro])
+      fbLink,req.body.latitud,req.body.longitud,sobreNosotros,req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
