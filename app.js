@@ -668,11 +668,17 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
 
             var groups = _.groupBy(data, 'idEmpleado');
             var values = _.values(groups);
+            var serviciosCalendario = [];
 
-            var final = _.groupBy(data, 'fechaServicio');
+            values.forEach((item, index)=>{
+                var final = _.groupBy(item, 'fechaServicio');
+                  serviciosCalendario.push(final);
+            });
+
+          
 
 
-            return res.send(final);
+            return res.send(serviciosCalendario);
 
       }).catch(err => res.send(err).status(500));
   });
