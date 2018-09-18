@@ -652,7 +652,8 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
 
   expressApp.post('/getCalendarioNC', (req, res) => {
     db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, s.duracion, 
-      sc.precioCobrado, sc.estado as estadoServicio, sc.horaInicio as inicioServicio, 
+      sc.precioCobrado, sc.estado as estadoServicio,
+      DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, sc.horaInicio as inicioServicio, 
       sc.horaFin as finServicio, c.estado as estadoCita, c.idCita, 
       DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado, 
       TIME(c.horaInicio) as hora 
@@ -666,7 +667,12 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
         if (!data) res.send().status(500);
 
             var groups = _.groupBy(data, 'idEmpleado');
-            return res.send(groups);
+            var values = _.values(groups);
+
+            var final = _.groupBy(data, 'fechaServicio');
+
+
+            return res.send(final);
 
       }).catch(err => res.send(err).status(500));
   });
