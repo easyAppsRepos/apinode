@@ -650,6 +650,29 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/getCalendarioNC', (req, res) => {
+    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, s.duracion, 
+      sc.precioCobrado, sc.estado as estadoServicio, sc.horaInicio as inicioServicio, 
+      sc.horaFin as finServicio, c.estado as estadoCita, c.idCita, 
+      DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado, 
+      TIME(c.horaInicio) as hora 
+      FROM servicio as s, servicio_cita as sc 
+      JOIN cita as c ON (c.idCita = sc.idCita) 
+      JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
+      WHERE  c.idCentro = ? AND c.horaInicio 
+      BETWEEN ? AND DATE_ADD(?, INTERVAL 5 DAY) 
+      AND s.idServicio = sc.idServicio `,[req.body.idCentro, req.body.fecha, req.body.fecha])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+            var groups = _.groupBy(data, 'idEmpleado');
+            return res.send(groups);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/citasCentroFiltro', (req, res) => {
     db(`SELECT c.nombre as nombreCliente, r.precioEsperado, c.telefono, em.nombre as nombreEmpleado, (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = r.idCita) as total,
 c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEstado, r.notaCita, r.horaInicio,r.horaFinalEsperado,
