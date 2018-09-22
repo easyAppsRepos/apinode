@@ -653,8 +653,8 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
   expressApp.post('/getCalendarioNC', (req, res) => {
     db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, cli.nombre as nombreCliente,s.duracion, 
       sc.precioCobrado, sc.estado as estadoServicio,
-      DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, sc.horaInicio as inicioServicio, 
-      sc.horaFin as finServicio, c.estado as estadoCita, c.idCita, 
+      DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME(sc.horaInicio) as inicioServicio, 
+      TIME(sc.horaFin) as finServicio, c.estado as estadoCita, c.idCita, 
       DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado, 
       TIME(c.horaInicio) as hora 
       FROM cliente as cli, servicio as s, servicio_cita as sc 
