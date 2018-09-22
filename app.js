@@ -651,18 +651,18 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
   });
 
   expressApp.post('/getCalendarioNC', (req, res) => {
-    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, s.duracion, 
+    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, cli.nombre as nombreCliente,s.duracion, 
       sc.precioCobrado, sc.estado as estadoServicio,
       DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, sc.horaInicio as inicioServicio, 
       sc.horaFin as finServicio, c.estado as estadoCita, c.idCita, 
       DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado, 
       TIME(c.horaInicio) as hora 
-      FROM servicio as s, servicio_cita as sc 
+      FROM cliente as cli, servicio as s, servicio_cita as sc 
       JOIN cita as c ON (c.idCita = sc.idCita) 
       JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
       WHERE  c.idCentro = ? AND c.horaInicio 
       BETWEEN ? AND DATE_ADD(?, INTERVAL 5 DAY) 
-      AND s.idServicio = sc.idServicio `,[req.body.idCentro, req.body.fecha, req.body.fecha])
+      AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente `,[req.body.idCentro, req.body.fecha, req.body.fecha])
       .then((data) => {
         if (!data) res.send().status(500);
 
