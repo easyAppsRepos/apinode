@@ -678,7 +678,8 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
           
 
 
-            return res.send(serviciosCalendario);
+            return res.send({servEmp:serviciosCalendario, 
+                             servAll:data});
 
       }).catch(err => res.send(err).status(500));
   });
