@@ -655,7 +655,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
       sc.precioCobrado, sc.estado as estadoServicio,
       DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, 
       TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio, c.estado as estadoCita, c.idCita, 
-      DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado, 
+      DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado,e.idFoto as empleadoFoto, 
       TIME(c.horaInicio) as hora 
       FROM cliente as cli, servicio as s, servicio_cita as sc 
       JOIN cita as c ON (c.idCita = sc.idCita) 
