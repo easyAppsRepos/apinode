@@ -674,7 +674,7 @@ DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente,
  c.precioEsperado, c.idCita as idCita, cli.nombre as nombreCliente,
  (SELECT COUNT(idServicioCita) FROM servicio_cita as sc WHERE c.idCita = sc.idCita) as cantServicios 
  FROM cita as c, cliente as cli WHERE c.idCliente = cli.idCliente 
- AND c.idCliente = (SELECT idCliente FROM cita WHERE idCita = ?)`,[req.body.idCita]), 
+ AND c.idCliente = (SELECT idCliente FROM cita WHERE idCita = ?) ORDER BY fechaCita DESC`,[req.body.idCita]), 
    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio,s.duracion, 
       sc.precioCobrado, sc.estado as estadoServicio,
       DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, 
