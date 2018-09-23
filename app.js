@@ -678,7 +678,7 @@ DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente,
    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio,s.duracion, 
       sc.precioCobrado, sc.estado as estadoServicio,
       DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, 
-      TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio,
+      TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio,sc.idCita, 
       e.nombre as nombreEmpleado,e.idFoto as empleadoFoto FROM  servicio as s, servicio_cita as sc 
       JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
       WHERE  sc.idCita = ? AND sc.idServicio = s.idServicio`,[req.body.idCita]),
