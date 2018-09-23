@@ -650,6 +650,23 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
       }).catch(err => res.send(err).status(500));
   });
 
+  expressApp.post('/serviciosCitaNC', (req, res) => {
+    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio,s.duracion, 
+      sc.precioCobrado, sc.estado as estadoServicio,
+      DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, 
+      TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio,
+      e.nombre as nombreEmpleado,e.idFoto as empleadoFoto FROM  servicio as s, servicio_cita as sc 
+      JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
+      WHERE  sc.idCita = ? AND sc.idServicio = s.idServicio`,[req.body.idCita])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+
+            return res.send({servicios:data});
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
   expressApp.post('/getCitaDetalleNC', (req, res) => {
    Promise.all([db(`SELECT TIME_FORMAT(c.horaInicio, '%h:%i%p') as inicioCita, c.estado, 
