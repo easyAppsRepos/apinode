@@ -650,6 +650,37 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/getCitaDetalleNC', (req, res) => {
+   Promise.all([db(`SELECT TIME_FORMAT(c.horaInicio, '%h:%i%p') as inicioCita, c.estado, 
+DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente, 
+ c.precioEsperado, c.idCita as idCita, cli.nombre as nombreCliente,
+ (SELECT COUNT(idServicioCita) FROM servicio_cita as sc WHERE c.idCita = sc.idCita) as cantServicios 
+ FROM cita as c, cliente as cli WHERE c.idCliente = cli.idCliente 
+ AND c.idCliente = (SELECT idCliente FROM cita WHERE idCita = ?)`,[req.body.idCita]), 
+   db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio,s.duracion, 
+      sc.precioCobrado, sc.estado as estadoServicio,
+      DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, 
+      TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio,
+      e.nombre as nombreEmpleado,e.idFoto as empleadoFoto FROM  servicio as s, servicio_cita as sc 
+      JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
+      WHERE  sc.idCita = ? AND sc.idServicio = s.idServicio`,[req.body.idCita]),
+   db(`SELECT cli.nombre as nombreCliente, cli.email, cli.idFoto, (SELECT COUNT(idCita) FROM cita WHERE estado = 3 AND idCliente = cli.idCliente) as completadas,
+(SELECT COUNT(idCita) FROM cita WHERE (estado = 1 OR estado = 0) AND idCliente = cli.idCliente) as programadas, (SELECT COUNT(idCita) FROM cita WHERE estado = 4 AND idCliente = cli.idCliente) as canceladas
+FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCita = ?)
+`,[req.body.idCita])])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+
+            return res.send({citas:data[0], serviciosCita:data[1],infoCli:data[2]});
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
   expressApp.post('/getCalendarioNC', (req, res) => {
     db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, cli.nombre as nombreCliente,s.duracion, 
       sc.precioCobrado, sc.estado as estadoServicio,
