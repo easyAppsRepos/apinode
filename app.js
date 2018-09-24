@@ -3528,9 +3528,9 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
     if(req.body.horario.length>0){
 
       Promise.all([db(`INSERT INTO horarioCentro(idCentro,diaSemana,horaAbrir,horaCerrar,estado) VALUES `+insertQ+` `),
-     db(`UPDATE centro set direccion = ?, latitud=?, longitud=?,telefono=?,fbLink=?, estado=1  
+     db(`UPDATE centro set direccion = ?, sobreNosotros = ?, latitud=?, longitud=?,telefono=?,fbLink=?, estado=1  
       WHERE idCentro = ?`,
-      [direccionC,req.body.latitud,req.body.longitud,req.body.telefono,req.body.webUsuario,req.body.idCentro]),
+      [direccionC,req.body.descripcion,req.body.latitud,req.body.longitud,req.body.telefono,req.body.webUsuario,req.body.idCentro]),
      db(`UPDATE horarioEmpleado as he, horarioCentro as hc set he.horaEntrar = hc.horaAbrir, he.horaSalir = hc.horaCerrar,he.estado = hc.estado   
 WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM empleado WHERE hc.idCentro = ?)`,
       [req.body.idCentro])])
@@ -3543,9 +3543,9 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
     }
     else{
 
-      db(`UPDATE centro set direccion = ?, latitud=?, longitud=?,telefono=?,fbLink=?, estado=1  
+      db(`UPDATE centro set direccion = ?,  sobreNosotros = ?, latitud=?, longitud=?,telefono=?,fbLink=?, estado=1  
       WHERE idCentro = ?`,
-      [direccionC,req.body.latitud,req.body.longitud,req.body.telefono,req.body.webUsuario,req.body.idCentro]).then((data) => {
+      [direccionC,req.body.descripcion,req.body.latitud,req.body.longitud,req.body.telefono,req.body.webUsuario,req.body.idCentro]).then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
 
