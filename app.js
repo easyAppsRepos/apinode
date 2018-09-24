@@ -3382,7 +3382,7 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
  SELECT 5, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
  WHERE e.idCentro = ?  UNION ALL 
  SELECT 6, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
- WHERE e.idCentro = ?`),[idCentro,idCentro,idCentro,idCentro,idCentro,idCentro,idCentro]])
+ WHERE e.idCentro = ?`,[idCentro,idCentro,idCentro,idCentro,idCentro,idCentro,idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data[0]);
