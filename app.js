@@ -3405,6 +3405,23 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
   });
 
 
+
+
+        expressApp.post('/configuracionCentroNC', function(req, res) {
+
+    db(`INSERT INTO configuracionCentro(idCentro,confirmacionAutomatica, parametro1,
+      parametro2,parametro3) 
+      VALUES (?,?,?,?,?)`,[req.body.idCentro,req.body.confirmacionAutomatica,req.body.parametro1,
+      req.body.parametro2,req.body.parametro3])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/addServicioNC', function(req, res) {
 
     var insertQ = ''; 
