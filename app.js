@@ -3355,7 +3355,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
         expressApp.post('/addStaffNC', function(req, res) {
-
+          var idCentro = req.body[0].idCentro;
     var insertQ = ''; 
     req.body.forEach((item, index)=>{
       if(index==0){
@@ -3367,10 +3367,25 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
     });
 
 
-    db(`INSERT INTO empleado(idCentro,nombre,tipo,descripcion,telefono,email) VALUES `+insertQ+` `)
+    Promise.all([db(`INSERT INTO empleado(idCentro,nombre,tipo,descripcion,telefono,email) VALUES `+insertQ+` `),
+      db(`INSERT INTO horarioEmpleado(diaSemana,horaEntrar,horaSalir,estado,idEmpleado) 
+SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
+ WHERE e.idCentro = ? UNION ALL 
+ SELECT 1, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
+ WHERE e.idCentro = ?  UNION ALL 
+ SELECT 2, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
+ WHERE e.idCentro = ?  UNION ALL 
+ SELECT 3, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
+ WHERE e.idCentro = ?  UNION ALL 
+ SELECT 4, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
+ WHERE e.idCentro = ?  UNION ALL 
+ SELECT 5, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
+ WHERE e.idCentro = ?  UNION ALL 
+ SELECT 6, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
+ WHERE e.idCentro = ?`),[idCentro,idCentro,idCentro,idCentro,idCentro,idCentro,idCentro]])
       .then((data) => {
          if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send(data[0]);
 
       }).catch(err => res.send(err).status(500));
   });
