@@ -3490,9 +3490,10 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
 
         expressApp.post('/UpdateconfiguracionCentroNC', function(req, res) {
 
-    db(`UPDATE configuracionCentro set confirmacionAutomatica=?, parametro1=?,
-      parametro2=?,parametro3=? WHERE idConfiguracionCentro = ?`,[req.body.confirmacionAutomatica,req.body.parametro1,
-      req.body.parametro2,req.body.parametro3,req.body.idConfiguracionCentro])
+    db(`INSERT INTO configuracionCentro (confirmacionAutomatica, parametro1, parametro2, parametro3, idCentro)
+      VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE configuracionCentro set confirmacionAutomatica=VALUES(confirmacionAutomatica), parametro1=VALUES(parametro1),
+      parametro2=VALUES(parametro2),parametro3=VALUES(parametro3)`,[req.body.confirmacionAutomatica,req.body.parametro1,
+      req.body.parametro2,req.body.parametro3,req.body.idCentro])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
