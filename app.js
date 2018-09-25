@@ -1351,6 +1351,18 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
   
 
+
+    expressApp.post('/cambiarOfertaNC', (req, res) => {
+    db(`UPDATE control_oferta set estado=? 
+      WHERE idControlOferta = ?`,[req.body.estado,req.body.idOferta])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/cancelarCita', (req, res) => {
     db(`UPDATE cita set estado=4 WHERE idCita = ?`,[req.body.idCita])
       .then((data) => {
