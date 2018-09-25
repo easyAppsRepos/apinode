@@ -1019,6 +1019,43 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
       }).catch(err => res.send(err).status(500));
   });
 
+
+
+
+    expressApp.post('/agregarPaqueteNC', (req, res) => {
+
+    var insertQ = ''; 
+
+    req.body.servicios.forEach((item, index)=>{
+
+      if(index==0){
+
+          insertQ += ' (LAST_INSERT_ID(),'+item.idServicio+')';
+
+       }
+       else{
+
+          insertQ += ',(LAST_INSERT_ID(),'+item.idServicio+')';
+
+       }
+
+    
+
+    });
+
+
+    Promise.all([db(`INSERT INTO paquete_centro (estado,nombre,tiempo,precioTotal, idCentro) 
+      VALUES(1,?,?,?,?)`,[req.body.nombrePaquete,req.body.duracion,
+      req.body.precio,req.body.idCentro]),
+    db(`INSERT INTO paquete_servicio(idPaqueteCentro,idServicio) VALUES `+insertQ+` `)])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data[0]);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/verificarDispoStaff', (req, res) => {
       Promise.all([db(`SELECT rm.* FROM reservaManual as rm 
       WHERE rm.estado = 1 AND 
