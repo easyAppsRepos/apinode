@@ -1026,31 +1026,29 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
     var insertQ = ''; 
 
-    req.body.servicios.forEach((item, index)=>{
 
-      if(index==0){
-
-          insertQ += ' (LAST_INSERT_ID(),'+item.idServicio+')';
-
-       }
-       else{
-
-          insertQ += ',(LAST_INSERT_ID(),'+item.idServicio+')';
-
-       }
-
-    
-
-    });
-
-
-    Promise.all([db(`INSERT INTO paquete_centro (estado,nombre,tiempo,precioTotal, idCentro) 
-      VALUES(1,?,?,?,?)`,[req.body.nombrePaquete,req.body.duracion,
-      req.body.precio,req.body.idCentro]),
-    db(`INSERT INTO paquete_servicio(idPaqueteCentro,idServicio) VALUES `+insertQ+` `)])
+    db(`INSERT INTO paquete_centro (estado,nombre,tiempo,precioTotal, idCentro, fechaVencimiento) 
+      VALUES(1,?,?,?,?, DATE_ADD(CURRENT_DATE(), INTERVAL 7 DAY))`,[req.body.nombrePaquete,req.body.duracion,
+      req.body.precio,req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data[0]);
+        else{
+          var isID = data.insertId;
+          req.body.servicios.forEach((item, index)=>{
+          if(index==0){
+          insertQ += ' ('+isID+ ','+item.idServicio+')';
+          }
+          else{
+          insertQ += ',('+isID+ ','+item.idServicio+')';
+          }
+          });
+          db(`INSERT INTO paquete_servicio(idPaqueteCentro,idServicio) VALUES `+insertQ+` `)
+          .then((datas) => {
+            return res.send(datas);
+          }).catch(err => res.send(err).status(500));
+        }
+
+        //return res.send(data[0]);
       }).catch(err => res.send(err).status(500));
   });
 
