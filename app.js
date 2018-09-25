@@ -3491,7 +3491,7 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
         expressApp.post('/UpdateconfiguracionCentroNC', function(req, res) {
 
     db(`UPDATE configuracionCentro set confirmacionAutomatica=?, parametro1=?,
-      parametro2=?,parametro3=? WHERE idConfiguracionCentro = ?`,[req.body.confAuto,req.body.parametro1,
+      parametro2=?,parametro3=? WHERE idConfiguracionCentro = ?`,[req.body.confirmacionAutomatica,req.body.parametro1,
       req.body.parametro2,req.body.parametro3,req.body.idConfiguracionCentro])
       .then((data) => {
          if (!data) res.send().status(500);
