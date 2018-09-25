@@ -2935,6 +2935,16 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+        expressApp.post('/getConfiguracionNC', (req, res) => {
+    db(`SELECT * FROM configuracionCentro WHERE idCentro = ?`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/editarStafNC', (req, res) => {
 
       var tipo = parseInt(req.body.tipo);
@@ -3478,6 +3488,17 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
       }).catch(err => res.send(err).status(500));
   });
 
+        expressApp.post('/UpdateconfiguracionCentroNC', function(req, res) {
+
+    db(`UPDATE configuracionCentro set confirmacionAutomatica=?, parametro1=?,
+      parametro2=?,parametro3=? WHERE idConfiguracionCentro = ?`,[req.body.confAuto,req.body.parametro1,
+      req.body.parametro2,req.body.parametro3,req.body.idConfiguracionCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
 
 
   expressApp.post('/addServicioNC', function(req, res) {
