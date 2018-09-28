@@ -567,8 +567,8 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
 
   Promise.all(funcionesBase).then((data) => {
 
-    var env = data.flat();
-console.log(env);
+
+console.log(data);
     if (!data) res.send().status(500);
 
 /*        data.forEach((item, index) => {
@@ -596,7 +596,7 @@ console.log(env);
         }
 */
 
-        return res.send(env);
+        return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
 
