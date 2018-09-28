@@ -573,8 +573,8 @@ console.log(data);
 var dataEnv = [];
 data.forEach(item=>{
 
-  if(item){
-    dataEnv.push(item);
+  if(item[0]){
+    dataEnv.push(item[0]);
   }
 
 });
