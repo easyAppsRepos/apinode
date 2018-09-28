@@ -560,7 +560,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         diaSem, inicioCita.format("HH:mm:ss"), finCita.format("HH:mm:ss")]));
   
     inicioCita = moment(finCita);
-  console.log(inicioCita);
+  //console.log(inicioCita);
     finCita.add(duracion,'m');
     
 }
@@ -595,6 +595,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
           verif = 1;
         }
 */
+console.log(data);
         return res.send({disponible:disponibleTodas, horasDispo:data,horariosDispo:horariosDisponibles});
       }).catch(err => res.send(err).status(500));
   });
