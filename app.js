@@ -569,9 +569,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
 console.log(data);
     if (!data) res.send().status(500);
 
-        var disponibleTodas=1;
-         var horariosDisponibles=0;
-        data.forEach((item, index) => {
+/*        data.forEach((item, index) => {
 
             if(item[0].disponibles<1){
               disponibleTodas=0;
@@ -580,7 +578,7 @@ console.log(data);
               horariosDisponibles=1;
             }
 
-        });
+        });*/
 /*
 
     data[0].forEach((item, index) => {
@@ -596,7 +594,7 @@ console.log(data);
         }
 */
 
-        return res.send({disponible:disponibleTodas, horasDispo:data,horariosDispo:horariosDisponibles});
+        return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
 
