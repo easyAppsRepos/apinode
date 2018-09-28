@@ -537,20 +537,23 @@ while (moment(finCita).isSameOrBefore(horaCerrar)) {
    // text += "The number is " + i;
     //i++;
 //8 830
-funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles FROM horarioEmpleado as he, empleado as e 
+funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles
+ FROM horarioEmpleado as he, empleado as e 
 
         LEFT JOIN cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (1,2,5) 
         AND ((?  BETWEEN c.horaInicio  AND c.horaFinalEsperado)  
         OR  (? BETWEEN c.horaInicio  AND c.horaFinalEsperado)))
 
-    LEFT JOIN reservaManual as rm ON (rm.idEmpleado = e.idEmpleado  AND ((?  BETWEEN rm.horaInicio  AND rm.horaFinalEsperado)  
+    LEFT JOIN reservaManual as rm ON (rm.idEmpleado = e.idEmpleado  
+    AND ((?  BETWEEN rm.horaInicio  AND rm.horaFinalEsperado)  
         OR  (? BETWEEN rm.horaInicio  AND rm.horaFinalEsperado)) )
 
         WHERE e.idEmpleado IN (SELECT ec.idEmpleado FROM empleado_categoria as ec 
         WHERE ec.idCategoria = ? AND ec.estado = 1) AND e.idCentro = ? 
-        AND (he.idEmpleado = e.idEmpleado AND he.diaSemana = ? AND he.estado = 1 AND he.horaEntrar < ? AND he.horaSalir > ?)
+        AND (he.idEmpleado = e.idEmpleado AND he.diaSemana = ?
+         AND he.estado = 1 AND he.horaEntrar < ? AND he.horaSalir > ?)
         AND c.idCita IS NULL
-        AND rm.idReservaManual IS NULL`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
+        AND rm.idReservaManual IS NULL AND disponibles>0`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"), inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),idCategoria,idCentro, 
