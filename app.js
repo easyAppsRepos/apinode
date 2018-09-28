@@ -566,7 +566,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
 }
 
   Promise.all(funcionesBase).then((data) => {
-
+console.log(data);
     if (!data) res.send().status(500);
 
         var disponibleTodas=1;
@@ -595,7 +595,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
           verif = 1;
         }
 */
-console.log(data);
+
         return res.send({disponible:disponibleTodas, horasDispo:data,horariosDispo:horariosDisponibles});
       }).catch(err => res.send(err).status(500));
   });
