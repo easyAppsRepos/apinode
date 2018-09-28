@@ -553,7 +553,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         AND (he.idEmpleado = e.idEmpleado AND he.diaSemana = ?
          AND he.estado = 1 AND he.horaEntrar < ? AND he.horaSalir > ?)
         AND c.idCita IS NULL
-        AND rm.idReservaManual IS NULL HAVING disponibles>0`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
+        AND rm.idReservaManual IS NULL `,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"), inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),idCategoria,idCentro, 
