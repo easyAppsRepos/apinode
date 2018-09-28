@@ -594,7 +594,7 @@ console.log(data);
         }
 */
 
-        return res.send(data);
+        return res.send(data.flat());
       }).catch(err => res.send(err).status(500));
   });
 
