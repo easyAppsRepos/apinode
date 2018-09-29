@@ -2740,7 +2740,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
     db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
       notaCita, estado,idCuponCliente ) 
-        VALUES (?,?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?)
         `,[req.body.idCentro, req.body.idCliente,req.body.fechaInicio,
         req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), 1, req.body.idCuponCliente])
       .then((data) => {
