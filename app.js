@@ -527,7 +527,7 @@ var finCita = moment({year:fecha.split('-')[0],month:(parseInt(fecha.split('-')[
 day:fecha.split('-')[2], hours: req.body.horaAbrir.split(':')[0], minutes: req.body.horaAbrir.split(':')[1]}).add(duracion,'m');
 
 var funcionesBase = [];
-var idCategoria = req.body.idCategoria;
+var idServicio = req.body.idServicio;
 var idCentro =   req.body.idCentro;
 
 //console.log(time.format("HH:mm"));
@@ -540,23 +540,21 @@ while (moment(finCita).isSameOrBefore(horaCerrar)) {
 funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles
  FROM horarioEmpleado as he, empleado as e 
 
-        LEFT JOIN cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (1,2,5) 
-        AND ((?  BETWEEN c.horaInicio  AND c.horaFinalEsperado)  
-        OR  (? BETWEEN c.horaInicio  AND c.horaFinalEsperado)))
+        LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,1,2) 
+        AND horaFin > ? AND horaInicio < ?)
 
-    LEFT JOIN reservaManual as rm ON (rm.idEmpleado = e.idEmpleado  
-    AND ((?  BETWEEN rm.horaInicio  AND rm.horaFinalEsperado)  
-        OR  (? BETWEEN rm.horaInicio  AND rm.horaFinalEsperado)) )
+        LEFT JOIN reservaManual as rm ON (rm.idEmpleado = e.idEmpleado  
+        AND rm.horaFinalEserado > ? AND rm.horaInicio < ? )
 
-        WHERE e.idEmpleado IN (SELECT ec.idEmpleado FROM empleado_categoria as ec 
-        WHERE ec.idCategoria = ? AND ec.estado = 1) AND e.idCentro = ? 
+        WHERE e.idEmpleado IN (SELECT ec.idEmpleado FROM servicioEmpleado as ec 
+        WHERE ec.idServicio = ? AND ec.estado = 1) AND e.idCentro = ? 
         AND (he.idEmpleado = e.idEmpleado AND he.diaSemana = ?
          AND he.estado = 1 AND he.horaEntrar < ? AND he.horaSalir > ?)
-        AND c.idCita IS NULL
-        AND rm.idReservaManual IS NULL  HAVING disponibles > 0`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
+        AND c.idServicioCita IS NULL
+        AND rm.idReservaManual IS NULL HAVING disponibles > 0`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"), inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
-        finCita.format("YYYY-MM-DD HH:mm:ss"),idCategoria,idCentro, 
+        finCita.format("YYYY-MM-DD HH:mm:ss"),idServicio,idCentro, 
         diaSem, inicioCita.format("HH:mm:ss"), finCita.format("HH:mm:ss")]));
   
     inicioCita = moment(finCita);
