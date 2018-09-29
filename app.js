@@ -995,7 +995,7 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
   WHERE  e.idCentro = ? AND e.estado = 1 AND ? IN (SELECT ec.idServicio FROM servicioEmpleado as ec WHERE ec.idEmpleado = e.idEmpleado AND ec.estado = 1) 
   AND rm.idReservaManual IS NULL 
   AND c.idServicioCita IS NULL 
-  AND he.idEmpleado IS NULL`,[req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
+  AND he.idEmpleado IS NULL ORDER BY e.idEmpleado ASC`,[req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
   req.body.fecha, req.body.fechaF,req.body.diaN,
   req.body.soloHI,req.body.soloHF,req.body.idCentro,req.body.idServicio])
       .then((data) => {
