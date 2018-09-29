@@ -544,7 +544,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         AND horaFin > ? AND horaInicio < ?)
 
         LEFT JOIN reservaManual as rm ON (rm.idEmpleado = e.idEmpleado  
-        AND rm.horaFinalEserado > ? AND rm.horaInicio < ? )
+        AND rm.horaFinalEsperado > ? AND rm.horaInicio < ? )
 
         WHERE e.idEmpleado IN (SELECT ec.idEmpleado FROM servicioEmpleado as ec 
         WHERE ec.idServicio = ? AND ec.estado = 1) AND e.idCentro = ? 
