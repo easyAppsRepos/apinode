@@ -2739,15 +2739,16 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     let idCita=null;
 
     db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
-      notaCita, estado, idEmpleado,idCuponCliente ) 
+      notaCita, estado,idCuponCliente ) 
         VALUES (?,?,?,?,?,?,?,?,?)
         `,[req.body.data.idCentro, req.body.idCliente,req.body.fechaInicio,
-        req.body.fechaFinal,req.body.total, req.body.notaCita, 1, req.body.idEmpleado, req.body.idCuponCliente])
+        req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), 1, req.body.idCuponCliente])
       .then((data) => {
         console.log(data);
         if (!data) {
           res.send().status(500);
         }
+
 
         let arrayFunctions = [];
         idCita = data.insertId;
@@ -2762,9 +2763,13 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
         req.body.servicios.forEach((elementw, index) => {
 
-            arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado) 
-            VALUES (?,?,0,?)
-            `,[data.insertId, elementw.idServicio,(parseFloat(elementw.precioFinal) || 0)]));
+          var horaI = req.body.fecha+' '+elementw.inicio;
+             var horaF = req.body.fecha+' '+elementw.fin;
+            arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado,
+              idEmpleado,horaInicio, horaFin) 
+            VALUES (?,?,0,?,?,?,?)
+            `,[data.insertId, elementw.idServicio,(parseFloat(elementw.precioFinal) || 0),
+            elementw.empleadoSeleccionado.idEmpleado,horaI, horaF]));
 
           });
       Promise.all(arrayFunctions).then((data) => {
