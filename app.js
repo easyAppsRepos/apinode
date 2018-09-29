@@ -988,13 +988,13 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
         ((? BETWEEN rm.horaInicio AND rm.horaFinalEsperado ) OR  (? BETWEEN rm.horaInicio AND rm.horaFinalEsperado) OR (? < rm.horaInicio AND rm.horaFinalEsperado < ?)))
         
     LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,1,2) 
-        AND horaFin > ? AND horaInicio < ?)
+        AND c.horaFin > ? AND c.horaInicio < ?)
     
     LEFT JOIN horarioEmpleado as he ON (he.idEmpleado = e.idEmpleado AND he.diaSemana = ? AND (he.estado = 0 OR (he.estado = 1 AND ? < he.horaEntrar  OR ? > he.horaSalir)))
     
   WHERE  e.idCentro = ? AND e.estado = 1 AND ? IN (SELECT ec.idServicio FROM servicioEmpleado as ec WHERE ec.idEmpleado = e.idEmpleado AND ec.estado = 1) 
   AND rm.idReservaManual IS NULL 
-  AND r.idCita IS NULL 
+  AND c.idServicioCita IS NULL 
   AND he.idEmpleado IS NULL`,[req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
   req.body.fecha, req.body.fechaF,req.body.diaN,
   req.body.soloHI,req.body.soloHF,req.body.idCentro,req.body.idServicio])
