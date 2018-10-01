@@ -2698,7 +2698,10 @@ FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) 
      FROM cupon as c 
       INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
       INNER JOIN cupon_cliente as cl ON (c.idCupon = cl.idCupon AND cl.idCliente = ? AND cl.estado = 1) 
-WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente])])
+WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente]),
+    db(`SELECT DATE_FORMAT(horaAbrir, '%l:%i   %p') as horaAbrir, 
+      DATE_FORMAT(horaCerrar, '%l:%i   %p') as horaCerrar, estado, diaSemana FROM  
+      horarioCentro WHERE idCentro = ?`,[req.body.idCentro])])
       .then((data) => {
 
         if (!data) res.send().status(500);
@@ -2714,7 +2717,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
        
 
         var groups = _.groupBy(data[1], 'nombreCategoria');
-        return res.send({info:data[0],servicios:groups, comentarios:comentarios, cupon:data[3]});
+        return res.send({info:data[0],servicios:groups, comentarios:comentarios, cupon:data[3],
+          horario:data[4]});
       }).catch(err => res.send(err).status(500));
   });
 
