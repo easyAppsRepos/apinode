@@ -2777,9 +2777,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento FROM centro as c, cita as ci LEFT JOIN empleado as vv ON vv.idEmpleado = ci.idEmpleado  
       WHERE ci.idCita = ? AND c.idCentro = ci.idCentro`,[req.body.idCita]),
-    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, sc.precioCobrado, sc.horaInicio, sc.horaFin, s.idCategoria, s.descripcion,c.idFoto as imagenCategoria, c.nombre as nombreCategoria  
-      FROM servicio as s, categoria as c, servicio_cita as sc  
-      WHERE s.idServicio = sc.idServicio AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita]),
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, sc.precioCobrado, sc.horaInicio, sc.horaFin, s.idCategoria, e.nombre as nombreEmpleado, c.nombre as nombreCategoria  
+      FROM servicio as s, categoria as c, servicio_cita as sc, empleado as e   
+      WHERE e.idEmpleado = sc.idEmpleado AND s.idServicio = sc.idServicio AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita]),
     db(`SELECT h.* FROM horarioCentro AS h INNER JOIN cita as c 
       ON c.idCentro = h.idCentro AND c.idCita = ?`,[req.body.idCita])
     ])
