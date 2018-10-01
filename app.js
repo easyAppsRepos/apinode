@@ -1428,7 +1428,8 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
 
     expressApp.post('/cancelarCita', (req, res) => {
-    db(`UPDATE cita set estado=4 WHERE idCita = ?`,[req.body.idCita])
+     Promise.all([db(`UPDATE cita set estado=4 WHERE idCita = ?`,[req.body.idCita]),
+      db(`UPDATE servicio_cita set estado=4 WHERE idCita = ?`,[req.body.idCita])])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
