@@ -1000,6 +1000,7 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
   req.body.soloHI,req.body.soloHF,req.body.idCentro,req.body.idServicio])
       .then((data) => {
         if (!data) res.send().status(500);
+        console.log(data);
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
