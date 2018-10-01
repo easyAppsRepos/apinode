@@ -1514,6 +1514,33 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
   });
 
 
+
+        expressApp.post('/reprogramarCitaNC', (req, res) => {
+
+          var idCita = req.body.servicios[0].idCita;
+           let arrayFunctions = [];
+      req.body.servicios.forEach((elementw, index) => {
+
+      var horaI = req.body.fecha+' '+elementw.inicio;
+      var horaF = req.body.fecha+' '+elementw.fin;
+      arrayFunctions.push(db(`UPDATE servicio_cita set estado=0,horaInicio=?, 
+        horaFin=?, idEmpleado = ? 
+        WHERE idServicioCita = ?`,[horaI, horaF, elementw.empleadoSeleccionado.idEmpleado,
+        elementw.idServicioCita]));
+
+      });
+
+      arrayFunctions.push(db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?, 
+      estado=1  WHERE idCita = ?`,[req.body.inicio,
+      req.body.fin,idCita]));
+
+     Promise.all(arrayFunctions).then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
         expressApp.post('/reprogramarCita', (req, res) => {
     db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?, estado=1  WHERE idCita = ?`,[req.body.horaInicio,
       req.body.horaFinalEsperado,req.body.idCita])
