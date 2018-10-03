@@ -3803,7 +3803,6 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
             dataSend.accessToken='access-token-' + Math.random();
             dataSend.refreshToken='access-token-' + Math.random();
             dataSend.roles=["ADMIN"];
-            return res.send(dataSend);
         }
         else{
             dataSend.completo=false;
