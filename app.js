@@ -3795,12 +3795,18 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       console.log(data);
 
       if (data[0].idUsuarioConsola) {
-        //data.status=true;
+
         var dataSend = data[0];
-        dataSend.accessToken='access-token-' + Math.random();
-        dataSend.refreshToken='access-token-' + Math.random();
-        dataSend.roles=["ADMIN"];
-        return res.send(dataSend);
+
+        if(data[0].pasos==10){
+            dataSend.completo=true;
+        }
+        else{
+            dataSend.completo=false;
+        }
+
+        return res.send(dataSend);  
+
       }
       else{
         return res.send(err).status(500);
