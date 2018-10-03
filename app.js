@@ -3790,7 +3790,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
     expressApp.post('/loginNC', (req, res) => {
 
-    db(`SELECT c.idCentro, u.idUsuarioConsola, u.email, u.nombre, u.tipo, u.estado FROM usuario_consola as u, centro as c  
+    db(`SELECT c.idCentro, u.idUsuarioConsola, u.email, u.nombre, u.tipo, u.estado, u.pasos FROM usuario_consola as u, centro as c  
       WHERE u.email = ? AND u.password = ? AND c.email = u.email`,[req.body.email,req.body.password]).then((data) => {
       console.log(data);
 
