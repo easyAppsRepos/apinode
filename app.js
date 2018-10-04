@@ -3504,7 +3504,7 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
  WHERE e.idCentro = ?  UNION ALL 
  SELECT 6, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
  WHERE e.idCentro = ?`,[idCentro,idCentro,idCentro,idCentro,idCentro,idCentro,idCentro]),
-db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])])
+db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data[0]);
