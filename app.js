@@ -1359,13 +1359,25 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
 
     expressApp.post('/actualizarBannerNC', upload.single('imageU'),(req, res) => {
-    db(`UPDATE centro set imagenBanner = ? WHERE idCentro = ?`,[req.file.path,req.body.idCentro])
+   Promise.all([db(`UPDATE centro set imagenBanner = ? WHERE idCentro = ?`,[req.file.path,req.body.idCentro]),
+     db(`UPDATE usuario_consola set pasos=4 WHERE email = 
+      (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send(data[0]);
       }).catch(err => res.send(err).status(500));
   });
 
+
+    expressApp.post('/actualizarBannerNC2', upload.single('imageU'),(req, res) => {
+   Promise.all([db(`UPDATE centro set idFoto = ? WHERE idCentro = ?`,[req.file.path,req.body.idCentro]),
+     db(`UPDATE usuario_consola set pasos=5 WHERE email = 
+      (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data[0]);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
     expressApp.post('/actualizarFotoNC', upload.single('imageU'),(req, res) => {
@@ -3439,8 +3451,8 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
         expressApp.post('/nuevoUsuarioNC', function(req, res) {
 
-   db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular) 
-      VALUES(?, ?,1,?,?)`,[req.body.correoElectronico,req.body.nombreNegocio,req.body.password,req.body.nombreUsuario])
+   db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular,pasos) 
+      VALUES(?, ?,1,?,?,1)`,[req.body.correoElectronico,req.body.nombreNegocio,req.body.password,req.body.nombreUsuario])
       .then((data) => {
 
         console.log(data.Error);
@@ -3491,7 +3503,8 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
  SELECT 5, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
  WHERE e.idCentro = ?  UNION ALL 
  SELECT 6, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
- WHERE e.idCentro = ?`,[idCentro,idCentro,idCentro,idCentro,idCentro,idCentro,idCentro])])
+ WHERE e.idCentro = ?`,[idCentro,idCentro,idCentro,idCentro,idCentro,idCentro,idCentro]),
+db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data[0]);
@@ -3671,7 +3684,8 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
       [direccionC,req.body.descripcion,req.body.latitud,req.body.longitud,req.body.telefonoNegocio,req.body.webUsuario,req.body.idCentro]),
      db(`UPDATE horarioEmpleado as he, horarioCentro as hc set he.horaEntrar = hc.horaAbrir, he.horaSalir = hc.horaCerrar,he.estado = hc.estado   
 WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM empleado WHERE hc.idCentro = ?)`,
-      [req.body.idCentro])])
+      [req.body.idCentro]),
+      db(`UPDATE usuario_consola set pasos=3 WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data[1]);
@@ -3681,11 +3695,12 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
     }
     else{
 
-      db(`UPDATE centro set direccion = ?,  sobreNosotros = ?, latitud=?, longitud=?,telefono=?,fbLink=?, estado=1  
+      Promise.all([db(`UPDATE centro set direccion = ?,  sobreNosotros = ?, latitud=?, longitud=?,telefono=?,fbLink=?, estado=1  
       WHERE idCentro = ?`,
-      [direccionC,req.body.descripcion,req.body.latitud,req.body.longitud,req.body.telefonoNegocio,req.body.webUsuario,req.body.idCentro]).then((data) => {
+      [direccionC,req.body.descripcion,req.body.latitud,req.body.longitud,req.body.telefonoNegocio,req.body.webUsuario,req.body.idCentro]),
+      db(`UPDATE usuario_consola set pasos=3 WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])]).then((data) => {
          if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send(data[0]);
 
       }).catch(err => res.send(err).status(500));
     }  
