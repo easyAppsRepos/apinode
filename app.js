@@ -3531,13 +3531,15 @@ db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro 
 
         expressApp.post('/configuracionCentroNC', function(req, res) {
 
-    db(`INSERT INTO configuracionCentro(idCentro,confirmacionAutomatica, parametro1,
+    Promise.all([db(`INSERT INTO configuracionCentro(idCentro,confirmacionAutomatica, parametro1,
       parametro2,parametro3) 
       VALUES (?,?,?,?,?)`,[req.body.idCentro,req.body.confAuto,req.body.parametro1,
-      req.body.parametro2,req.body.parametro3])
+      req.body.parametro2,req.body.parametro3]),
+     db(`UPDATE usuario_consola set pasos=10 
+        WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send(data[0]);
 
       }).catch(err => res.send(err).status(500));
   });
@@ -3737,6 +3739,20 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
       }).catch(err => res.send(err).status(500));
   });
+
+
+        expressApp.post('/updateStep', function(req, res) {
+
+    db(`UPDATE usuario_consola set pasos=? 
+        WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.step,req.body.idCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
 
 
