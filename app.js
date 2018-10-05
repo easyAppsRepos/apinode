@@ -2999,8 +2999,10 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
         expressApp.post('/getEvaluacionesNC', (req, res) => {
-    db(`SELECT * FROM evaluacionCentro WHERE 
-      idCentro = ? ORDER BY fechaCreacion DESC LIMIT 5`,[req.body.idCentro])
+    db(`SELECT ec.*, c.nombre as nombreCliente, c.idFoto FROM evaluacionCentro as ec, cliente as c, cita as r  
+WHERE ec.idCentro = ? 
+AND r.idCita = ec.idCita 
+AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
