@@ -2998,6 +2998,17 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
 
 
+        expressApp.post('/getEvaluacionesNC', (req, res) => {
+    db(`SELECT * FROM evaluacionCentro WHERE 
+      idCentro = ? ORDER BY fechaCreacion DESC LIMIT 5`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/editarStafNC', (req, res) => {
 
       var tipo = parseInt(req.body.tipo);
