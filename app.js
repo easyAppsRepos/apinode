@@ -3013,7 +3013,7 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body
 
 
         expressApp.post('/getInfoEvaNC', (req, res) => {
-    db(`SELECT AVG(puntuacion), COUNT(idEvaluacionCentro) 
+    db(`SELECT AVG(puntuacion) as puntuacion, COUNT(idEvaluacionCentro) as cantidad 
       FROM evaluacionCentro WHERE idCentro = ? AND estado = 2`,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
