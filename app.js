@@ -3001,6 +3001,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
         expressApp.post('/getEvaluacionesNC', (req, res) => {
     db(`SELECT ec.*,  DATE_FORMAT(ec.fechaCreacion,'%Y-%m-%d') as soloFecha, c.nombre as nombreCliente, c.idFoto FROM evaluacionCentro as ec, cliente as c, cita as r  
 WHERE ec.idCentro = ? 
+AND ec.estado = 2 
 AND r.idCita = ec.idCita 
 AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body.idCentro])
       .then((data) => {
@@ -3010,9 +3011,23 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body
   });
 
 
+
+        expressApp.post('/getInfoEvaNC', (req, res) => {
+    db(`SELECT AVG(puntuacion), COUNT(idEvaluacionCentro) 
+      FROM evaluacionCentro WHERE idCentro = ? AND estado = 2`,[req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
         expressApp.post('/getEvaluacionesPeriodoNC', (req, res) => {
     db(`SELECT ec.*,  DATE_FORMAT(ec.fechaCreacion,'%Y-%m-%d') as soloFecha, c.nombre as nombreCliente, c.idFoto FROM evaluacionCentro as ec, cliente as c, cita as r  
 WHERE ec.idCentro = ? 
+AND ec.estado = 2 
 AND r.idCita = ec.idCita 
 AND (ec.fechaCreacion BETWEEN ? AND ? )
 AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion `,[req.body.idCentro, req.body.inicio, req.body.fin])
