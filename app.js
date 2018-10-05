@@ -3010,6 +3010,19 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body
   });
 
 
+        expressApp.post('/getEvaluacionesPeriodoNC', (req, res) => {
+    db(`SELECT ec.*,  DATE_FORMAT(ec.fechaCreacion,'%Y-%m-%d') as soloFecha, c.nombre as nombreCliente, c.idFoto FROM evaluacionCentro as ec, cliente as c, cita as r  
+WHERE ec.idCentro = ? 
+AND r.idCita = ec.idCita 
+AND (ec.fechaCreacion BETWEEN ? AND ? )
+AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion `,[req.body.idCentro, req.body.inicio, req.body.fin])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
     expressApp.post('/editarStafNC', (req, res) => {
 
