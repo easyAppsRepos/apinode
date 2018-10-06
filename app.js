@@ -694,10 +694,12 @@ DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente,
       e.nombre as nombreEmpleado,e.idFoto as empleadoFoto FROM  servicio as s, servicio_cita as sc 
       JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
       WHERE  sc.idCita = ? AND sc.idServicio = s.idServicio`,[req.body.idCita]),
-   db(`SELECT cli.nombre as nombreCliente, cli.email, cli.idFoto, (SELECT COUNT(idCita) FROM cita WHERE estado = 3 AND idCliente = cli.idCliente) as completadas,
+   db(`SELECT cli.nombre as nombreCliente, cli.email, cli.idFoto, 
+    (SELECT COUNT(idCita) FROM cita WHERE estado = 3 AND idCliente = cli.idCliente) as completadas,
+    (SELECT idCentro FROM cita WHERE idCita = ?) as idCentro,
 (SELECT COUNT(idCita) FROM cita WHERE (estado = 1 OR estado = 0) AND idCliente = cli.idCliente) as programadas, (SELECT COUNT(idCita) FROM cita WHERE estado = 4 AND idCliente = cli.idCliente) as canceladas
 FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCita = ?)
-`,[req.body.idCita])])
+`,[req.body.idCita,req.body.idCita])])
       .then((data) => {
         if (!data) res.send().status(500);
 
