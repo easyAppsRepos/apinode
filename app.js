@@ -3013,6 +3013,18 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
   });
 
 
+    expressApp.post('/getStaffBasicNC', (req, res) => {
+    db(`SELECT e.nombre, c.idCentro, e.descripcion, e.email, e.idFoto, e.estado, e.tipo, e.idEmpleado FROM empleado as e,
+    centro as c WHERE
+       e.idEmpleado = ? 
+       AND e.idCentro = c.idCentro`,[req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
         expressApp.post('/getConfiguracionNC', (req, res) => {
     db(`SELECT * FROM configuracionCentro WHERE idCentro = ?`,[req.body.idCentro])
       .then((data) => {
