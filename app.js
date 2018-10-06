@@ -663,7 +663,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
   });
 
   expressApp.post('/serviciosCitaNC', (req, res) => {
-    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio,s.duracion, 
+    db(`SELECT sc.idServicioCita, sc.idCita, sc.idEmpleado, s.nombre as nombreServicio,s.duracion, 
       sc.precioCobrado, sc.estado as estadoServicio,
       DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, 
       TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio,
