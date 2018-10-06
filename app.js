@@ -1450,6 +1450,29 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
   });
 
 
+
+    expressApp.post('/cambiarServicioCitaNC', (req, res) => {
+
+      var traduccionEstado = req.body.estado == 0 ? 1 : 
+       req.body.estado == 1 ? 2 : req.body.estado == 2 ? 5 : 
+        req.body.estado == 3 ? 3 : 1;
+
+
+     Promise.all([db(`UPDATE servicio_cita set estado=? 
+      WHERE idServicioCita = ?`,[req.body.estado,req.body.idServicioCita]),
+      db(`UPDATE cita set estado=? WHERE idCita = ? AND ? = 
+         ALL (SELECT estado FROM servicio_cita WHERE idCita = ?) 
+        `,[traduccionEstado,req.body.idCita,req.body.estado, req.body.idCita ])])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+    
+
+
     expressApp.post('/reprogramarCita2', (req, res) => {
      Promise.all([db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?,comentarioEstado=?, estado=5  WHERE idCita = ?`,[req.body.fechaCompleta,
       req.body.horaFinalEsperado,req.body.comentarioEstado,req.body.idCita]),
