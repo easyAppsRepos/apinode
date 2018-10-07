@@ -681,7 +681,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
 
 
   expressApp.post('/getCitaDetalleNC', (req, res) => {
-   Promise.all([db(`SELECT TIME_FORMAT(c.horaInicio, '%h:%i%p') as inicioCita, c.estado, 
+   Promise.all([db(`SELECT TIME_FORMAT(c.horaInicio, '%h:%i%p') as inicioCita, c.estado, c.clienteReferencia,
 DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente, 
  c.precioEsperado, c.idCita as idCita, cli.nombre as nombreCliente,
  (SELECT COUNT(idServicioCita) FROM servicio_cita as sc WHERE c.idCita = sc.idCita) as cantServicios 
@@ -694,7 +694,7 @@ DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente,
       e.nombre as nombreEmpleado,e.idFoto as empleadoFoto FROM  servicio as s, servicio_cita as sc 
       JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
       WHERE  sc.idCita = ? AND sc.idServicio = s.idServicio`,[req.body.idCita]),
-   db(`SELECT cli.nombre as nombreCliente, cli.email, cli.idFoto, 
+   db(`SELECT cli.nombre as nombreCliente, cli.idCliente, cli.email, cli.idFoto, 
     (SELECT COUNT(idCita) FROM cita WHERE estado = 3 AND idCliente = cli.idCliente) as completadas,
     (SELECT idCentro FROM cita WHERE idCita = ?) as idCentro,
 (SELECT COUNT(idCita) FROM cita WHERE (estado = 1 OR estado = 0) AND idCliente = cli.idCliente) as programadas, (SELECT COUNT(idCita) FROM cita WHERE estado = 4 AND idCliente = cli.idCliente) as canceladas
