@@ -748,6 +748,51 @@ FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCi
 
 
 
+
+  expressApp.post('/getCalendarioDayNC', (req, res) => {
+    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, cli.nombre as nombreCliente,s.duracion, 
+      sc.precioCobrado, sc.estado as estadoServicio,
+      DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, TIME_FORMAT(sc.horaInicio, '%h:00 %p') as inicioServicioFixed,
+      TIME_FORMAT(sc.horaInicio, '%h') as soloHoraFixed,  
+      TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio, c.estado as estadoCita, c.idCita,c.clienteReferencia,
+      DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado,e.idFoto as empleadoFoto, 
+      TIME(c.horaInicio) as horaICita 
+      FROM cliente as cli, servicio as s, servicio_cita as sc 
+      JOIN cita as c ON (c.idCita = sc.idCita) 
+      JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
+      WHERE  c.idCentro = ? AND DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') = ? 
+      AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente ORDER BY sc.horaInicio`,[req.body.idCentro,  req.body.fecha])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+        /*
+              var horasFixed = data.map((item)=>{
+
+
+
+                return item;
+              })
+
+            //var groups = _.groupBy(data, 'idEmpleado');
+           // var values = _.values(groups);
+            //var serviciosCalendario = [];
+
+            values.forEach((item, index)=>{
+                var final = _.groupBy(item, 'fechaServicio');
+                  serviciosCalendario.push(final);
+            });
+*/
+          
+            var serviciosCalendario = _.groupBy(data, 'idEmpleado');
+
+            return res.send({servEmp:serviciosCalendario, 
+                             servAll:data});
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/citasCentroFiltro', (req, res) => {
     db(`SELECT c.nombre as nombreCliente, r.precioEsperado, c.telefono, em.nombre as nombreEmpleado, (SELECT SUM(s.precio) FROM servicio as s, servicio_cita as sc WHERE sc.idServicio = s.idServicio AND sc.idCita = r.idCita) as total,
 c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEstado, r.notaCita, r.horaInicio,r.horaFinalEsperado,
