@@ -753,7 +753,7 @@ FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCi
     db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, cli.nombre as nombreCliente,s.duracion, 
       sc.precioCobrado, sc.estado as estadoServicio,
       DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, TIME_FORMAT(sc.horaInicio, '%h:00 %p') as inicioServicioFixed,
-      TIME_FORMAT(sc.horaInicio, '%h') as soloHoraFixed,  
+      TIME_FORMAT(sc.horaInicio, '%H') as soloHoraFixed,  
       TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio, c.estado as estadoCita, c.idCita,c.clienteReferencia,
       DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado,e.idFoto as empleadoFoto, 
       TIME(c.horaInicio) as horaICita 
