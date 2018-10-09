@@ -342,7 +342,8 @@ AVG(ec.puntuacion) as rate
 */
 
       if(req.body.palabra){
-        stringQuery += ` AND c.sobreNosotros LIKE '%`+req.body.palabra+`%'`; 
+        stringQuery += ` AND (c.sobreNosotros LIKE '%`+req.body.palabra+`%' OR 
+        c.nombre LIKE '%`+req.body.palabra+`%') `; 
       }
 
        if(req.body.servicios.length>0){
