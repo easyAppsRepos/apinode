@@ -4019,24 +4019,12 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
     db(`INSERT INTO cliente(nombre,email,telefono,password, verificacionKey, estado) 
       VALUES(?, ?, ?, ?,?,?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.password,hashEmail,0]).then((data) => {
-       console.log('*************data***************');
-      console.log(data);
-       console.log('*************data***************');
 
-              console.log('*************data***************');
-      console.log(data);
-       console.log('*************data***************');
 
       var numss='123456789';
       if (data.insertId) {
 
-                console.log('****************ADENTRO !!!! ************');
-
-
-               console.log('****************length************');
-        console.log(data.length);
-             console.log('****************length************');
-        /*
+            
           nodemailer.createTestAccount((err, account) => {
           console.log(err);
           // create reusable transporter object using the default SMTP transport
@@ -4072,11 +4060,10 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
           // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
           });
           });
-*/
-       
+ 
       }
       else{
-           console.log('****************AFUERASSS !!!! ************');
+       
         return res.send(err).status(500);
       }
       
