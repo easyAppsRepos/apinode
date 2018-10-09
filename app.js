@@ -4022,7 +4022,8 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       console.log(data);
       var numss='123456789';
       if (data) {
-
+        console.log(data.length);
+        /*
           nodemailer.createTestAccount((err, account) => {
           console.log(err);
           // create reusable transporter object using the default SMTP transport
@@ -4058,7 +4059,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
           // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
           });
           });
-
+*/
        
       }
       else{
