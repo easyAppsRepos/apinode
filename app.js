@@ -4019,10 +4019,19 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
     db(`INSERT INTO cliente(nombre,email,telefono,password, verificacionKey, estado) 
       VALUES(?, ?, ?, ?,?,?)`,[req.body.nombre,req.body.email,req.body.telefono,req.body.password,hashEmail,0]).then((data) => {
+       console.log('*************data***************');
       console.log(data);
+       console.log('*************data***************');
+
+              console.log('*************data***************');
+      console.log(data);
+       console.log('*************data***************');
+       
       var numss='123456789';
       if (data) {
+               console.log('****************length************');
         console.log(data.length);
+             console.log('****************length************');
         /*
           nodemailer.createTestAccount((err, account) => {
           console.log(err);
