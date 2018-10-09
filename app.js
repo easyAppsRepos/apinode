@@ -4026,9 +4026,13 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
               console.log('*************data***************');
       console.log(data);
        console.log('*************data***************');
-       
+
       var numss='123456789';
-      if (data) {
+      if (data.insertId) {
+
+                console.log('****************ADENTRO !!!! ************');
+
+
                console.log('****************length************');
         console.log(data.length);
              console.log('****************length************');
@@ -4072,6 +4076,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
        
       }
       else{
+           console.log('****************AFUERASSS !!!! ************');
         return res.send(err).status(500);
       }
       
