@@ -3026,7 +3026,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     //let horaFinal = req.body.fecha;
    // let horaFinal = moment(req.body.fecha).format("YYYY-MM-DD");
     let idCita=null;
-    let cliR = req.body.clienteReferencia || ' ';
+    let cliR = req.body.clienteReferencia || null;
     db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
       notaCita, estado,idCuponCliente, clienteReferencia ) 
         VALUES (?,?,?,?,?,?,?,?,?)
