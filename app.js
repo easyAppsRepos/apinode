@@ -3016,7 +3016,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       .then((data) => {
         if (!data) res.send().status(500);
 
-      var groups = _.groupBy(data, 'idCategoria');
+      var groups = _.groupBy(data[0], 'idCategoria');
 
 
         return res.send({servicios:data[0], cupon: data[1],categorias:groups});
