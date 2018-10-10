@@ -1693,7 +1693,7 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
          ALL (SELECT estado FROM servicio_cita WHERE idCita = ?) 
         `,[traduccionEstado,req.body.idCita,req.body.estado, req.body.idCita ]),
       db(`SELECT idCita FROM cita WHERE idCita = ? AND 
-        estado = ?`,[req.body.idCita, req.body.estado])])
+        estado = ?`,[req.body.idCita, traduccionEstado])])
       .then((data) => {
         if (!data) res.send().status(500);
 
