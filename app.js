@@ -179,6 +179,10 @@ function enviarPush(idCita, tipo){
         mensajePush=" ha solicitado una reprogramacion"
       }
 
+            if(tipo == 2){
+        mensajePush=" ha confirmado tu cita"
+      }
+
           var nombreCentro = data[2][0].nombre;
 
               if(data[1]){
@@ -212,7 +216,7 @@ function enviarPush(idCita, tipo){
           "data":{
                        "title": nombreCentro,
                        "icon": "ic_launcher",
-                       "body": mensajePush,
+                       "body": nombreCentro+mensajePush,
                        "tipoNoti": tipo, "idCita":idCita}
                      });
 
@@ -1689,7 +1693,7 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
          ALL (SELECT estado FROM servicio_cita WHERE idCita = ?) 
         `,[traduccionEstado,req.body.idCita,req.body.estado, req.body.idCita ]),
       db(`SELECT idCita FROM cita WHERE idCita = ? AND 
-        estado = 3`,[req.body.idCita])])
+        estado = ?`,[req.body.idCita, req.body.estado])])
       .then((data) => {
         if (!data) res.send().status(500);
 
@@ -1697,6 +1701,9 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
         if(req.body.estado==3 && data[2].length>0 && data[2][0].idCita){
           completarCitaPush(req.body.idCita);
         }
+        if(req.body.estado==1 && data[2].length>0 && data[2][0].idCita){
+          enviarPush(req.body.idCita,2);
+        }        
 
         return res.send(data);
       }).catch(err => res.send(err).status(500));
