@@ -160,6 +160,89 @@ iap.config({
 });
 */
 
+function enviarPush(idCita, tipo){
+    
+
+
+   Promise.all([db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'Android'`,[idCita]),
+     db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'iOS'`,[idCita]),
+     db(`SELECT c.nombre, c.idCentro FROM centro as c, cita as r 
+      WHERE c.idCentro = r.idCentro AND r.idCita = ?`,[idCita])]).then((data) => {
+     
+      //res.json(data);
+      var mensajePush = ' '; 
+      if(tipo == 1){
+        mensajePush=" ha solicitado una reprogramacion"
+      }
+
+          var nombreCentro = data[2][0].nombre;
+
+              if(data[1]){
+
+              var note = new apn.Notification();
+
+              note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+    
+              note.sound = "ping.aiff";
+              note.alert = nombreCentro+mensajePush;
+              note.payload = {'tipoNoti': tipo,"idCita":idCita};
+              note.topic = "com.ionicframework.beyou";
+
+                 var regTokens = [];
+
+              data[1].forEach((elementwa, index) => {
+
+                  apnProvider.send(note, elementwa.pushKey).then( (result) => {
+                  console.log(result);
+                  });
+
+              });
+
+
+            }
+
+            if(data[0]){
+
+
+            var message = new gcm.Message({
+          "data":{
+                       "title": nombreCentro,
+                       "icon": "ic_launcher",
+                       "body": mensajePush,
+                       "tipoNoti": tipo, "idCita":idCita}
+                     });
+
+
+
+
+
+              // Specify which registration IDs to deliver the message to
+              var regTokens = [];
+
+              data[0].forEach((elementw, index) => {
+              regTokens.push(elementw.pushKey);
+              });
+
+
+
+              //var regTokens = ['dY98OGfoOJE:APA91bFVAw74t-YO0Oh5DXYFOZbgLzhglyMMhSLsEb2jFpnqn44N6e-mt90V6NbMQ9TkYRUfN3kZw2G7D9Xuv1BKReiJ7khrt2zloVkTx3acZ6tcLevhlg3mb70YDocE0LGaeft7APh7yZYgTgAMErouTV5p3m9H0A'];
+
+              // Actually send the message
+              sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if (err) console.error(err);
+              else console.log(response);
+              });
+
+            }
+
+
+    }).catch(err => res.send(err).status(500));
+
+}
 
 const app = () => {
 
@@ -1621,6 +1704,8 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
      Promise.all(arrayFunctions).then((data) => {
         if (!data) res.send().status(500);
+
+        enviarPush(idCita,1);
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
@@ -1981,7 +2066,7 @@ where  exists (SELECT SUM(f.exp) as sss FROM
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     
               note.sound = "ping.aiff";
-              note.alert = "Felicidades! Tu cita ha sido completada. Valora al negocio";
+              note.alert = "Has ganado puntos! Tu cita ha sido marcada como completada";
               note.payload = {'tipoNoti': 2, 'puntosGanados':pg,'totalExc':te,'puntosActual':pa,'idCC':idCC};
               note.topic = "com.ionicframework.beyou";
 
@@ -2020,7 +2105,7 @@ data.additionalData.puntosGanados,
                           "data":{
                                        "title": "Cita Finalizada",
                                        "icon": "ic_launcher",
-                                       "body": "Felicidades! Tu cita ha sido completada. Valora al negocio",
+                                       "body": "Has ganado puntos! Tu cita ha sido marcada como completada",
                                        "tipoNoti": "2","puntosGanados":pg,
                                        "totalExc":te,"puntosActual":pa,'idCC':idCC
                                        
