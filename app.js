@@ -3001,7 +3001,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
      Promise.all([db(`SELECT ss.*,  
       (SELECT co.precioOferta FROM control_oferta AS co 
       WHERE co.idServicio = ss.idServicio AND co.idCentro = ? 
-      AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta, c.idFoto as imagenCategoria FROM servicio as ss, categoria as c  
+      AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta, c.nombre as nombreCategoria, c.idFoto as imagenCategoria FROM servicio as ss, categoria as c  
       WHERE  ss.idCentro = ? AND c.idCategoria = ss.idCategoria 
       AND ss.estado = 1`,[req.body.idCentro, req.body.idCentro]),
       db(`SELECT c.*, cl.idCuponCliente,
