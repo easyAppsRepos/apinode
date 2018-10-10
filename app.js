@@ -1686,6 +1686,7 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
         expressApp.post('/reprogramarCitaNC', (req, res) => {
 
           var idCita = req.body.servicios[0].idCita;
+           var notaR = req.body.comentarioEstado || ' ';
            let arrayFunctions = [];
       req.body.servicios.forEach((elementw, index) => {
 
@@ -1698,8 +1699,8 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
       });
 
-      arrayFunctions.push(db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?, 
-      estado=1  WHERE idCita = ?`,[req.body.inicio,
+      arrayFunctions.push(db(`UPDATE cita set comentarioEstado=?, horaInicio=?, horaFinalEsperado=?, 
+      estado=1  WHERE idCita = ?`,[notaR,req.body.inicio,
       req.body.fin,idCita]));
 
      Promise.all(arrayFunctions).then((data) => {
