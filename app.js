@@ -244,6 +244,100 @@ function enviarPush(idCita, tipo){
 
 }
 
+
+
+function completarCitaPush(idCita){
+
+Promise.all([
+    db(`UPDATE cita set  estado=3,
+      exp=(precioEsperado*(SELECT valor FROM parametros WHERE idParametro=2)),
+      comision=(precioEsperado*((SELECT valor FROM parametros WHERE idParametro=1)/100)) WHERE idCita = ?`,[idCita]), 
+    db(`INSERT INTO evaluacionCentro (idCentro,idCita) 
+      VALUES((SELECT x.idCentro FROM cita as x WHERE x.idCita = ?), ?)`,[idCita,idCita]),
+    db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'Android'`,[idCita]),
+     db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
+      AND p.logOut IS NULL AND p.so = 'iOS'`,[idCita]),
+      db(`SELECT (SELECT valor FROM parametros WHERE idParametro = 7) as max,
+(SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3) as expCliente,
+(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?) as expCita`,[idCita,idCita]),
+
+       db(`INSERT IGNORE INTO cupon_cliente(idCliente, idCupon,estado,regalo, fechaActivacion)
+select (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?),
+ (SELECT idc.idCupon FROM cupon as idc WHERE idc.estado = 1 
+ AND idc.premio = 1 ORDER BY RAND() LIMIT 1), 
+ 1,1, CURRENT_TIMESTAMP cupon_cliente
+where  exists (SELECT SUM(f.exp) as sss FROM
+ cita as f 
+ WHERE f.idCliente = 
+ (SELECT gm.idCliente FROM cita as gm 
+ WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3 AND f.idCita != ? 
+ HAVING (sss+(SELECT exp FROM cita WHERE idCita = ?))>(SELECT valor FROM parametros WHERE idParametro = 7))`,
+ [idCita,idCita,idCita,idCita])])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+           var pg = data[4][0].expCita;
+               var te = data[4][0].max;
+                var pa = parseInt(data[4][0].expCliente) - parseInt(data[4][0].expCita);
+                var idCC = 0;
+
+                if(data[5].insertId > 0){
+                   idCC = data[5].insertId;
+                }
+            if(data[3]){
+
+              var note = new apn.Notification();
+
+              note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+    
+              note.sound = "ping.aiff";
+              note.alert = "Has ganado puntos! Tu cita ha sido marcada como completada";
+              note.payload = {'tipoNoti': 2, 'puntosGanados':pg,'totalExc':te,'puntosActual':pa,'idCC':idCC};
+              note.topic = "com.ionicframework.beyou";
+
+                 var regTokens = [];
+
+              data[3].forEach((elementwa, index) => {
+
+                  apnProvider.send(note, elementwa.pushKey).then( (result) => {
+                  console.log(result);
+                  });
+              });
+            }
+
+            if(data[2]){
+
+                         var message = new gcm.Message({
+                          "data":{
+                                       "title": "Cita Finalizada",
+                                       "icon": "ic_launcher",
+                                       "body": "Has ganado puntos! Tu cita ha sido marcada como completada",
+                                       "tipoNoti": "2","puntosGanados":pg,
+                                       "totalExc":te,"puntosActual":pa,'idCC':idCC
+                                       
+                                       }});
+              var regTokens = [];
+
+              data[2].forEach((elementw, index) => {
+              regTokens.push(elementw.pushKey);
+              });
+
+              sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if (err) console.error(err);
+              else console.log(response);
+              });
+
+            }
+      }).catch(err => console.log(err));
+
+}
+
+
+
 const app = () => {
 
 
@@ -1593,9 +1687,17 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
       WHERE idServicioCita = ?`,[req.body.estado,req.body.idServicioCita]),
       db(`UPDATE cita set estado=? WHERE idCita = ? AND ? = 
          ALL (SELECT estado FROM servicio_cita WHERE idCita = ?) 
-        `,[traduccionEstado,req.body.idCita,req.body.estado, req.body.idCita ])])
+        `,[traduccionEstado,req.body.idCita,req.body.estado, req.body.idCita ]),
+      db(`SELECT idCita FROM cita WHERE idCita = ? AND 
+        estado = 3`,[req.body.idCita])])
       .then((data) => {
         if (!data) res.send().status(500);
+
+
+        if(req.body.estado==3 && data[2].length>0 && data[2][0].idCita){
+          completarCitaPush(req.body.idCita);
+        }
+
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
