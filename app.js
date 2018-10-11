@@ -2554,7 +2554,7 @@ data.additionalData.puntosGanados,
    * sin( radians(c.latitud)))) AS distance 
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
       WHERE c.idCentro = s.idCentro 
-      AND s.estado = 1 AND c.latitud IS NOT NULL AND c.longitud IS NOT NULL 
+      AND s.estado = 1 AND s.idSubcategoria IN (`+req.body.idSubcategoria+`) AND c.latitud IS NOT NULL AND c.longitud IS NOT NULL 
       GROUP BY c.idCentro ORDER BY distance DESC LIMIT 10`,[req.body.lat, req.body.lon, req.body.lat])
       .then((data) => {
         if (!data) res.send().status(500);
