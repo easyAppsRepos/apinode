@@ -2540,6 +2540,8 @@ data.additionalData.puntosGanados,
 
 
   expressApp.post('/getCentrosMapa', (req, res) => {
+
+    console.log(req.body);
     db(`SELECT c.nombre, c.idFoto, c.latitud, c.longitud, c.idCentro, 
       MAX(s.precio) as pMax, 
       MIN(s.precio) as pMin, 
