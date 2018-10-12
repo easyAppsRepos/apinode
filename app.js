@@ -162,7 +162,7 @@ iap.config({
 
 function enviarPush(idCita, tipo){
     
-
+var tipox = 1;
 
    Promise.all([db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
@@ -177,10 +177,13 @@ function enviarPush(idCita, tipo){
       var mensajePush = ' '; 
       if(tipo == 1){
         mensajePush=" ha solicitado una reprogramacion"
+       tipox = 1;
       }
 
             if(tipo == 2){
-        mensajePush=" ha confirmado tu cita"
+        mensajePush=" ha confirmado tu cita";
+         tipox = 1;
+
       }
 
           var nombreCentro = data[2][0].nombre;
@@ -193,7 +196,7 @@ function enviarPush(idCita, tipo){
     
               note.sound = "ping.aiff";
               note.alert = nombreCentro+mensajePush;
-              note.payload = {'tipoNoti': tipo,"idCita":idCita};
+              note.payload = {'tipoNoti': tipox,"idCita":idCita};
               note.topic = "com.ionicframework.beyou";
 
                  var regTokens = [];
@@ -217,7 +220,7 @@ function enviarPush(idCita, tipo){
                        "title": nombreCentro,
                        "icon": "ic_launcher",
                        "body": nombreCentro+mensajePush,
-                       "tipoNoti": tipo, "idCita":idCita}
+                       "tipoNoti": tipox, "idCita":idCita}
                      });
 
 
