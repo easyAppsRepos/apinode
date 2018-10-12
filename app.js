@@ -287,9 +287,9 @@ where  exists (SELECT SUM(f.exp) as sss FROM
 
         if (!data) res.send().status(500);
 
-           var pg = data[4][0].expCita;
-               var te = data[4][0].max;
-                var pa = parseInt(data[4][0].expCliente) - parseInt(data[4][0].expCita);
+           var pg = parseInt(data[4][0].expCita) || 0;
+               var te = parseInt(data[4][0].max) || 0;
+                var pa = (parseInt(data[4][0].expCliente) - parseInt(data[4][0].expCita)) || 0;
                 var idCC = 0;
 
                 if(data[5].insertId > 0){
