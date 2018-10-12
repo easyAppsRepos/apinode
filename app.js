@@ -3677,7 +3677,7 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion `,[req.body.idCentro, re
 
     db(`INSERT INTO horario_especial(idCentro,horaAbrir,horaCerrar,fecha,abierto) 
       VALUES(?,?,?,?,?)`,[req.body.idCentro,
-      req.body.horaAbrir,req.body.horaCerrar,req.body.fecha,1])
+      req.body.horaAbrir,req.body.horaCerrar,req.body.fecha,req.body.estado])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
