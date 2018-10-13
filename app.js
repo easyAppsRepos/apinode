@@ -2338,7 +2338,7 @@ data.additionalData.puntosGanados,
     (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 4) as canceladas,
     (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as exp,
     (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
-     FROM cliente as c`,[req.body.idUsuario])
+     FROM cliente as c WHERE c.idCliente <> 0`,[req.body.idUsuario])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
