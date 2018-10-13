@@ -3829,6 +3829,44 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion `,[req.body.idCentro, re
           db(`INSERT INTO centro(nombre,email,nombreTitular,webAccess) 
       VALUES(?, ?,?,?)`,[req.body.nombreNegocio,req.body.correoElectronico,req.body.nombreUsuario, req.body.accesoweb]).then((datas) => {
           
+          if(datas.affectedRows>0){
+
+                  var numss='123456789';
+
+           nodemailer.createTestAccount((err, account) => {
+          console.log(err);
+          // create reusable transporter object using the default SMTP transport
+          let transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
+          }
+          });
+
+
+          // setup email data with unicode symbols
+          let mailOptions = {
+          from: 'yourBeautyMessageCenter@gmail.com', // sender address
+          to: req.body.correoElectronico, // list of receivers
+          subject: 'Cuenta YourBeauty creada', // Subject line
+          text: 'Felicidades! Hemos creado tu cuenta de negocio YourBeauty.\n Usuario:'+req.body.correoElectronico+' Contraseña:'+req.body.password
+          };
+
+          // send mail with defined transport object
+          transporter.sendMail(mailOptions, (error, info) => {
+
+          if(error){
+          console.log('Error send email occured');
+          console.log(error.message);
+          }
+          // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+          // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+          });
+          });
+          }
           return res.send(datas);
 
       }).catch(err => res.send(err).status(500));;
