@@ -1695,26 +1695,32 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
         req.body.estado == 3 ? 3 : 1;
         console.log(traduccionEstado);
 
-     Promise.all([db(`UPDATE servicio_cita set estado=? 
-      WHERE idServicioCita = ?`,[req.body.estado,req.body.idServicioCita]),
-      db(`UPDATE cita set estado=? WHERE idCita = ? AND ? = 
+db(`UPDATE servicio_cita set estado=? 
+      WHERE idServicioCita = ?`,[req.body.estado,req.body.idServicioCita]).then((datass) => {
+
+        if (!datass) res.send().status(500);
+
+     Promise.all([db(`UPDATE cita set estado=? WHERE idCita = ? AND ? = 
          ALL (SELECT estado FROM servicio_cita WHERE idCita = ?) 
         `,[traduccionEstado,req.body.idCita,req.body.estado, req.body.idCita ]),
       db(`SELECT idCita FROM cita WHERE idCita = ? AND 
         estado = ?`,[req.body.idCita, traduccionEstado])])
       .then((data) => {
-        if (!data) res.send().status(500);
+        
 
 
-        if(req.body.estado==3 && data[2].length>0 && data[2][0].idCita){
+        if(req.body.estado==3 && data[1].length>0 && data[1][0].idCita){
           completarCitaPush(req.body.idCita);
         }
-        if(req.body.estado==1 && data[2].length>0 && data[2][0].idCita){
+        if(req.body.estado==1 && data[1].length>0 && data[1][0].idCita){
           enviarPush(req.body.idCita,2);
         }        
 
         return res.send(data);
       }).catch(err => res.send(err).status(500));
+
+
+    });
   });
 
 
