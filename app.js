@@ -2417,7 +2417,8 @@ data.additionalData.puntosGanados,
 
 
         expressApp.post('/cargaUsuariosConsolaNC', (req, res) => {
-    db(`SELECT  c.nombre, c.idCentro, c.nombreTitular, c.idFoto, c.email,
+    db(`SELECT  c.nombre, c.idCentro, c.idFoto, c.email,
+      (SELECT uc.nombreTitular FROM usuario_consola as uc WHERE uc.email = c.email) as nombreTitular,
 (SELECT uc.ruc FROM usuario_consola as uc WHERE uc.email = c.email) as ruc,
 (SELECT uc.inicioContrato FROM usuario_consola as uc WHERE uc.email = c.email) as inicioContrato,
 (SELECT uc.finContrato FROM usuario_consola as uc WHERE uc.email = c.email) as finContrato,
