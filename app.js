@@ -2416,6 +2416,30 @@ data.additionalData.puntosGanados,
   });
 
 
+        expressApp.post('/cargaUsuariosConsolaNC', (req, res) => {
+    db(`SELECT  c.nombre, c.idCentro, c.nombreTitular, c.idFoto, c.email,
+(SELECT uc.ruc FROM usuario_consola as uc WHERE uc.email = c.email) as ruc,
+(SELECT uc.inicioContrato FROM usuario_consola as uc WHERE uc.email = c.email) as inicioContrato,
+(SELECT uc.finContrato FROM usuario_consola as uc WHERE uc.email = c.email) as finContrato,
+(SELECT uc.tipoContrato FROM usuario_consola as uc WHERE uc.email = c.email) as tipoContrato,
+(SELECT uc.observaciones FROM usuario_consola as uc WHERE uc.email = c.email) as observaciones,
+(SELECT uc.estado FROM usuario_consola as uc WHERE uc.email = c.email) as estado,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 4 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionCanceladas,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 1 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionPorConfirmar,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 5 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionEConfirmar,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 2 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionConfirmadas,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 3 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionCompletadas,
+    COUNT(DISTINCT CASE WHEN r.estado = 1 THEN r.idCita ELSE NULL END) AS porconfirmar,
+    COUNT(DISTINCT CASE WHEN r.estado = 5 THEN r.idCita ELSE NULL END) AS econfirmar,
+    COUNT(DISTINCT CASE WHEN r.estado = 2 THEN r.idCita ELSE NULL END) AS confirmadas,
+    COUNT(DISTINCT CASE WHEN r.estado = 4 THEN r.idCita ELSE NULL END) AS canceladas,
+    COUNT(DISTINCT CASE WHEN r.estado = 3 THEN r.idCita ELSE NULL END) AS completadas 
+FROM  parametros as p, centro as c LEFT JOIN cita as r ON  r.idCentro = c.idCentro GROUP BY c.idCentro`)
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
         expressApp.post('/cargaCentrosUserSA', (req, res) => {
