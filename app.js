@@ -1870,7 +1870,7 @@ db(`UPDATE servicio_cita set estado=?
     expressApp.post('/editarUC', (req, res) => {
     db(`UPDATE usuario_consola set nombreTitular=?,email=?,estado=?,ruc=?,
       inicioContrato=?,finContrato=?, tipoContrato=?, observaciones=? 
-      WHERE idUsuarioConsola = ?`,[req.body.nombre,req.body.email,
+      WHERE idUsuarioConsola = ?`,[req.body.nombreTitular,req.body.email,
       req.body.estado,
       req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato,req.body.observaciones,req.body.idUsuarioConsola])
       .then((data) => {
