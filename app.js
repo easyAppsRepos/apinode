@@ -2477,8 +2477,10 @@ data.additionalData.puntosGanados,
   FROM centro as c WHERE c.idCentro = ?`,[req.body.idCentro]),
      db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,df.idFoto, r.precioEsperado, 
       r.comision, em.nombre as nombreEmpleado, r.idCita, r.idCentro,
-       CONCAT(DATE_FORMAT(r.horaInicio, '%d/%m/%y %H:%i'), ' - ', 
-       DATE_FORMAT(r.horaFinalEsperado, '%H:%i')) as FechaCita, 
+       DATE_FORMAT(r.horaInicio, '%d/%m/%y') as FechaCita, 
+       CONCAT(DATE_FORMAT(r.horaInicio, '%l:%i  %p'), ' - ', 
+       DATE_FORMAT(r.horaFinalEsperado, '%l:%i  %p')) as horaCita,
+       (CONVERT_TZ(now(),'+00:00','-05:00') > r.horaInicio) as caducada, 
        r.comentarioCita,r.horaInicio,r.comentarioEstado, r.notaCita,
         r.estado, (SELECT cupon.porcentajeDescuento 
         FROM cupon, cupon_cliente as gh WHERE gh.idCupon = cupon.idCupon AND 
