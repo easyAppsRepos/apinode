@@ -2476,7 +2476,7 @@ data.additionalData.puntosGanados,
   (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as comisionCompletadas 
   FROM centro as c WHERE c.idCentro = ?`,[req.body.idCentro]),
      db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,df.idFoto, r.precioEsperado, 
-      r.comision, em.nombre as nombreEmpleado, r.idCita, r.idCentro,
+      r.comision, r.idCita, r.idCentro,
        DATE_FORMAT(r.horaInicio, '%d/%m/%y') as FechaCita, 
        CONCAT(DATE_FORMAT(r.horaInicio, '%l:%i  %p'), ' - ', 
        DATE_FORMAT(r.horaFinalEsperado, '%l:%i  %p')) as horaCita,
@@ -2489,8 +2489,7 @@ data.additionalData.puntosGanados,
         WHERE sc.idCita = r.idCita) as totalServicios, 
         (SELECT v.puntuacion FROM evaluacionCentro as v 
         WHERE v.idCita = r.idCita LIMIT 1) as valoracion  
-        FROM cliente as sx, centro as df, cita as r 
-        LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
+        FROM cliente as sx, centro as df, cita as r  
         WHERE df.idCentro = r.idCentro AND r.idCentro  = ? 
         AND sx.idCliente = r.idCliente`,[req.body.idCentro]),
       db(`SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision 
@@ -2501,7 +2500,7 @@ data.additionalData.puntosGanados,
 
             var groups = _.groupBy(data[1], 'estado');
         var datav= {sucursales:data[0], info:groups, dataR:data[2]}
-        console.log(datav);
+        //console.log(datav);
         return res.send(datav);
       }).catch(err => res.send(err).status(500));
   });
