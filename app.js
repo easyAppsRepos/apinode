@@ -2479,7 +2479,7 @@ data.additionalData.puntosGanados,
    (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as completadas,
     (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as completadasT,
    (SELECT ROUND(AVG(ecc.puntuacion), 2) FROM evaluacionCentro as ecc WHERE ecc.idCentro = c.idCentro AND ecc.estado = 2 ) as calificacion,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as comisionCompletadas 
+  (SELECT SUM(r.comision) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as comisionCompletadas 
   FROM centro as c WHERE c.idCentro = ?`,[req.body.idCentro]),
      db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,sx.idFoto, r.precioEsperado, 
       r.comision, r.idCita, r.idCentro,
