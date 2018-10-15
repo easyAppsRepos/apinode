@@ -812,6 +812,7 @@ console.log(dataEnv);
     db(`SELECT  df.nombre as nombreCentro, df.idFoto, r.precioEsperado, 
         r.idCita, r.idCentro, DATE_FORMAT(r.horaInicio, '%d/%m/%y') as FechaCita, 
       r.comentarioCita,r.comentarioEstado, r.notaCita, r.estado, 
+       (CONVERT_TZ(now(),'+00:00','-05:00') > r.horaInicio) as caducada,
       CONCAT(DATE_FORMAT(r.horaInicio, '%l:%i  %p'), ' - ', 
        DATE_FORMAT(r.horaFinalEsperado, '%l:%i  %p')) as horaCita, 
       (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
