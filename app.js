@@ -1002,7 +1002,24 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
 
 
   expressApp.post('/citasCentroFiltroSA', (req, res) => {
-      db("SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,df.idFoto, r.precioEsperado, r.comision, em.nombre as nombreEmpleado, r.idCita, r.idCentro, CONCAT(DATE_FORMAT(r.`horaInicio`, '%d/%m/%y %H:%i'), ' - ', DATE_FORMAT(r.`horaFinalEsperado`, '%H:%i')) as FechaCita, r.comentarioCita,r.horaInicio,r.comentarioEstado, r.notaCita, r.estado, (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = r.idCuponCliente) as descuento, (SELECT COUNT(sc.idServicioCita) FROM servicio_cita as sc WHERE sc.idCita = r.idCita AND sc.estado = 0) as totalServicios, (SELECT v.puntuacion FROM evaluacionCentro as v WHERE v.idCita = r.idCita LIMIT 1) as valoracion  FROM cliente as sx, centro as df, cita as r LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado WHERE df.idCentro = r.idCentro AND r.idCentro IN (SELECT g.idCentro FROM usuario_consola_centro as g WHERE g.idUsuarioConsola = ? AND sx.idCliente = r.idCliente) AND DATE(r.horaInicio) BETWEEN ? AND ?",[req.body.idUsuarioConsola, req.body.fecha, req.body.fechaF])
+      db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,df.idFoto, 
+        r.precioEsperado, r.comision, em.nombre as nombreEmpleado, 
+        r.idCita, r.idCentro, 
+        CONCAT(DATE_FORMAT(r.horaInicio, '%d/%m/%y %H:%i'), ' - ', DATE_FORMAT(r.horaFinalEsperado, '%H:%i')) as FechaCita, 
+        r.comentarioCita,r.horaInicio,r.comentarioEstado, r.notaCita,
+         r.estado, (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
+         WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = r.idCuponCliente) as descuento, 
+         (SELECT COUNT(sc.idServicioCita) FROM servicio_cita as sc 
+         WHERE sc.idCita = r.idCita AND sc.estado = 0) as totalServicios, 
+         (SELECT v.puntuacion 
+         FROM evaluacionCentro as v WHERE v.idCita = r.idCita LIMIT 1) as valoracion  
+         FROM cliente as sx, centro as df, cita as r 
+         LEFT JOIN empleado as em ON r.idEmpleado = em.idEmpleado 
+         WHERE df.idCentro = r.idCentro 
+         AND r.idCentro IN (SELECT g.idCentro 
+         FROM usuario_consola_centro as g WHERE g.idUsuarioConsola = ? 
+         AND sx.idCliente = r.idCliente) 
+         AND DATE(r.horaInicio) BETWEEN ? AND ?`,[req.body.idUsuarioConsola, req.body.fecha, req.body.fechaF])
       .then((data) => {
         if (!data) res.send().status(500);
 
@@ -2459,6 +2476,66 @@ data.additionalData.puntosGanados,
         return res.send(datav);
       }).catch(err => res.send(err).status(500));
   });
+
+
+
+
+
+        expressApp.post('/cargaCentrosUserSA2Fecha', (req, res) => {
+     Promise.all([db(` SELECT c.*,
+       (SELECT SUM(r.comision) FROM cita as r 
+       WHERE r.estado = 3 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comision,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as canceladas,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionCanceladas,
+  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as canceladasT,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as porconfirmar,
+  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado IN (1,5) AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as porconfirmarT,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionPorConfirmar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as econfirmar,
+     (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as econfirmarT,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionEConfirmar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as confirmadas,
+        (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as confirmadasT,
+  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionConfirmadas,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as completadas,
+    (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as completadasT,
+   (SELECT ROUND(AVG(ecc.puntuacion), 2) FROM evaluacionCentro as ecc WHERE ecc.idCentro = c.idCentro AND ecc.estado = 2 AND DATE(r.horaInicio) BETWEEN ? AND ?) as calificacion,
+  (SELECT SUM(r.comision) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionCompletadas 
+  FROM centro as c WHERE c.idCentro = ?`,[req.body.idCentro, req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
+  req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
+  req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
+  req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF]),
+     db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,sx.idFoto, r.precioEsperado, 
+      r.comision, r.idCita, r.idCentro,
+       DATE_FORMAT(r.horaInicio, '%d/%m/%y') as FechaCita, 
+       CONCAT(DATE_FORMAT(r.horaInicio, '%l:%i  %p'), ' - ', 
+       DATE_FORMAT(r.horaFinalEsperado, '%l:%i  %p')) as horaCita,
+       (CONVERT_TZ(now(),'+00:00','-05:00') > r.horaInicio) as caducada, 
+       r.comentarioCita,r.horaInicio,r.comentarioEstado, r.notaCita,
+        r.estado, (SELECT cupon.porcentajeDescuento 
+        FROM cupon, cupon_cliente as gh WHERE gh.idCupon = cupon.idCupon AND 
+        gh.idCuponCliente = r.idCuponCliente) as descuento, 
+        (SELECT COUNT(sc.idServicioCita) FROM servicio_cita as sc 
+        WHERE sc.idCita = r.idCita) as totalServicios, 
+        (SELECT v.puntuacion FROM evaluacionCentro as v 
+        WHERE v.idCita = r.idCita LIMIT 1) as valoracion  
+        FROM cliente as sx, centro as df, cita as r  
+        WHERE df.idCentro = r.idCentro AND r.idCentro  = ? AND DATE(r.horaInicio) BETWEEN ? AND ? 
+        AND sx.idCliente = r.idCliente `,[req.body.idCentro, req.body.fecha, req.body.fechaF]),
+      db(`SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision 
+          FROM cita as r WHERE r.estado = 3 AND DATE(r.horaInicio) BETWEEN ? AND ? 
+          AND r.idCentro = ?`,[req.body.idCentro,req.body.fecha, req.body.fechaF])
+     ]).then((data) => {
+        if (!data) res.send().status(500);
+
+            var groups = _.groupBy(data[1], 'estado');
+        var datav= {sucursales:data[0], info:groups, dataR:data[2]}
+        //console.log(datav);
+        return res.send(datav);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
         expressApp.post('/cargaCentrosUserSA2', (req, res) => {
      Promise.all([db(` SELECT c.*,
