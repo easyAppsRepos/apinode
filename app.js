@@ -818,7 +818,7 @@ console.log(dataEnv);
       (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = r.idCuponCliente) as descuento, 
       (SELECT COUNT(sc.idServicioCita) FROM servicio_cita as sc 
-      WHERE sc.idCita = r.idCita AND sc.estado = 0) as totalServicios, 
+      WHERE sc.idCita = r.idCita ) as totalServicios, 
       (SELECT v.puntuacion FROM evaluacionCentro as v WHERE v.idCita = r.idCita LIMIT 1) as valoracion  
       FROM centro as df, cita as r  
       WHERE df.idCentro = r.idCentro AND r.idCliente  = ?`,[req.body.idCliente])
