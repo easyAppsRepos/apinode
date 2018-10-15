@@ -2475,7 +2475,7 @@ data.additionalData.puntosGanados,
    (SELECT ROUND(AVG(ecc.puntuacion), 2) FROM evaluacionCentro as ecc WHERE ecc.idCentro = c.idCentro AND ecc.estado = 2 ) as calificacion,
   (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as comisionCompletadas 
   FROM centro as c WHERE c.idCentro = ?`,[req.body.idCentro]),
-     db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,df.idFoto, r.precioEsperado, 
+     db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,sx.idFoto, r.precioEsperado, 
       r.comision, r.idCita, r.idCentro,
        DATE_FORMAT(r.horaInicio, '%d/%m/%y') as FechaCita, 
        CONCAT(DATE_FORMAT(r.horaInicio, '%l:%i  %p'), ' - ', 
