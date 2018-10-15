@@ -4212,7 +4212,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
         s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM cita as vv, servicio as s, categoria as c, servicio_cita as sc, empleado as em   
       WHERE s.idServicio = sc.idServicio AND em.idEmpleado = sc.idEmpleado 
-      AND sc.idCita = 116 AND c.idCategoria = s.idCategoria AND vv.idCita = 116 AND s.estado = 1`,[req.body.idCita,req.body.idCita]),
+      AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND vv.idCita = ? `,[req.body.idCita,req.body.idCita]),
      db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, s.estado, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c 
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado =  1`,[req.body.idCentro])])
