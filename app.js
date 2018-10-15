@@ -2499,6 +2499,7 @@ data.additionalData.puntosGanados,
 
             var groups = _.groupBy(data[1], 'estado');
         var datav= {sucursales:data[0], info:groups, dataR:data[2]}
+        console.log(datav);
         return res.send(datav);
       }).catch(err => res.send(err).status(500));
   });
