@@ -4209,7 +4209,8 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
     expressApp.post('/getServiciosCita', (req, res) => {
      Promise.all([db(`SELECT vv.precioEsperado, sc.idServicioCita, sc.estado, em.nombre as nombreEmpleado, sc.precioCobrado, CONCAT(DATE_FORMAT(sc.horaInicio, '%l:%i  %p'), ' - ', 
        DATE_FORMAT(sc.horaFin, '%l:%i  %p')) as horaCita,
-        s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
+        s.idServicio, s.nombre, s.duracion, s.precio,
+        DATE_FORMAT(sc.horaInicio, '%d/%m/%y') as fechaCita, s.idCategoria, s.descripcion, c.nombre as nombreCategoria  
       FROM cita as vv, servicio as s, categoria as c, servicio_cita as sc, empleado as em   
       WHERE s.idServicio = sc.idServicio AND em.idEmpleado = sc.idEmpleado 
       AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND vv.idCita = ? `,[req.body.idCita,req.body.idCita]),
