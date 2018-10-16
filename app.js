@@ -3290,6 +3290,58 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
 
+  expressApp.post('/addCitaManual', (req, res) => {
+
+    let idCita=null;
+    let cliR = req.body.clienteReferencia || null;
+      let idPaquete = req.body.idPaquete || null;
+
+    db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
+      notaCita, estado,idCuponCliente, clienteReferencia, idPaquete ) 
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+        `,[req.body.idCentro, req.body.idCliente,req.body.fechaInicio,
+        req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), 2, req.body.idCuponCliente, cliR,idPaquete])
+      .then((data) => {
+        console.log(data);
+        if (!data) {
+          res.send().status(500);
+        }
+
+
+        let arrayFunctions = [];
+        idCita = data.insertId;
+        //
+
+        if(req.body.idCuponCliente && req.body.idCuponCliente>0){
+
+      arrayFunctions.push(db(`UPDATE cupon_cliente set estado=2 WHERE idCuponCliente = ?`,[req.body.idCuponCliente]));
+
+        }
+
+
+        req.body.servicios.forEach((elementw, index) => {
+
+          var horaI = req.body.fecha+' '+elementw.inicio;
+             var horaF = req.body.fecha+' '+elementw.fin;
+            arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado,
+              idEmpleado,horaInicio, horaFin) 
+            VALUES (?,?,1,?,?,?,?)
+            `,[data.insertId, elementw.idServicio,(parseFloat(elementw.precioFinal) || 0),
+            elementw.empleadoSeleccionado.idEmpleado,horaI, horaF]));
+
+          });
+      Promise.all(arrayFunctions).then((data) => {
+        if (!data) res.send().status(500);
+         return res.send({insertId:idCita });
+      }).catch(err => res.send(err).status(500));
+
+
+        //return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/getDataCita', (req, res) => {
      Promise.all([
     db(`SELECT c.idCentro,xcli.nombre as nombreCliente, c.nombre, c.direccion, c.idFoto, c.telefono,c.latitud, c.longitud, vv.nombre as nombreEmpleado, 
