@@ -3230,25 +3230,16 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
   expressApp.post('/addCita', (req, res) => {
 
-// console.log(req.body);
-    //var password = req.body.pass;
-   // var salt = Bcrypt.genSaltSync();
-   // console.log(password+'-'+ salt);
-    //var encryptedPassword = Bcrypt.hashSync(password, salt);
-    //,[req.body.email, req.body.pass,req.body.nombre,req.body.telefono]
-
-    //let horaInicio = req.body.fecha;
-    //let horaFinal = req.body.fecha;
-   // let horaFinal = moment(req.body.fecha).format("YYYY-MM-DD");
     let idCita=null;
     let cliR = req.body.clienteReferencia || null;
       let idPaquete = req.body.idPaquete || null;
 
     db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
       notaCita, estado,idCuponCliente, clienteReferencia, idPaquete ) 
-        VALUES (?,?,?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,(SELECT (CASE WHEN (confirmacionAutomatica = 1)
+         THEN 2 ELSE 1 END ) FROM configuracionCentro WHERE idCentro = ? LIMIT 1),?,?,?)
         `,[req.body.idCentro, req.body.idCliente,req.body.fechaInicio,
-        req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), 1, req.body.idCuponCliente, cliR,idPaquete])
+        req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), req.body.idCentro, req.body.idCuponCliente, cliR,idPaquete])
       .then((data) => {
         console.log(data);
         if (!data) {
@@ -3273,8 +3264,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
              var horaF = req.body.fecha+' '+elementw.fin;
             arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado,
               idEmpleado,horaInicio, horaFin) 
-            VALUES (?,?,0,?,?,?,?)
-            `,[data.insertId, elementw.idServicio,(parseFloat(elementw.precioFinal) || 0),
+            VALUES (?,?,(SELECT confirmacionAutomatica FROM configuracionCentro WHERE idCentro = ? LIMIT 1),?,?,?,?)
+            `,[data.insertId, elementw.idServicio,req.body.idCentro,(parseFloat(elementw.precioFinal) || 0),
             elementw.empleadoSeleccionado.idEmpleado,horaI, horaF]));
 
           });
