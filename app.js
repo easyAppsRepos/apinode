@@ -3892,13 +3892,17 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion `,[req.body.idCentro, re
               expressApp.post('/agregarHENC', function(req, res) {
 
                     var insertQ = ''; 
+                    var horaI = req.body.horaAbrir || '00:00:00';
+                     var horaF = req.body.horaCerrar || '00:00:00';
 
     req.body.fecha.forEach((item, index)=>{
+      
+
     if(index==0){
-    insertQ +='('+req.body.idCentro+',"'+req.body.horaAbrir+'",'+req.body.horaCerrar+',"'+item+'",'+req.body.estado+','+req.body.timespan+')';
+    insertQ +='('+req.body.idCentro+',"'+horaI+'",'+horaF+',"'+item+'",'+req.body.estado+','+req.body.timespan+')';
     }
     else{
-   insertQ +=',('+req.body.idCentro+',"'+req.body.horaAbrir+'",'+req.body.horaCerrar+',"'+item+'",'+req.body.estado+','+req.body.timespan+')';
+   insertQ +=',('+req.body.idCentro+',"'+horaI+'",'+horaF+',"'+item+'",'+req.body.estado+','+req.body.timespan+')';
     }
     });
 
