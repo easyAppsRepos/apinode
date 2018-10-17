@@ -3610,7 +3610,8 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion `,[req.body.idCentro, re
 
     expressApp.post('/getHorarioNC', (req, res) => {
     Promise.all([db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro]),
-      db(`SELECT * FROM horario_especial WHERE idCentro = ?`,[req.body.idCentro])]).then((data) => {
+      db(`SELECT idHorarioEspecial, DATE_FORMAT(horaAbrir, '%l:%i  %p') as horaAbrir,DATE_FORMAT(horaCerrar, '%l:%i  %p') as horaCerrar,
+idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE idCentro = ?`,[req.body.idCentro])]).then((data) => {
         if (!data) res.send().status(500);
               return res.send({horario:data[0],horarioEspecial: data[1]});
       }).catch(err => res.send(err).status(500));
