@@ -3891,9 +3891,21 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion `,[req.body.idCentro, re
 
               expressApp.post('/agregarHENC', function(req, res) {
 
-    db(`INSERT INTO horario_especial(idCentro,horaAbrir,horaCerrar,fecha,abierto) 
-      VALUES(?,?,?,?,?)`,[req.body.idCentro,
-      req.body.horaAbrir,req.body.horaCerrar,req.body.fecha,req.body.estado])
+                    var insertQ = ''; 
+
+    req.body.fecha.forEach((item, index)=>{
+    if(index==0){
+    insertQ +='('+req.body.idCentro+',"'+req.body.horaAbrir+'",'+req.body.horaCerrar+',"'+item+'",'+req.body.estado+','+req.body.timespan+')';
+    }
+    else{
+   insertQ +=',('+req.body.idCentro+',"'+req.body.horaAbrir+'",'+req.body.horaCerrar+',"'+item+'",'+req.body.estado+','+req.body.timespan+')';
+    }
+    });
+
+
+
+    db(`INSERT INTO horario_especial(idCentro,horaAbrir,horaCerrar,fecha,abierto,timespan) 
+      VALUES `+insertQ)
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
