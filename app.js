@@ -555,9 +555,13 @@ expressApp.get('/horaMinMax', function(req, res) {
             console.log(error.message);
             //return;
             resultadoEmail=0;
+            return res.send().status(500)
             }
-            console.log(info);
-           return res.send({data:dataf,email:resultadoEmail});
+            else{
+              return res.send(dataf);
+            }
+      
+           
 
 
         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
@@ -566,7 +570,7 @@ expressApp.get('/horaMinMax', function(req, res) {
 });
           console.log(dataf);
         }
-        else{res.send().status(500)}
+        else{return res.send().status(500)}
 
         }
         //return res.send(data);
