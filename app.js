@@ -523,7 +523,7 @@ expressApp.get('/horaMinMax', function(req, res) {
       .then((dataf) => {
         if (!dataf) {res.send().status(500)}
         else{
-           if(datas.affectedRows>0){
+           if(dataf.affectedRows>0){
             var numss='123456789';
 
           nodemailer.createTestAccount((err, account) => {
