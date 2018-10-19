@@ -390,6 +390,13 @@ expressApp.get('/categoriasHome', function(req, res) {
 
 
 
+expressApp.get('/getCategoriasCentro', function(req, res) {
+    db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 
+      AND idCategoria IN (SELECT DISTINCT idCategoria FROM servicio WHERE idCentro = ?) `,[req.body.idCentro]).then((data) => {
+      console.log(data);
+      res.json(data);
+    }).catch(err => res.send(err).status(500));
+});
 
 expressApp.get('/categoriasHome2', function(req, res) {
     db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 `).then((data) => {
