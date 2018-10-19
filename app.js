@@ -1748,7 +1748,7 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
       var traduccionEstado = req.body.estado == 0 ? 1 : 
        req.body.estado == 1 ? 2 : req.body.estado == 2 ? 5 : 
-        req.body.estado == 3 ? 3 : 1;
+        req.body.estado == 3 ? 3 : req.body.estado == 4 ? 4 :1;
         console.log(traduccionEstado);
 
 db(`UPDATE servicio_cita set estado=? 
