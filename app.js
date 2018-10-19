@@ -2376,6 +2376,15 @@ data.additionalData.puntosGanados,
       }).catch(err => res.send(err).status(500));
   });
     
+     expressApp.post('/getSubcategoriasCentro', (req, res) => {
+    db(`SELECT * FROM subcategoria WHERE idCategoria = ? 
+      AND idSubcategoria IN (SELECT DISTINCT idSubcategoria FROM servicio WHERE idCentro = ?)`,[req.body.idCategoria,req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
 
