@@ -960,7 +960,7 @@ FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCi
       JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
       WHERE  c.idCentro = ? AND c.horaInicio 
       BETWEEN ? AND DATE_ADD(?, INTERVAL 5 DAY) 
-      AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente `,[req.body.idCentro, req.body.fecha, req.body.fecha])
+      AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente ORDER BY sc.horaInicio ASC`,[req.body.idCentro, req.body.fecha, req.body.fecha])
       .then((data) => {
         if (!data) res.send().status(500);
 
