@@ -3636,6 +3636,20 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body
 
 
 
+        expressApp.post('/getEventosUserNC', (req, res) => {
+    db(`SELECT cli.nombre as nombreCliente, s.nombre as nombreServicio, 
+sc.horaInicio, sc.horaFin, sc.idCita, sc.estado, c.estado as estadoCita 
+FROM cliente as cli, servicio as s, servicio_cita as sc, cita as c 
+WHERE cli.idCliente = c.idCliente AND c.idCita = sc.idCita AND sc.idServicio = s.idServicio 
+AND sc.idEmpleado = ?`,[req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
         expressApp.post('/getInfoEvaNC', (req, res) => {
     db(`SELECT AVG(puntuacion) as puntuacion, COUNT(idEvaluacionCentro) as cantidad 
       FROM evaluacionCentro WHERE idCentro = ? AND estado = 2`,[req.body.idCentro])
