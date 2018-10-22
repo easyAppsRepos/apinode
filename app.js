@@ -3456,7 +3456,10 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       FROM cliente as xcli, centro as c, cita as ci  
       WHERE ci.idCita = ? AND c.idCentro = ci.idCentro AND xcli.idCliente = ci.idCliente`,[req.body.idCita]),
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, sc.precioCobrado, sc.idCita,
-     sc.idServicioCita, sc.horaInicio, sc.horaFin, s.idCategoria, e.idFoto as idFotoE,
+     sc.idServicioCita,
+     DAY(sc.horaInicio) as d, MONTH(sc.horaInicio) as m, YEAR(sc.horaInicio) as y, 
+     HOUR(sc.horaInicio) as h, MINUTE(sc.horaInicio) as min,
+      HOUR(sc.horaFin) as h2, MINUTE(sc.horaFin) as min2, s.idCategoria, e.idFoto as idFotoE,
       e.nombre as nombreEmpleado,sc.idEmpleado, c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c, servicio_cita as sc, empleado as e   
       WHERE e.idEmpleado = sc.idEmpleado AND s.idServicio = sc.idServicio 
