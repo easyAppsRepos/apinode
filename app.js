@@ -3455,7 +3455,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento 
       FROM cliente as xcli, centro as c, cita as ci  
       WHERE ci.idCita = ? AND c.idCentro = ci.idCentro AND xcli.idCliente = ci.idCliente`,[req.body.idCita]),
-    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, sc.precioCobrado, sc.idCita,
+    db(`SELECT s.idServicio, sc.estado, s.nombre, s.duracion, s.precio, sc.precioCobrado, sc.idCita,
      sc.idServicioCita,
      DAY(sc.horaInicio) as d, MONTH(sc.horaInicio) as m, YEAR(sc.horaInicio) as y, 
      HOUR(sc.horaInicio) as h, MINUTE(sc.horaInicio) as min,
