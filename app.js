@@ -4655,6 +4655,28 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
     }).catch(err => res.send(err).status(500));
   });
 
+
+        expressApp.post('/doLoginApiAE', (req, res) => {
+
+    db(`SELECT e.idEmpleado, e.nombre, e.email, e.idFoto,
+ e.descripcion, e.idCentro, e.tipo, e.telefono FROM empleado as e 
+ WHERE e.email = ? AND e.password = ? `,[req.body.username,req.body.password]).then((data) => {
+      console.log(data);
+      if (data) {
+        return res.send({
+          data: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
 //"INSERT INTO Usuarios(nombre, email, fbId, imagenFB) values(?, ?, ?, ?)"
     expressApp.post('/addUserEmail', (req, res) => {
 
