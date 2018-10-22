@@ -3446,6 +3446,32 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
   });
 
 
+    expressApp.post('/getDataCitaAE', (req, res) => {
+     Promise.all([
+    db(`SELECT c.idCentro,xcli.nombre as nombreCliente, c.nombre, c.direccion, c.idFoto, c.telefono, 
+      ci.idCita, ci.estado, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
+      ci.horaFinalEsperado,precioEsperado, ci.idCuponCliente, ci.idCliente, 
+      (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
+      WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento 
+      FROM cliente as xcli, centro as c, cita as ci  
+      WHERE ci.idCita = ? AND c.idCentro = ci.idCentro AND xcli.idCliente = ci.idCliente`,[req.body.idCita]),
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, sc.precioCobrado, sc.idCita,
+     sc.idServicioCita, sc.horaInicio, sc.horaFin, s.idCategoria, e.idFoto as idFotoE,
+      e.nombre as nombreEmpleado,sc.idEmpleado, c.nombre as nombreCategoria  
+      FROM servicio as s, categoria as c, servicio_cita as sc, empleado as e   
+      WHERE e.idEmpleado = sc.idEmpleado AND s.idServicio = sc.idServicio 
+      AND sc.idCita = ? AND c.idCategoria = s.idCategoria 
+      AND s.estado = 1`,[req.body.idCita])])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+    //var groups = _.groupBy(data[0], 'nombreCategoria');
+  
+        return res.send({cita:data[0], servicios:data[1]});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
   expressApp.post('/getCentroServicios', (req, res) => {
      Promise.all([
