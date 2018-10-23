@@ -1713,6 +1713,22 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
   });
 
 
+
+
+    expressApp.post('/editarEmpleadoAE', (req, res) => {
+
+
+    db(`UPDATE empleado set nombre=?,telefono=?  
+     WHERE idEmpleado = ?`,[req.body.nombre, req.body.telefono,req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
     expressApp.post('/editarParametro', (req, res) => {
     db(`UPDATE parametros set valor=? WHERE idParametro=?`,[req.body.valor,req.body.idParametro])
       .then((data) => {
