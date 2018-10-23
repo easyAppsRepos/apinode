@@ -4211,7 +4211,7 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
     Promise.all([db(`SELECT * FROM horarioEmpleado WHERE idEmpleado = ?`,[req.body.idEmpleado]),
       db(`SELECT *  
        FROM horario_especial_empleado WHERE idEmpleado = ? AND 
-        (CONVERT_TZ(now(),'+00:00','-05:00') > fecha)`,[req.body.idEmpleado])])
+        CURDATE() <= fecha`,[req.body.idEmpleado])])
       .then((data) => {
          if (!data) res.send().status(500);
 
