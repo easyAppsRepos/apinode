@@ -4173,6 +4173,19 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
       }).catch(err => res.send(err).status(500));
   });
 
+    expressApp.post('/getInfoEmpleadoAE', function(req, res) {
+
+    Promise.all([db(`SELECT * FROM horarioEmpleado WHERE idEmpleado = ?`,[req.body.idEmpleado]),
+      db(`SELECT idEmpleadoBloqueLibre, idEmpleado, DATE_FORMAT(fechaInicio,'%Y-%m-%d') as fechaInicio, 
+        DATE_FORMAT(fechaFinal,'%Y-%m-%d') as fechaFinal FROM empleadoBloqueLibre WHERE idEmpleado = ?`,[req.body.idEmpleado])])
+      .then((data) => {
+         if (!data) res.send().status(500);
+
+        return res.send({horario:data[0],horarioEspecial:data[1]});
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
 
