@@ -390,6 +390,31 @@ expressApp.get('/categoriasHome', function(req, res) {
 
 
 
+    expressApp.post('/editarCFE', upload.single('ionicfile'),(req, res) => {
+      console.log(req.file);
+
+    
+     db(`UPDATE empleado set nombre=?,
+      telefono=?, idFoto=? 
+     WHERE idEmpleado = ?`,[req.body.nombre, req.body.telefono,
+     req.file.path,req.body.idEmpleado])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+        return res.send({data:data,idFoto:req.file.path});
+
+
+      }).catch(err => res.send(err).status(500));
+
+      
+
+  });
+
+
+
+
+
 expressApp.post('/getCategoriasCentro', function(req, res) {
     db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 
       AND idCategoria IN (SELECT DISTINCT idCategoria FROM servicio WHERE idCentro = ?) `,[req.body.idCentro]).then((data) => {
