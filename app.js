@@ -3709,12 +3709,12 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body
         expressApp.post('/getEventosUserNC', (req, res) => {
     db(`SELECT (SELECT COUNT(DISTINCT idServicioCita) 
       FROM servicio_cita WHERE DATE(horaInicio) =  DATE(sc.horaInicio) 
-      AND idEmpleado = 3 AND estado = 0) as pendientes,cli.nombre as nombreCliente, s.nombre as nombreServicio,
+      AND idEmpleado = ? AND estado = 0) as pendientes,cli.nombre as nombreCliente, s.nombre as nombreServicio,
 DAY(sc.horaInicio) as d, MONTH(sc.horaInicio) as m, YEAR(sc.horaInicio) as y, HOUR(sc.horaInicio) as h, MINUTE(sc.horaInicio) as min,
  HOUR(sc.horaFin) as h2, MINUTE(sc.horaFin) as min2,
 sc.idCita, sc.estado, c.estado as estadoCita FROM cliente as cli, servicio as s, servicio_cita as sc, cita as c 
 WHERE cli.idCliente = c.idCliente AND c.idCita = sc.idCita AND sc.idServicio = s.idServicio 
-AND sc.idEmpleado = ?`,[req.body.idEmpleado])
+AND sc.idEmpleado = ?`,[req.body.idEmpleado,req.body.idEmpleado])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
