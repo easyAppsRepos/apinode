@@ -396,7 +396,7 @@ expressApp.get('/categoriasHome', function(req, res) {
     
      db(`UPDATE empleado set nombre=?,
       telefono=?, idFoto=? 
-     WHERE idEmpleado = ?`,[req.body.nombre, req.body.telefono,
+     WHERE idEmpleado = ?`,[req.body.nombreEmpleado, req.body.telefono,
      req.file.path,req.body.idEmpleado])
       .then((data) => {
 
@@ -1719,7 +1719,7 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
 
     db(`UPDATE empleado set nombre=?,telefono=?  
-     WHERE idEmpleado = ?`,[req.body.nombre, req.body.telefono,req.body.idEmpleado])
+     WHERE idEmpleado = ?`,[req.body.nombreEmpleado, req.body.telefono,req.body.idEmpleado])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
