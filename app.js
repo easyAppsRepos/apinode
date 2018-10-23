@@ -4658,9 +4658,9 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
         expressApp.post('/doLoginApiAE', (req, res) => {
 
-    db(`SELECT e.idEmpleado, e.nombre, e.email, e.idFoto,
- e.descripcion, e.idCentro, e.tipo, e.telefono FROM empleado as e 
- WHERE e.email = ? AND e.password = ? `,[req.body.username,req.body.password]).then((data) => {
+    db(`SELECT e.idEmpleado, e.nombre as nombreEmpleado, c.nombre as nombreCentro, e.email, e.idFoto,
+ e.descripcion, e.idCentro, e.tipo, e.telefono FROM empleado as e, centro as c  
+ WHERE e.email = ? AND e.password = ? AND c.idCentro = e.idCentro`,[req.body.username,req.body.password]).then((data) => {
       console.log(data);
       if (data) {
         return res.send({
