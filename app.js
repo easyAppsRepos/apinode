@@ -3714,7 +3714,7 @@ DAY(sc.horaInicio) as d, MONTH(sc.horaInicio) as m, YEAR(sc.horaInicio) as y, HO
  HOUR(sc.horaFin) as h2, MINUTE(sc.horaFin) as min2,
 sc.idCita, sc.estado, c.estado as estadoCita FROM cliente as cli, servicio as s, servicio_cita as sc, cita as c 
 WHERE cli.idCliente = c.idCliente AND c.idCita = sc.idCita AND sc.idServicio = s.idServicio 
-AND sc.idEmpleado = ?`,[req.body.idEmpleado,req.body.idEmpleado])
+AND sc.idEmpleado = ? ORDER BY FIELD(sc.estado,0) DESC, sc.horaInicio DESC`,[req.body.idEmpleado,req.body.idEmpleado])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
