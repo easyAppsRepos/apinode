@@ -4101,6 +4101,19 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
   });
 
 
+    expressApp.post('/eliminarHE', function(req, res) {
+
+    db(`DELETE FROM horario_especial_empleado WHERE 
+      idHorarioEspecialEmpleado = ?`,[req.body.id])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
 
 
 
