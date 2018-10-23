@@ -4209,7 +4209,7 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
     expressApp.post('/getInfoEmpleadoAE', function(req, res) {
 
     Promise.all([db(`SELECT * FROM horarioEmpleado WHERE idEmpleado = ?`,[req.body.idEmpleado]),
-      db(`SELECT *, DATE_FORMAT(fechaInicio,'%Y-%m-%d') as fechaF, 
+      db(`SELECT *, DATE_FORMAT(fecha,'%Y-%m-%d') as fechaF, 
        FROM horario_especial_empleado WHERE idEmpleado = ?`,[req.body.idEmpleado])])
       .then((data) => {
          if (!data) res.send().status(500);
