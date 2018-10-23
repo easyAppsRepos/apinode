@@ -4056,6 +4056,39 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
 
 
 
+
+              expressApp.post('/agregarHEENC', function(req, res) {
+
+                    var insertQ = ''; 
+                    var horaI = req.body.horaAbrir ? req.body.horaAbrir+':00' : '00:00:00';
+                     var horaF = req.body.horaCerrar ? req.body.horaCerrar+':00' : '00:00:00';
+
+    req.body.fecha.forEach((item, index)=>{
+
+
+    if(index==0){
+    insertQ +='('+req.body.idEmpleado+',"'+horaI+'","'+horaF+'","'+item+'",'+req.body.estado+')';
+    }
+    else{
+   insertQ +=',('+req.body.idEmpleado+',"'+horaI+'","'+horaF+'","'+item+'",'+req.body.estado+')';
+    }
+    });
+
+
+
+    db(`INSERT INTO horario_especial_empleado(idEmpleado,horaEntrar,horaSalir,fecha,abierto) 
+      VALUES `+insertQ)
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
     expressApp.post('/deleteLibresNC', function(req, res) {
 
     db(`DELETE FROM empleadoBloqueLibre WHERE 
