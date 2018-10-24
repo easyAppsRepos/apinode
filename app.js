@@ -535,7 +535,69 @@ expressApp.get('/horaMinMax', function(req, res) {
 
 
 
+  expressApp.post('/mensajeSoporte', (req, res) => {
 
+    var resultadoEmail=1;
+    db(`SELECT c.email,c.nombre FROM centro as c WHERE c.idCentro = ? `,[req.body.idCentro])
+      .then((dataf) => {
+        if (!dataf) {res.send().status(500)}
+        else{
+           if(dataf.length>0){
+            var numss='123456789';
+
+          nodemailer.createTestAccount((err, account) => {
+            console.log(err);
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+         host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+      auth: {
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
+          }
+    });
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: 'yourBeautyMessageCenter@gmail.com', // sender address
+        to: 'jralfarog@gmail.com'+','+dataf[0].email, // list of receivers
+        subject: 'Solicitud de Soporte Yourbeauty', // Subject line
+        text: 'El centro '+dataf[0].nombre+' ha iniciado una solicitud de soporte con el siguiente mensaje:'+req.body.mensaje
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+
+            if(error){
+            console.log('Error occured');
+            console.log(error.message);
+            //return;
+            resultadoEmail=0;
+            return res.send().status(500)
+            }
+            else{
+              return res.send(dataf);
+            }
+      
+           
+
+
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    });
+});
+          console.log(dataf);
+        }
+        else{return res.send().status(500)}
+
+        }
+        //return res.send(data);
+      }).catch(err => {
+        console.log(err);
+        res.send(err).status(500);
+      });
+  });
 
   expressApp.post('/recuperarPassNC', (req, res) => {
 
