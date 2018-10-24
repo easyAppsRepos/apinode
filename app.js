@@ -557,7 +557,7 @@ expressApp.get('/horaMinMax', function(req, res) {
           pass: 'be'+numss // generated ethereal password
           }
     });
-
+    console.log(dataf[0].email);
     // setup email data with unicode symbols
     let mailOptions = {
         from: 'yourBeautyMessageCenter@gmail.com', // sender address
