@@ -118,6 +118,52 @@ function makeid() {
   return text;
 }
 
+
+function enviarEmailStaff(email, clave){
+
+  var numss='123456789';
+
+  nodemailer.createTestAccount((err, account) => {
+            console.log(err);
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+         host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+      auth: {
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
+          }
+    });
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: 'yourBeautyMessageCenter@gmail.com', // sender address
+        to: email, // list of receivers
+        subject: 'Cuenta ByStaff', // Subject line
+        text: 'Se ha creado una cuenta Staff para ti! Tu usuario ByStaff es: '+email+' y tu contraseña es:'+clave
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+
+            if(error){
+            console.log('Error occured');
+            console.log(error.message);
+            //return;
+            resultadoEmail=0;
+            }
+            console.log(info);
+           //return res.send({data:dataf,email:resultadoEmail});
+
+
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    });
+});
+          console.log(dataf);
+        }
+
 function makeidEmail() {
   var text = "";
   var possible = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRS";
@@ -4515,6 +4561,17 @@ SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
 db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
+
+
+          req.body.forEach((item, index)=>{
+          
+           var clave = makeid();
+           enviarEmailStaff(item.email, clave);
+        
+    
+          });
+
+        
         return res.send(data[0]);
 
       }).catch(err => res.send(err).status(500));
@@ -4529,6 +4586,10 @@ db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro 
       req.body.descripcion,telefono,req.body.email])
       .then((data) => {
          if (!data) res.send().status(500);
+
+           var clave = makeid();
+           enviarEmailStaff(req.body.email, clave);
+
         return res.send(data);
 
       }).catch(err => res.send(err).status(500));
