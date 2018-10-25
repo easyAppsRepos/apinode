@@ -1143,11 +1143,24 @@ FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCi
                   serviciosCalendario.push(final);
             });
 
-            var result = data[1].filter(word => word.estadoServicio == 0).length;
+          var result = 0;
+
+          var dataF = data[1].map((i, index) => {
+
+          if(i.estadoServicio == 0){result++;}
+
+          i.timeAgo =  moment(i.cambioEstado).fromNow();
+
+          return i;
+
+        });
+
+
+           // var result = data[1].filter(word => word.estadoServicio == 0).length;
 
 
             return res.send({servEmp:serviciosCalendario, 
-                             servAll:data[0], budge:result, notis:data[1]});
+                             servAll:data[0], budge:result, notis:dataF});
 
       }).catch(err => res.send(err).status(500));
   });
