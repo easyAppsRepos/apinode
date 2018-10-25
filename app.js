@@ -4253,6 +4253,21 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
 
 
 
+
+        expressApp.post('/goReserva', function(req, res) {
+
+    db(`SELECT idCita FROM cita WHERE  idCita = ? AND idCentro = ?`,[req.body.idCita,req.body.idCentro]).then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
+
         expressApp.post('/serviciosGroupNC', function(req, res) {
 
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, s.descripcion, 
