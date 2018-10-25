@@ -4407,8 +4407,11 @@ TIME_FORMAT(horaSalir, '%h:%i%p') as horaFF FROM horario_especial_empleado WHERE
 
         expressApp.post('/nuevoUsuarioNC', function(req, res) {
 
-   db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular,pasos) 
-      VALUES(?, ?,1,?,?,1)`,[req.body.correoElectronico,req.body.nombreNegocio,req.body.password,req.body.nombreUsuario])
+          var nombreFactura = req.body.nombreFactura || ''; 
+          var ruc = req.body.ruc || ''; 
+
+   db(`INSERT INTO usuario_consola(email,nombre,tipo,password, nombreTitular,pasos,nombreFactura, ruc) 
+      VALUES(?, ?,1,?,?,1,?,?)`,[req.body.correoElectronico,req.body.nombreNegocio,req.body.password,req.body.nombreUsuario,nombreFactura,ruc])
       .then((data) => {
 
         console.log(data.Error);
