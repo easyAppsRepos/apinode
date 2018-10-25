@@ -1129,7 +1129,7 @@ FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCi
       FROM cliente as cli, servicio as s, servicio_cita as sc 
       JOIN cita as c ON (c.idCita = sc.idCita) 
       JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
-      WHERE  c.idCentro = ? AND DATE(c.horaInicio) >= CURDATE() AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente
+      WHERE  c.idCentro = ? AND sc.estado IN (0,1,2,4) AND DATE(sc.horaInicio) >= CURDATE() AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente
        ORDER BY FIELD(sc.estado, 0) DESC, sc.cambioEstado DESC`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
