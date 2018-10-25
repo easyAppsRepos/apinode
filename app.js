@@ -1169,7 +1169,7 @@ FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCi
 
 
   expressApp.post('/getCalendarioDayNC', (req, res) => {
-    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, cli.nombre as nombreCliente,s.duracion, 
+     Promise.all([db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, cli.nombre as nombreCliente,s.duracion, 
       sc.precioCobrado, sc.estado as estadoServicio,
       DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, TIME_FORMAT(sc.horaInicio, '%h:00 %p') as inicioServicioFixed,
       TIME_FORMAT(sc.horaInicio, '%H') as soloHoraFixed,  
@@ -1180,7 +1180,18 @@ FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCi
       JOIN cita as c ON (c.idCita = sc.idCita) 
       JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
       WHERE  c.idCentro = ? AND DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') = ? 
-      AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente ORDER BY sc.horaInicio`,[req.body.idCentro,  req.body.fecha])
+      AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente ORDER BY sc.horaInicio`,[req.body.idCentro,  req.body.fecha]),
+    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio, cli.nombre as nombreCliente, 
+      sc.estado as estadoServicio, sc.cambioEstado,
+      DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, 
+      TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio, c.idCita,c.clienteReferencia,
+      DATE(c.horaInicio) as fecha, e.nombre as nombreEmpleado,e.idFoto as empleadoFoto, 
+      TIME(c.horaInicio) as hora 
+      FROM cliente as cli, servicio as s, servicio_cita as sc 
+      JOIN cita as c ON (c.idCita = sc.idCita) 
+      JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
+      WHERE  c.idCentro = ? AND sc.estado IN (0,1,2,4) AND DATE(sc.horaInicio) >= CURDATE() AND s.idServicio = sc.idServicio AND cli.idCliente = c.idCliente
+       ORDER BY FIELD(sc.estado, 0) DESC, sc.cambioEstado DESC`,[req.body.idCentro])])
       .then((data) => {
         if (!data) res.send().status(500);
 
@@ -1202,10 +1213,24 @@ FROM cliente as cli WHERE cli.idCliente = (SELECT idCliente FROM cita WHERE idCi
             });
 */
           
-            var serviciosCalendario = _.groupBy(data, 'idEmpleado');
+            var serviciosCalendario = _.groupBy(data[0], 'idEmpleado');
+
+
+          var result = 0;
+
+          var dataF = data[1].map((i, index) => {
+
+          if(i.estadoServicio == 0){result++;}
+
+          i.timeAgo =  moment(i.cambioEstado).fromNow();
+
+          return i;
+
+        });
+
 
             return res.send({servEmp:serviciosCalendario, 
-                             servAll:data});
+                             servAll:data[0],budge:result, notis:dataF});
 
       }).catch(err => res.send(err).status(500));
   });
