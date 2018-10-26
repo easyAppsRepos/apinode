@@ -3466,7 +3466,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       AND cc.idCategoria = s.idCategoria 
       GROUP BY sc.idServicio 
       ORDER BY cantidad DESC LIMIT 5`,[req.body.idCentro]),
-    db(`SELECT SUM(r.precioEsperado) as total, AVG(r.precioEsperado) as promedio 
+    db(`SELECT  ROUND(SUM(r.precioEsperado), 2) as total, ROUND(AVG(r.precioEsperado), 2) as promedio 
       FROM cita as r WHERE r.idCentro = ? AND r.estado = 3`,[req.body.idCentro])])
       .then((data) => {
 
