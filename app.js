@@ -5013,7 +5013,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
         expressApp.post('/doLoginApiAE', (req, res) => {
 
-    db(`SELECT e.idEmpleado, e.nombre as nombreEmpleado, c.nombre as nombreCentro, e.email, e.idFoto,
+    db(`SELECT e.idEmpleado, e.horarioSet, e.nombre as nombreEmpleado, c.nombre as nombreCentro, e.email, e.idFoto,
  e.descripcion, e.idCentro, e.tipo, e.telefono FROM empleado as e, centro as c  
  WHERE e.email = ? AND e.password = ? AND c.idCentro = e.idCentro`,[req.body.username,req.body.password]).then((data) => {
       console.log(data);
@@ -5105,6 +5105,24 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       
     }).catch(err => res.send(err).status(500));
   });
+
+        expressApp.post('/horarioSet', (req, res) => {
+
+    db(`UPDATE empleado set horarioSet = 0 WHERE idEmpleado = ?`,
+      [req.body.idEmpleado]).then((data) => {
+      console.log(data);
+      if (data) {
+       return res.send(data);
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+        
+
 
         expressApp.post('/addNegocio2', (req, res) => {
 
