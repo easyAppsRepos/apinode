@@ -4641,7 +4641,7 @@ db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro 
       parametro2,parametro3) 
       VALUES (?,?,?,?,?)`,[req.body.idCentro,req.body.confAuto,req.body.parametro1,
       req.body.parametro2,req.body.parametro3]),
-     db(`UPDATE usuario_consola set pasos=10 
+     db(`UPDATE usuario_consola set pasos=7 
         WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])])
       .then((data) => {
          if (!data) res.send().status(500);
@@ -4649,6 +4649,21 @@ db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro 
 
       }).catch(err => res.send(err).status(500));
   });
+
+
+
+
+        expressApp.post('/configuracionPrecioNC', function(req, res) {
+
+  db(`UPDATE usuario_consola set pasos=10, plan=?  
+        WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.plan, req.body.idCentro])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
         expressApp.post('/UpdateconfiguracionCentroNC', function(req, res) {
 
