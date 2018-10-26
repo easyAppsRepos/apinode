@@ -4532,17 +4532,22 @@ TIME_FORMAT(horaSalir, '%h:%i%p') as horaFF FROM horario_especial_empleado WHERE
         expressApp.post('/addStaffNC', function(req, res) {
           var idCentro = req.body[0].idCentro;
     var insertQ = ''; 
+    var dataFE = req.body;
     req.body.forEach((item, index)=>{
+
+        var clave = makeid();
+      dataFE[index].clave = clave;
+      var tel = item.telefono || ' ';
       if(index==0){
-    insertQ +='('+item.idCentro+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+item.telefono+'","'+item.email+'")';
+    insertQ +='('+item.idCentro+',"'+clave+'"'+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+tel+'","'+item.email+'")';
        }
        else{
-          insertQ +=', ('+item.idCentro+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+item.telefono+'","'+item.email+'")';
+          insertQ +=', ('+item.idCentro+',"'+clave+'"'+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+tel+'","'+item.email+'")';
        }
     });
 
 
-    Promise.all([db(`INSERT INTO empleado(idCentro,nombre,tipo,descripcion,telefono,email) VALUES `+insertQ+` `),
+    Promise.all([db(`INSERT INTO empleado(idCentro,password,nombre,tipo,descripcion,telefono,email) VALUES `+insertQ+` `),
       db(`INSERT INTO horarioEmpleado(diaSemana,horaEntrar,horaSalir,estado,idEmpleado) 
 SELECT 0, '00:00:00', '00:00:00', 0, e.idEmpleado FROM empleado as e
  WHERE e.idCentro = ? UNION ALL 
@@ -4563,10 +4568,10 @@ db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro 
          if (!data) res.send().status(500);
 
 
-          req.body.forEach((item, index)=>{
+          dataFE.forEach((item, index)=>{
           
-           var clave = makeid();
-           enviarEmailStaff(item.email, clave);
+           
+           enviarEmailStaff(item.email, item.clave);
         
     
           });
@@ -4579,15 +4584,15 @@ db(`UPDATE usuario_consola set pasos=2  WHERE email = (SELECT email FROM centro 
 
 
         expressApp.post('/addStaffNC2', function(req, res) {
-
+ var clave = makeid();
           var telefono = req.body.telefono || '';
-    db(`INSERT INTO empleado(idCentro,nombre,tipo,descripcion,telefono,email) 
-      VALUES (?,?,?,?,?,?)`,[req.body.idCentro,req.body.nombre,req.body.tipo,
-      req.body.descripcion,telefono,req.body.email])
+    db(`INSERT INTO empleado(idCentro,nombre,tipo,descripcion,telefono,email, password) 
+      VALUES (?,?,?,?,?,?,?)`,[req.body.idCentro,req.body.nombre,req.body.tipo,
+      req.body.descripcion,telefono,req.body.email,clave])
       .then((data) => {
          if (!data) res.send().status(500);
 
-           var clave = makeid();
+          
            enviarEmailStaff(req.body.email, clave);
 
         return res.send(data);
