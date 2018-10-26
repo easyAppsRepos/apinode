@@ -3448,6 +3448,38 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
   });
 
 
+
+  expressApp.post('/getInfoCentroNC', (req, res) => {
+     Promise.all([
+    db(`SELECT c.nombre,c.direccion,c.idFoto, 
+       (SELECT COUNT(r.idCita) FROM cita as r WHERE r.idCentro = c.idCentro) as total, (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 3) as completadas,
+      (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 4) as canceladas,
+      (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 2) as confirmadas  
+      FROM  centro as c  
+      WHERE c.idCentro = ?`,[req.body.idCentro]), 
+    db(`SELECT s.nombre, cc.nombre as nombreCategoria, cc.idFoto, 
+      sc.idServicio, COUNT(sc.idServicioCita) as cantidad 
+      FROM categoria as cc, servicio as s, servicio_cita as sc 
+      INNER JOIN cita as c ON sc.idCita = c.idCita 
+      AND c.idCentro = ? AND c.estado = 3 
+      WHERE s.idServicio = sc.idServicio 
+      AND cc.idCategoria = s.idCategoria 
+      GROUP BY sc.idServicio 
+      ORDER BY cantidad DESC LIMIT 5`,[req.body.idCentro]),
+    db(`SELECT SUM(r.precioEsperado) as total, AVG(r.precioEsperado) as promedio 
+      FROM cita as r WHERE r.idCentro = ? AND r.estado = 3`,[req.body.idCentro])])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+        return res.send({info:data[0],clientes:data[1], dataV:data[2]});
+
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
   expressApp.post('/getCentroInfo', (req, res) => {
      Promise.all([
     db(`SELECT c.*, 
