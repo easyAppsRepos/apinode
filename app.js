@@ -3209,6 +3209,20 @@ data.additionalData.puntosGanados,
   });
 
 
+  expressApp.post('/getEmpleadoServicios', (req, res) => {
+    db(`SELECT s.*, c.nombre as nombreCategoria 
+      FROM servicio as s, categoria as c 
+      WHERE c.idCategoria = s.idCategoria 
+      AND s.idServicio 
+      IN (SELECT f.idServicio FROM servicioEmpleado as f 
+      WHERE f.idEmpleado = 3 AND f.estado = 1)`,[req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        var groups = _.groupBy(data, 'idCategoria');
+        return res.send(groups);
+      }).catch(err => res.send(err).status(500));
+  });
+
 
   expressApp.post('/getServiciosCupon', (req, res) => {
     Promise.all([db(`SELECT DISTINCT s.nombre,s.idServicio, s.precio, s.precioOferta FROM  servicio as s, cupon_centro as cc 
