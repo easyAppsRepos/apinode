@@ -1507,9 +1507,13 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
 
 
     expressApp.post('/agregarBloque', (req, res) => {
+
+      var detalle = 'Reserva de tiempo';
+      
     db(`INSERT INTO reservaManual(idEmpleado,idCentro,horaInicio, 
       horaFinalEsperado, detalle) 
-      VALUES (?,?,?,?,?)`,[req.body.idEmpleado,req.body.idCentro,req.body.horaInicio,req.body.horaFinalEsperado,req.body.detalle])
+      VALUES (?,(SELECT idCentro FROM empleado WHERE idEmpleado = ? LIMIT 1),?,?,?)`,[req.body.idEmpleado,
+      req.body.idEmpleado,req.body.horaInicio,req.body.horaFinalEsperado,detalle])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
