@@ -1509,7 +1509,7 @@ WHERE x.idServicio = sc.idServicio AND sc.idCita = r.idCita
     expressApp.post('/agregarBloque', (req, res) => {
 
       var detalle = 'Reserva de tiempo';
-      
+
     db(`INSERT INTO reservaManual(idEmpleado,idCentro,horaInicio, 
       horaFinalEsperado, detalle) 
       VALUES (?,(SELECT idCentro FROM empleado WHERE idEmpleado = ? LIMIT 1),?,?,?)`,[req.body.idEmpleado,
@@ -3962,17 +3962,22 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body
 
 
         expressApp.post('/getEventosUserNC', (req, res) => {
-    db(`SELECT (SELECT COUNT(DISTINCT idServicioCita) 
+    Promise.all([db(`SELECT (SELECT COUNT(DISTINCT idServicioCita) 
       FROM servicio_cita WHERE DATE(horaInicio) =  DATE(sc.horaInicio) 
       AND idEmpleado = ? AND estado = 0) as pendientes,cli.nombre as nombreCliente, s.nombre as nombreServicio,
 DAY(sc.horaInicio) as d, MONTH(sc.horaInicio) as m, YEAR(sc.horaInicio) as y, HOUR(sc.horaInicio) as h, MINUTE(sc.horaInicio) as min,
  HOUR(sc.horaFin) as h2, MINUTE(sc.horaFin) as min2,
 sc.idCita, sc.estado, c.estado as estadoCita FROM cliente as cli, servicio as s, servicio_cita as sc, cita as c 
 WHERE cli.idCliente = c.idCliente AND c.idCita = sc.idCita AND sc.idServicio = s.idServicio 
-AND sc.idEmpleado = ? ORDER BY FIELD(sc.estado,0) DESC, sc.horaInicio DESC`,[req.body.idEmpleado,req.body.idEmpleado])
+AND sc.idEmpleado = ? ORDER BY FIELD(sc.estado,0) DESC, 
+sc.horaInicio DESC`,[req.body.idEmpleado,req.body.idEmpleado]),
+    db(`SELECT * FROM reservaManual WHERE idEmpleado = ?`,[req.body.idEmpleado])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+
+        var arrayM = data[0].concat(data[1]);
+
+        return res.send(arrayM);
       }).catch(err => res.send(err).status(500));
   });
 
