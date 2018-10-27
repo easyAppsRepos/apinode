@@ -3971,7 +3971,12 @@ sc.idCita, sc.estado, c.estado as estadoCita FROM cliente as cli, servicio as s,
 WHERE cli.idCliente = c.idCliente AND c.idCita = sc.idCita AND sc.idServicio = s.idServicio 
 AND sc.idEmpleado = ? ORDER BY FIELD(sc.estado,0) DESC, 
 sc.horaInicio DESC`,[req.body.idEmpleado,req.body.idEmpleado]),
-    db(`SELECT * FROM reservaManual WHERE idEmpleado = ?`,[req.body.idEmpleado])])
+    db(`SELECT rm.*, 
+    DAY(rm.horaInicio) as d, MONTH(rm.horaInicio) as m, 
+    YEAR(rm.horaInicio) as y, HOUR(rm.horaInicio) as h, 
+    MINUTE(rm.horaInicio) as min,
+    HOUR(rm.horaFinalEsperado) as h2, MINUTE(rm.horaFinalEsperado) as min2 
+    FROM reservaManual as rm WHERE rm.idEmpleado = ?`,[req.body.idEmpleado])])
       .then((data) => {
         if (!data) res.send().status(500);
 
