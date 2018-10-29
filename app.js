@@ -608,7 +608,7 @@ expressApp.get('/horaMinMax', function(req, res) {
     let mailOptions = {
         from: 'yourBeautyMessageCenter@gmail.com', // sender address
         to: 'jralfarog@gmail.com'+','+dataf[0].email, // list of receivers
-        subject: 'Solicitud de Soporte Yourbeauty', // Subject line
+        subject: req.body.asunto, // Subject line
         text: 'El centro '+dataf[0].nombre+' ha iniciado una solicitud de soporte con el siguiente mensaje:'+req.body.mensaje
     };
 
