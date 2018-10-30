@@ -5421,6 +5421,19 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
         return res.send({ insertId: data.insertId });
       }).catch(err => res.send(err).status(500));
   });
+
+
+    expressApp.post('/addPush2', (req, res) => {
+    db(`INSERT INTO pushHandlerStaff (idEmpleado, so, pushKey, deviceID) 
+        VALUES (?, ?, ?, ?)
+        `,[req.body.user, req.body.device, req.body.pushK, req.body.deviceId])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({ insertId: data.insertId });
+      }).catch(err => res.send(err).status(500));
+  });
+
+
   expressApp.post('/cerrarS', (req, res) => {
     db(`UPDATE  pushHandler set logOut = CURRENT_TIMESTAMP WHERE idCliente = ?`,[req.body.idCliente])
       .then((data) => {
@@ -5429,6 +5442,14 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       }).catch(err => res.send(err).status(500));
   });
 
+
+  expressApp.post('/cerrarS2', (req, res) => {
+    db(`UPDATE  pushHandlerStaff set logOut = CURRENT_TIMESTAMP WHERE idEmpleado = ?`,[req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 
