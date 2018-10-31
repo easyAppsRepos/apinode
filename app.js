@@ -1134,6 +1134,8 @@ function makeidEmail() {
 
 
 var sender = new gcm.Sender('AIzaSyBH4d4XhTbiJDW2QYwkgABH6nmthapELd0');
+
+var sender2 = new gcm.Sender('AIzaSyCfhDSKvwAVZqVQc8pzqvMy64NB6r2VZWQ');
 //var iap = require('in-app-purchase');
 
 const { database } = require('./config/credentials');
@@ -1351,24 +1353,24 @@ where  exists (SELECT SUM(f.exp) as sss FROM
 
 
 
-function enviarPushEmpleados(empleados, servicios, idCentro){
+function enviarPushEmpleados(empleado, servicios,tipo,fecha,idCita){
     
-var tipox = 1;
 
-   Promise.all([db(`SELECT DISTINCT p.pushKey FROM pushHandlerStaff as p 
-      WHERE p.idEmpleado IN ?  
-      AND p.logOut IS NULL AND p.so = 'Android'`,[empleados]),
+   Promise.all([db(`SELECT DISTINCT p.pushKey,p.idEmpleado FROM pushHandlerStaff as p 
+      WHERE p.idEmpleado = ?  
+      AND p.logOut IS NULL AND p.so = 'Android'`,[empleado]),
      db(`SELECT DISTINCT p.pushKey FROM pushHandlerStaff as p 
-      WHERE p.idEmpleado IN ? AND p.logOut IS NULL AND p.so = 'iOS'`,[empleados])]).then((data) => {
+      WHERE p.idEmpleado = ? AND p.logOut IS NULL AND p.so = 'iOS'`,[empleado])]).then((data) => {
       //res.json(data);
-      var mensajePush = ' '; 
-      if(tipo == 1){
-        mensajePush=" ha solicitado una reprogramacion"
-        tipox = 1;
+      var mensajePush = ' ';
+      var titulo = ''; 
+      if(tipo == 0){
+        titulo = 'Reserva por confirmar.';
+        mensajePush=servicios+" servicio"+(servicios>1 ? 's' : '')+" por confirmar para el "+fecha;
       }
-      if(tipo == 2){
-        mensajePush=" ha confirmado tu cita";
-        tipox = 1;
+      if(tipo == 1){
+         titulo = 'Nueva Reserva.';
+        mensajePush=servicios+" servicio"+(servicios>1 ? 's' : '')+" para el "+fecha;
       }
 
           var nombreCentro = ' ';
@@ -1380,8 +1382,8 @@ var tipox = 1;
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     
               note.sound = "ping.aiff";
-              note.alert = nombreCentro+mensajePush;
-              note.payload = {'tipoNoti': tipox,"idCita":idCita};
+              note.alert = titulo+' '+mensajePush;
+              note.payload = {'tipoNoti': 1,"idCita":idCita};
               note.topic = "com.ionicframework.beyou";
 
                  var regTokens = [];
@@ -1402,10 +1404,10 @@ var tipox = 1;
 
             var message = new gcm.Message({
           "data":{
-                       "title": tituloPush,
+                       "title": titulo,
                        "icon": "ic_launcher",
-                       "body": nombreCentro+mensajePush,
-                       "tipoNoti": tipox, "idCita":idCita}
+                       "body": mensajePush,
+                       "tipoNoti": 1, "idCita":idCita}
                      });
 
 
@@ -1424,7 +1426,7 @@ var tipox = 1;
               //var regTokens = ['dY98OGfoOJE:APA91bFVAw74t-YO0Oh5DXYFOZbgLzhglyMMhSLsEb2jFpnqn44N6e-mt90V6NbMQ9TkYRUfN3kZw2G7D9Xuv1BKReiJ7khrt2zloVkTx3acZ6tcLevhlg3mb70YDocE0LGaeft7APh7yZYgTgAMErouTV5p3m9H0A'];
 
               // Actually send the message
-              sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              sender2.send(message, { registrationTokens: regTokens }, function (err, response) {
               if (err) console.error(err);
               else console.log(response);
               });
@@ -4623,12 +4625,13 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     let cliR = req.body.clienteReferencia || null;
       let idPaquete = req.body.idPaquete || null;
 
-    db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
+    Promise.all([db(`INSERT INTO cita (idCentro, idCliente, horaInicio, horaFinalEsperado, precioEsperado,
       notaCita, estado,idCuponCliente, clienteReferencia, idPaquete ) 
         VALUES (?,?,?,?,?,?,(SELECT (CASE WHEN (confirmacionAutomatica = 1)
          THEN 2 ELSE 1 END ) FROM configuracionCentro WHERE idCentro = ? LIMIT 1),?,?,?)
         `,[req.body.idCentro, req.body.idCliente,req.body.fechaInicio,
-        req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), req.body.idCentro, req.body.idCuponCliente, cliR,idPaquete])
+        req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), req.body.idCentro, req.body.idCuponCliente, cliR,idPaquete]),
+        db(`SELECT confirmacionAutomatica FROM configuracionCentro WHERE idCentro = ? LIMIT 1`,[req.body.idCentro])])
       .then((data) => {
         console.log(data);
         if (!data) {
@@ -4637,7 +4640,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
 
         let arrayFunctions = [];
-        idCita = data.insertId;
+        idCita = data[0].insertId;
         //
 
         if(req.body.idCuponCliente && req.body.idCuponCliente>0){
@@ -4655,14 +4658,29 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
             arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado,
               idEmpleado,horaInicio, horaFin) 
             VALUES (?,?,(SELECT confirmacionAutomatica FROM configuracionCentro WHERE idCentro = ? LIMIT 1),?,?,?,?)
-            `,[data.insertId, elementw.idServicio,req.body.idCentro,(parseFloat(elementw.precioFinal) || 0),
+            `,[data[0].insertId, elementw.idServicio,req.body.idCentro,(parseFloat(elementw.precioFinal) || 0),
             elementw.empleadoSeleccionado.idEmpleado,horaI, horaF]));
 
-
+            confirmacionLista.push(elementw.empleadoSeleccionado.idEmpleado);
 
           });
-      Promise.all(arrayFunctions).then((data) => {
-        if (!data) res.send().status(500);
+
+          var confir = data[1][0].confirmacionAutomatica || 0;
+          var idCitaAdded=data[0].insertId;
+
+
+
+        //(req.body.fechaInicio)
+      Promise.all(arrayFunctions).then((dataas) => {
+        if (!dataas) res.send().status(500);
+
+           var listaPush = _.uniq(confirmacionLista);
+           listaPush.forEach((elementw, index) => {
+            var cant = confirmacionLista.filter(word => word == elementw).length;
+
+            enviarPushEmpleados(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
+          });
+
          return res.send({insertId:idCita });
       }).catch(err => res.send(err).status(500));
 
