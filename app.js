@@ -1427,8 +1427,13 @@ function enviarPushEmpleados(empleado, servicios,tipo,fecha,idCita){
 
               // Actually send the message
               sender2.send(message, { registrationTokens: regTokens }, function (err, response) {
-              if (err) console.error(err);
-              else console.log(response);
+              if (err) {
+                console.log('error push');
+              console.error(err);}
+              else {
+                console.log('okPush');
+                console.log(response);
+              }
               });
 
             }
@@ -4677,7 +4682,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
            var listaPush = _.uniq(confirmacionLista);
            listaPush.forEach((elementw, index) => {
             var cant = confirmacionLista.filter(word => word == elementw).length;
-
+            console.log(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
             enviarPushEmpleados(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
           });
 
