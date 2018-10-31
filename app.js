@@ -1135,7 +1135,7 @@ function makeidEmail() {
 
 var sender = new gcm.Sender('AIzaSyBH4d4XhTbiJDW2QYwkgABH6nmthapELd0');
 
-var sender2 = new gcm.Sender('AIzaSyCfhDSKvwAVZqVQc8pzqvMy64NB6r2VZWQ');
+var sender2 = new gcm.Sender('AIzaSyAkoSKAVHH9JJDulCAb9h3tx5hM4RDxbyE');
 //var iap = require('in-app-purchase');
 
 const { database } = require('./config/credentials');
