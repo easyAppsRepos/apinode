@@ -1384,7 +1384,7 @@ function enviarPushEmpleados(empleado, servicios,tipo,fecha,idCita){
               note.sound = "ping.aiff";
               note.alert = titulo+' '+mensajePush;
               note.payload = {'tipoNoti': 1,"idCita":idCita};
-              note.topic = "com.ionicframework.beyou";
+              note.topic = "com.ionicframework.estilista";
 
                  var regTokens = [];
 
