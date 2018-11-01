@@ -4680,10 +4680,12 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         if (!dataas) res.send().status(500);
 
            var listaPush = _.uniq(confirmacionLista);
+           var fecha = req.body.fechaInicio.split(' ')[0];
            listaPush.forEach((elementw, index) => {
             var cant = confirmacionLista.filter(word => word == elementw).length;
+
             console.log(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
-            enviarPushEmpleados(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
+            enviarPushEmpleados(elementw, cant,1,fecha,idCitaAdded);
           });
 
          return res.send({insertId:idCita });
