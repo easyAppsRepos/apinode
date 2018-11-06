@@ -5570,6 +5570,15 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
   });
 
 
+        expressApp.post('/verificarEmail3', function(req, res) {
+
+    db(`SELECT email FROM cliente WHERE  email = ?`,[req.body.email]).then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
 
 
