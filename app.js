@@ -2916,8 +2916,8 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
       if(req.body.fechaNacimiento){
         req.body.fechaNacimiento = req.body.fechaNacimiento.split('T')[0];
       }
-    db(`UPDATE cliente set nombre=?,telefono=?,genero=?, fechaNacimiento = ? 
-     WHERE idCliente = ?`,[req.body.nombre, req.body.telefono,req.body.genero,req.body.fechaNacimiento,
+    db(`UPDATE cliente set nombre=?,telefono=?,genero=?, idGenero = ? , fechaNacimiento = ? 
+     WHERE idCliente = ?`,[req.body.nombre, req.body.telefono,req.body.genero,req.body.idGenero,req.body.fechaNacimiento,
      req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
