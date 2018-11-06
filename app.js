@@ -6188,7 +6188,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
   });
     expressApp.post('/doLoginApi', (req, res) => {
 
-    db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
+    db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
       u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
        (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
