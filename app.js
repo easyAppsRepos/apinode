@@ -1573,7 +1573,7 @@ expressApp.get('/horaMinMax', function(req, res) {
 
   expressApp.post('/recuperarPass', (req, res) => {
 
-
+    var numss='123456789';
   var claveNeva = makeid();
   console.log(claveNeva);
  //var claveNeva = 'asdasd';
