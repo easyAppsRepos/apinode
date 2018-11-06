@@ -1521,6 +1521,21 @@ expressApp.post('/getCategoriasCentro', function(req, res) {
     }).catch(err => res.send(err).status(500));
 });
 
+
+
+expressApp.post('/getCitaPendientesN', function(req, res) {
+    db(`SELECT idCita FROM cita 
+      WHERE idCliente = ? AND estado = 5 
+      AND (CONVERT_TZ(now(),'+00:00','-05:00')) < horaInicio 
+      ORDER BY idCita ASC LIMIT 1 `,[req.body.idCliente]).then((data) => {
+      console.log(data);
+      res.json(data);
+    }).catch(err => res.send(err).status(500));
+});
+
+
+
+
 expressApp.get('/categoriasHome2', function(req, res) {
     db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 `).then((data) => {
       console.log(data);
