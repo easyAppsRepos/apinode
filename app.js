@@ -4082,6 +4082,27 @@ data.additionalData.puntosGanados,
    * sin( radians(c.latitud)))) AS distance 
       FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
       WHERE c.idCentro = s.idCentro 
+      AND s.idSubcategoria IN (`+req.body.idSubcategoria+`)  
+      AND s.estado = 1   
+      GROUP BY c.idCentro HAVING distance < 35`,[req.body.lat, req.body.lon, req.body.lat])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+  expressApp.post('/getCentrosMapaFix', (req, res) => {
+    db(`SELECT c.*, 
+      MAX(s.precio) as pMax, 
+      MIN(s.precio) as pMin, 
+      COUNT(DISTINCT ec.puntuacion) as cantRate, 
+      AVG(ec.puntuacion) as rate, 
+      ( 6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
+   * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
+   * sin( radians(c.latitud)))) AS distance 
+      FROM servicio as s, centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro
+      WHERE c.idCentro = s.idCentro 
       AND s.idSubcategoria IN ?   
       AND s.estado = 1   
       GROUP BY c.idCentro HAVING distance < 35`,[req.body.lat, req.body.lon, req.body.lat,req.body.idSubcategoria])
@@ -4091,7 +4112,6 @@ data.additionalData.puntosGanados,
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
-
 
 
 
