@@ -2921,8 +2921,11 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
 
   expressApp.post('/agregarOpinion', (req, res) => {
-    db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2
-     WHERE idEvaluacionCentro = ?`,[req.body.evaluacion, req.body.comentario,req.body.idEvaluacionCentro])
+    db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2,
+      servicio=?,staff=?,precio=?,limpieza=?,ambiente=?  
+     WHERE idEvaluacionCentro = ?`,[req.body.evaluacion, req.body.comentario,
+     req.body.servicio,req.body.staff,req.body.precio,req.body.limpieza,
+     req.body.ambiente,req.body.idEvaluacionCentro])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
