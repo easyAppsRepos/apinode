@@ -1914,8 +1914,10 @@ AVG(ec.puntuacion) as rate
 
 
       if(req.body.disponible){
-        stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
- WHERE c.idCentro = hh.idCentro AND hh.diaSemana=`+req.body.diaSemana+`) > 0 `; 
+        stringQuery += ` AND ((SELECT COUNT(*) FROM horarioCentro as hh 
+ WHERE c.idCentro = hh.idCentro AND hh.estado = 1 AND hh.diaSemana=`+req.body.diaSemana+`) > 0 AND 
+ (SELECT COUNT(*) FROM horario_especial as hhs 
+ WHERE c.idCentro = hhs.idCentro AND hhs.abierto = 0 AND hhs.fecha = DATE(now()) ) < 1)`; 
       }
 
 
