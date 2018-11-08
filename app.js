@@ -3254,6 +3254,50 @@ db(`UPDATE servicio_cita set estado=?
   });
 
 
+
+        expressApp.post('/reprogramarCitaNCAPP', (req, res) => {
+
+          var idCita = req.body.servicios[0].idCita;
+           var notaR = req.body.comentarioEstado || ' ';
+           let arrayFunctions = [];
+              let confirmacionLista = [];
+      req.body.servicios.forEach((elementw, index) => {
+
+      var horaI = req.body.fecha+' '+elementw.inicio;
+      var horaF = req.body.fecha+' '+elementw.fin;
+      arrayFunctions.push(db(`UPDATE servicio_cita set estado=0,horaInicio=?, 
+        horaFin=?, idEmpleado = ? 
+        WHERE idServicioCita = ?`,[horaI, horaF, elementw.empleadoSeleccionado.idEmpleado,
+        elementw.idServicioCita]));
+
+       confirmacionLista.push(elementw.empleadoSeleccionado.idEmpleado);
+
+
+      });
+
+      arrayFunctions.push(db(`UPDATE cita set comentarioEstado=?, horaInicio=?, horaFinalEsperado=?, 
+      estado=1  WHERE idCita = ?`,[notaR,req.body.inicio,
+      req.body.fin,idCita]));
+
+     Promise.all(arrayFunctions).then((data) => {
+        if (!data) res.send().status(500);
+
+          var listaPush = _.uniq(confirmacionLista);
+           var fecha = req.body.inicio.split(' ')[0];
+
+            listaPush.forEach((elementw, index) => {
+            var cant = confirmacionLista.filter(word => word == elementw).length;
+
+            //console.log(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
+            enviarPushEmpleados(elementw, cant,1,fecha,idCita);
+          });
+
+
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
         expressApp.post('/reprogramarCita', (req, res) => {
     db(`UPDATE cita set horaInicio=?, horaFinalEsperado=?, estado=1  WHERE idCita = ?`,[req.body.horaInicio,
       req.body.horaFinalEsperado,req.body.idCita])
