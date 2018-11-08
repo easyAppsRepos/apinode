@@ -3143,6 +3143,29 @@ db(`UPDATE servicio_cita set estado=?
   });
 
 
+
+        expressApp.post('/cambiarServicioCitaNCREPRO', (req, res) => {
+
+db(`UPDATE servicio_cita set estado=2 
+      WHERE idCita = ?`,[req.body.estado,req.body.idCita]).then((datass) => {
+
+        if (!datass) res.send().status(500);
+
+     db(`UPDATE cita set estado=5 WHERE idCita = ?`,[req.body.idCita])
+      .then((data) => {
+        
+          enviarPush(req.body.idCita,1);
+               
+
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+
+
+    });
+  });
+
+
+
     
 
 
