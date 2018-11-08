@@ -3147,7 +3147,7 @@ db(`UPDATE servicio_cita set estado=?
         expressApp.post('/cambiarServicioCitaNCREPRO', (req, res) => {
 
 db(`UPDATE servicio_cita set estado=2 
-      WHERE idCita = ?`,[req.body.estado,req.body.idCita]).then((datass) => {
+      WHERE idCita = ?`,[req.body.idCita]).then((datass) => {
 
         if (!datass) res.send().status(500);
 
