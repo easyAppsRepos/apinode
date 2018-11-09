@@ -5972,7 +5972,7 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
   expressApp.post('/addServicioNC', function(req, res) {
 
     var insertQ = ''; 
-    var duracion = req.body.duracionH + req.body.duracionM;
+    var duracion = parseInt(req.body.duracionH) + parseInt(req.body.duracionM);
      db(`INSERT INTO servicio(idCentro, nombre, idCategoria, idSubcategoria, duracion, precio ) 
       VALUES (?,?,?,?,?,?)`,[req.body.idCentro,req.body.nombreServicio,req.body.idCategoria,
       req.body.idSubcategoria,duracion,req.body.precio]).then((data) => {
