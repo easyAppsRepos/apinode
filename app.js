@@ -1182,12 +1182,12 @@ var tipox = 1;
       //res.json(data);
       var mensajePush = ' '; 
       if(tipo == 1){
-        mensajePush=" ha solicitado una reprogramacion"
+        mensajePush=" Solicitud de reprogramación de reserva"
        tipox = 1;
       }
 
             if(tipo == 2){
-        mensajePush=" ha confirmado tu cita";
+        mensajePush="  Felicidades! Tu reserva ha sido confirmada.";
          tipox = 1;
 
       }
