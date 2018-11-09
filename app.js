@@ -4941,7 +4941,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     expressApp.post('/getDataCitaAE', (req, res) => {
      Promise.all([
     db(`SELECT c.idCentro,xcli.nombre as nombreCliente, c.nombre, c.direccion, xcli.idFoto, c.telefono, 
-      ci.idCita, ci.estado, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
+      ci.idCita, ci.estado, ci.clienteReferencia, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
       ci.horaFinalEsperado,precioEsperado, ci.idCuponCliente, ci.idCliente, 
       (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento 
