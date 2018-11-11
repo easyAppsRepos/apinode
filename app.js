@@ -3017,6 +3017,16 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
   });
 
 
+
+    expressApp.post('/actualizarBannerNC21', upload.single('imageU'),(req, res) => {
+   db(`UPDATE centro set imagenBanner = ? WHERE idCentro = ?`,[req.file.path,req.body.idCentro])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
     expressApp.post('/actualizarBannerNC2', upload.single('imageU'),(req, res) => {
    Promise.all([db(`UPDATE centro set idFoto = ? WHERE idCentro = ?`,[req.file.path,req.body.idCentro]),
      db(`UPDATE usuario_consola set pasos=5 WHERE email = 
