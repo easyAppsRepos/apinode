@@ -5228,8 +5228,8 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion `,[req.body.idCentro, re
       var tipo = parseInt(req.body.tipo);
       var telefono = req.body.telefono || '';
 
-    db(`UPDATE empleado set nombre = ?, telefono = ?, email = ?, descripcion=?, tipo=? 
-      WHERE idEmpleado = ?`,[req.body.nombre,telefono,req.body.email,
+    db(`UPDATE empleado set nombre = ?, password = ?, telefono = ?, email = ?, descripcion=?, tipo=? 
+      WHERE idEmpleado = ?`,[req.body.nombre,req.body.pass,telefono,req.body.email,
       req.body.descripcion,tipo,req.body.idEmpleado])
       .then((data) => {
         if (!data) res.send().status(500);
