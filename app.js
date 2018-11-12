@@ -6699,11 +6699,11 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       }).catch(err => res.send(err).status(500));
   });
 
-
+/*
 var httpsServer = https.createServer(https_options, expressApp);
 serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
 
-
+*/
 
   expressApp.get('/test', (req, res) =>
     res.send('Api is running in port 3000'));
