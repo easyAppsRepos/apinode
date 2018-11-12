@@ -4655,9 +4655,9 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
   expressApp.post('/getInfoCentroNC', (req, res) => {
      Promise.all([
     db(`SELECT c.nombre,c.direccion,c.idFoto, 
-       (SELECT COUNT(r.idCita) FROM cita as r WHERE r.idCentro = c.idCentro AND r.idCliente <> 0) as total, (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 3 AND r.idCliente <> 0) as completadas,
-      (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 4 AND r.idCliente <> 0) as canceladas,
-      (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 2 AND r.idCliente <> 0) as confirmadas  
+       (SELECT COUNT(r.idCita) FROM cita as r WHERE r.idCentro = c.idCentro AND r.idCliente <> 0) as total, (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 3 AND d.idCliente <> 0) as completadas,
+      (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 4 AND d.idCliente <> 0) as canceladas,
+      (SELECT COUNT(d.idCita) FROM cita as d WHERE d.idCentro = c.idCentro AND d.estado = 2 AND d.idCliente <> 0) as confirmadas  
       FROM  centro as c  
       WHERE c.idCentro = ?`,[req.body.idCentro]), 
     db(`SELECT s.nombre, cc.nombre as nombreCategoria, cc.idFoto, 
