@@ -8,6 +8,7 @@ const apn = require('apn');
 
 var fs = require('fs');
 var https = require('https');
+var http = require('http');
 
 var https_options = {
   key: fs.readFileSync("../../private.key"),
@@ -1458,7 +1459,7 @@ function enviarPushEmpleados(empleado, servicios,tipo,fecha,idCita){
 
 }
 
-const app = () => {
+//const app = () => {
 
 
   const expressApp = express();
@@ -6705,13 +6706,24 @@ serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
 
 */
 
-  expressApp.get('/test', (req, res) =>
-    res.send('Api is running in port 3000'));
+  expressApp.get('/test', (req, res) =>res.send('Api is running in port 3000'));
 
+
+const server = http.createServer(expressApp);
+const serverHttps = https.createServer(https_options,expressApp);
+
+serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
+server.listen(3000, () => console.log(`Running on localhost:${port}`));
+
+
+
+/*
   return expressApp.listen(
     3000,
     () => console.log('Connection has been established successfully.')
   );
-};
+*/
 
-module.exports = app();
+//};
+
+//module.exports = app();
