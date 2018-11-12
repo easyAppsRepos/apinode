@@ -6713,7 +6713,7 @@ const server = http.createServer(expressApp);
 const serverHttps = https.createServer(https_options,expressApp);
 
 serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
-server.listen(3000, () => console.log(`Running on localhost:${port}`));
+server.listen(3000, () => console.log(`Running on localhost:3000`));
 
 
 
