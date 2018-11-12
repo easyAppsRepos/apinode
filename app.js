@@ -5197,7 +5197,13 @@ sc.horaInicio DESC`,[req.body.idEmpleado,req.body.idEmpleado]),
 
 
         expressApp.post('/getInfoEvaNC', (req, res) => {
-    db(`SELECT AVG(puntuacion) as puntuacion, COUNT(idEvaluacionCentro) as cantidad 
+    db(`SELECT AVG(puntuacion) as puntuacion,
+    AVG(servicio) as servicio,
+    AVG(staff) as staff,
+    AVG(precio) as precio,
+    AVG(limpieza) as limpieza,
+    AVG(ambiente) as ambiente,
+     COUNT(idEvaluacionCentro) as cantidad 
       FROM evaluacionCentro WHERE idCentro = ? AND estado = 2`,[req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
