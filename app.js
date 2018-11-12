@@ -1673,7 +1673,7 @@ expressApp.get('/horaMinMax', function(req, res) {
     console.log(dataf[0].email);
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'yourBeautyMessageCenter@gmail.com', // sender address
+        from: dataf[0].email, // sender address
         to: 'soporte@yourbeauty.com.pa'+','+dataf[0].email, // list of receivers
         subject: req.body.asunto, // Subject line
         text: 'El centro '+dataf[0].nombre+' ha iniciado una solicitud de soporte con el siguiente mensaje:'+req.body.mensaje
