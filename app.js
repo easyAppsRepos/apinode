@@ -5,6 +5,21 @@ const apn = require('apn');
 //const mail = require("nodemailer").mail;
 //const nodemailer = require("nodemailer");
 //var nodemailer = require('nodemailer');
+
+var fs = require('fs');
+var https = require('https');
+
+var https_options = {
+  key: fs.readFileSync("../../private.key"),
+  cert: fs.readFileSync("../../_yourbeauty_com_pa.crt"),
+  ca: [
+          fs.readFileSync('../../COMODO_RSA_Certification_Authority.crt'),
+          fs.readFileSync('../../AddTrust_External_CA_Root.crt') 
+       ]
+
+};
+
+
 const nodemailer = require('nodemailer');
 
 
@@ -6683,6 +6698,10 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
         return res.send(data);
       }).catch(err => res.send(err).status(500));
   });
+
+
+var httpsServer = https.createServer(https_options, expressApp);
+serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
 
 
 
