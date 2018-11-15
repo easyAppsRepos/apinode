@@ -83,6 +83,18 @@ const storage2 = multer.diskStorage({
 
   taskCupon.start();
 */
+
+registrarIdCC(idAnimacion, idCC){
+
+db(`UPDATE animacionUser set idCC = ? WHERE idAnimacionesUser = ?`,[idCC,idAnimacion]).then((data) => {
+  console.log('animSetOK');
+
+      }).catch(err => console.log('errorEnCron1'));
+
+
+}
+
+
   var task = cron.schedule('0,30 * * * *', () =>  {
 
   console.log('task cronjob');
@@ -1344,6 +1356,21 @@ var tipox = 1;
 
 function completarCitaPush(idCita){
 
+
+/*
+
+            var ga=Number(data.additionalData.puntosGanados) * 1;
+            var ge=Number(data.additionalData.totalExc)* 1;
+            var gi=Number(data.additionalData.puntosActual)* 1;
+            var idCC=Number(data.additionalData.idCC);
+
+SELECT (SELECT valor FROM parametros WHERE idParametro = 7) as max,
+(SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3) as expCliente,
+(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?) as expCita
+
+*/
+
+
 Promise.all([
     db(`UPDATE cita set  estado=3,
       exp=(precioEsperado*(SELECT valor FROM parametros WHERE idParametro=2)),
@@ -1356,9 +1383,14 @@ Promise.all([
      db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
       AND p.logOut IS NULL AND p.so = 'iOS'`,[idCita]),
-      db(`SELECT (SELECT valor FROM parametros WHERE idParametro = 7) as max,
-(SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3) as expCliente,
-(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?) as expCita`,[idCita,idCita]),
+      db(`INSERT INTO animacionesUser (idCliente,ga,ge,gi) 
+        VALUES ((SELECT idCliente FROM cita WHERE idCita = ?),
+        (SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?),
+        (SELECT valor FROM parametros WHERE idParametro = 7),
+        ((SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente 
+        = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) 
+        AND f.estado = 3)-(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?))
+          )`,[idCita,idCita,idCita,idCita]),
 
        db(`INSERT IGNORE INTO cupon_cliente(idCliente, idCupon,estado,regalo, fechaActivacion)
 select (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?),
@@ -1375,14 +1407,16 @@ where  exists (SELECT SUM(f.exp) as sss FROM
       .then((data) => {
 
         if (!data) res.send().status(500);
-
+        /*
            var pg = parseInt(data[4][0].expCita) || 0;
                var te = parseInt(data[4][0].max) || 0;
                 var pa = (parseInt(data[4][0].expCliente) - parseInt(data[4][0].expCita)) || 0;
                 var idCC = 0;
-
+*/
                 if(data[5].insertId > 0){
-                   idCC = data[5].insertId;
+                   //idCC = data[5].insertId;
+                   registrarIdCC(data[4].insertId,data[5].insertId);
+
                 }
             if(data[3]){
 
@@ -1392,7 +1426,7 @@ where  exists (SELECT SUM(f.exp) as sss FROM
     
               note.sound = "ping.aiff";
               note.alert = "Has ganado puntos! Tu cita ha sido marcada como completada";
-              note.payload = {'tipoNoti': 2, 'puntosGanados':pg,'totalExc':te,'puntosActual':pa,'idCC':idCC};
+              note.payload = {'tipoNoti': 2};
               note.topic = "com.ionicframework.beyou";
 
                  var regTokens = [];
@@ -1412,8 +1446,7 @@ where  exists (SELECT SUM(f.exp) as sss FROM
                                        "title": "Cita Finalizada",
                                        "icon": "ic_launcher",
                                        "body": "Has ganado puntos! Tu cita ha sido marcada como completada",
-                                       "tipoNoti": "2","puntosGanados":pg,
-                                       "totalExc":te,"puntosActual":pa,'idCC':idCC
+                                       "tipoNoti": "2"
                                        
                                        }});
               var regTokens = [];
