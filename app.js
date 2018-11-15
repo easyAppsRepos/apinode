@@ -10,6 +10,13 @@ var fs = require('fs');
 var https = require('https');
 var http = require('http');
 
+const { twilo } = require('../../twilocred');
+
+const accountSid = twilo.sid;
+const authToken = twilo.token;
+const client = require('twilio')(accountSid, authToken);
+
+
 var https_options = {
   key: fs.readFileSync("../../private.key"),
   cert: fs.readFileSync("../../_yourbeauty_com_pa.crt"),
