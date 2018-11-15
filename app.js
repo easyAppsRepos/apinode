@@ -83,10 +83,10 @@ const storage2 = multer.diskStorage({
 
   taskCupon.start();
 */
-  var task = cron.schedule('10,43 * * * *', () =>  {
+  var task = cron.schedule('10,44 * * * *', () =>  {
 
   console.log('task cronjob');
-/*
+
       Promise.all([db(`SELECT c.idCita, c.horaInicio FROM cita as c  WHERE TIMEDIFF(c.horaInicio, CONVERT_TZ(now(),'+00:00','-05:00')) BETWEEN  '01:30:00' AND '02:00:00' AND
  TIMEDIFF(CONVERT_TZ(now(),'+00:00','-05:00'),CONVERT_TZ(c.fechaCreacion,'+00:00','-05:00')) < '24:00:00'`,[]),
    db(`SELECT c.idCita, c.horaInicio FROM cita as c  WHERE TIMEDIFF(c.horaInicio, CONVERT_TZ(now(),'+00:00','-05:00')) BETWEEN  '23:30:00' AND '24:00:00' AND
@@ -110,7 +110,6 @@ const storage2 = multer.diskStorage({
 
       }).catch(err => console.log('errorEnCron1'));
 
-*/
 
   });
 
