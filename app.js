@@ -1607,12 +1607,13 @@ expressApp.post('/getCategoriasCentro', function(req, res) {
 
 
 expressApp.post('/getCitaPendientesN', function(req, res) {
-    db(`SELECT idCita FROM cita 
+      Promise.all([db(`SELECT idCita FROM cita 
       WHERE idCliente = ? AND estado = 5 
       AND (CONVERT_TZ(now(),'+00:00','-05:00')) < horaInicio 
-      ORDER BY idCita ASC LIMIT 1 `,[req.body.idCliente]).then((data) => {
-      console.log(data);
-      res.json(data);
+      ORDER BY idCita ASC LIMIT 1 `,[req.body.idCliente]),
+      db(`SELECT * FROM animacionesUser WHERE idCliente = ? AND estado = 1 LIMIT 1`,[req.body.idCliente])]).then((data) => {
+     // console.log(data);
+      res.json({citas:data[0], animaciones:data[1]});
     }).catch(err => res.send(err).status(500));
 });
 
