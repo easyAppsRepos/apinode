@@ -5,7 +5,7 @@ const apn = require('apn');
 //const mail = require("nodemailer").mail;
 //const nodemailer = require("nodemailer");
 //var nodemailer = require('nodemailer');
-
+var cron = require('node-cron');
 var fs = require('fs');
 var https = require('https');
 var http = require('http');
@@ -63,6 +63,63 @@ const storage2 = multer.diskStorage({
 });
 
 
+/*CRONJOBLOGIC START*/
+/*
+  var taskCupon = cron.schedule('10 10 * * *', () =>  {
+
+  console.log('stoped task');
+
+      db(`SELECT cli.idCliente, cu.idCupon, cu.nombre as nombreCupon FROM cupon as cu, cliente as cli, 
+  cupon_cliente as cc WHERE DATE(DATE_ADD(CONVERT_TZ(now(),'+00:00','-05:00'), INTERVAL 1 DAY)) = DATE(cu.fechaExpira) AND cc.idCupon = cu.idCupon AND cli.idCliente = cc.idCliente`,[])
+      .then((data) => {
+
+         if (!data) res.send().status(500);
+
+         var clientesCupon = data;
+          return res.send(data);
+
+      }).catch(err => console.log('errorEnCron2'));
+  });
+
+  taskCupon.start();
+*/
+  var task = cron.schedule('* 10,40 * * * *', () =>  {
+
+  console.log('task cronjob');
+
+      Promise.all([db(`SELECT c.idCita, c.horaInicio FROM cita as c  WHERE TIMEDIFF(c.horaInicio, CONVERT_TZ(now(),'+00:00','-05:00')) BETWEEN  '01:30:00' AND '02:00:00' AND
+ TIMEDIFF(CONVERT_TZ(now(),'+00:00','-05:00'),CONVERT_TZ(c.fechaCreacion,'+00:00','-05:00')) < '24:00:00'`,[]),
+   db(`SELECT c.idCita, c.horaInicio FROM cita as c  WHERE TIMEDIFF(c.horaInicio, CONVERT_TZ(now(),'+00:00','-05:00')) BETWEEN  '23:30:00' AND '24:00:00' AND
+ TIMEDIFF(CONVERT_TZ(now(),'+00:00','-05:00'),CONVERT_TZ(c.fechaCreacion,'+00:00','-05:00')) > '24:00:00'`,[])])
+      .then((data) => {
+
+         if (!data) res.send().status(500);
+
+         var itemsReservaHoy = data[0];
+          var itemsReservaVariosDias = data[1];
+
+          itemsReservaHoy.forEach(item => {
+            enviarPush(item.idCita,4);
+          });
+
+          itemsReservaVariosDias.forEach(item => {
+            enviarPush(item.idCita,4);
+          });
+
+        //return res.send(data);
+
+      }).catch(err => console.log('errorEnCron1'));
+
+
+
+  });
+
+  task.start();
+  //task.stop();
+  //task.destroy();
+
+
+/*CRONJOBLOGIC ENDS*/
 
 /*
 const transport = nodemailer.createTransport("SMTP", {
@@ -1193,7 +1250,7 @@ var tipox = 1;
      db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
       AND p.logOut IS NULL AND p.so = 'iOS'`,[idCita]),
-     db(`SELECT c.nombre, c.idCentro FROM centro as c, cita as r 
+     db(`SELECT c.nombre, c.idCentro, r.horaInicio FROM centro as c, cita as r 
       WHERE c.idCentro = r.idCentro AND r.idCita = ?`,[idCita])]).then((data) => {
      
       //res.json(data);
@@ -1209,7 +1266,16 @@ var tipox = 1;
 
       }
 
+                  if(tipo == 4){
+        var horaInicioReserva = moment(data[2][0].horaInicio, "YYYY-MM-DD HH:mm:ss").format("LLL");
+        mensajePush=" Recordatorio de cita para el "+horaInicioReserva;
+         tipox = 1;
+
+      }
+
+
           var nombreCentro = data[2][0].nombre;
+
 
               if(data[1]){
 
