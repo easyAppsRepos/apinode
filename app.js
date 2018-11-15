@@ -83,7 +83,7 @@ const storage2 = multer.diskStorage({
 
   taskCupon.start();
 */
-  var task = cron.schedule('10,44 * * * *', () =>  {
+  var task = cron.schedule('10,54 * * * *', () =>  {
 
   console.log('task cronjob');
 
@@ -1251,7 +1251,8 @@ var tipox = 1;
       AND p.logOut IS NULL AND p.so = 'iOS'`,[idCita]),
      db(`SELECT c.nombre, c.idCentro, r.horaInicio FROM centro as c, cita as r 
       WHERE c.idCentro = r.idCentro AND r.idCita = ?`,[idCita])]).then((data) => {
-     
+
+      moment.locale('es');
       //res.json(data);
       var mensajePush = ' '; 
       if(tipo == 1){
@@ -1274,7 +1275,7 @@ var tipox = 1;
 
 
           var nombreCentro = data[2][0].nombre;
-
+         
 
               if(data[1]){
 
@@ -6772,12 +6773,7 @@ serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
 
 */
 
-  expressApp.get('/test', (req, res) =>{
-    moment.locale('es');
-    var env =  moment('2018-11-16 02:20:00', "YYYY-MM-DD HH:mm:ss").format("LLL");
-    res.send(env);
-
-  });
+  expressApp.get('/test', (req, res) =>res.send('Api is running in port 3000'));
 
 
 const server = http.createServer(expressApp);
