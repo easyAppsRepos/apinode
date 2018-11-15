@@ -83,7 +83,7 @@ const storage2 = multer.diskStorage({
 
   taskCupon.start();
 */
-  var task = cron.schedule('10,45 * * * *', () =>  {
+  var task = cron.schedule('10,43 * * * *', () =>  {
 
   console.log('task cronjob');
 /*
