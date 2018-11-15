@@ -84,7 +84,7 @@ const storage2 = multer.diskStorage({
   taskCupon.start();
 */
 
-registrarIdCC(idAnimacion, idCC){
+function registrarIdCC(idAnimacion, idCC){
 
 db(`UPDATE animacionUser set idCC = ? WHERE idAnimacionesUser = ?`,[idCC,idAnimacion]).then((data) => {
   console.log('animSetOK');
