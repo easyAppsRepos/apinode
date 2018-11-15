@@ -3000,10 +3000,16 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
 
         expressApp.post('/quitarAnimacion', function(req, res) {
-     db(`UPDATE animacionesUser set estado = 0 WHERE idCliente = ?`,[req.body.idCliente])
+     Promise.all([db(`UPDATE animacionesUser set estado = 0 WHERE idCliente = ?`,[req.body.idCliente]),
+     db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
+      u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
+       (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
+              (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
+        FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
+      WHERE u.idCliente = ?  GROUP BY u.idCliente`,[req.body.idCliente])])
       .then((data) => {
          if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send({data: data[1]});
 
       }).catch(err => res.send(err).status(500));
   });
@@ -6443,6 +6449,30 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       
     }).catch(err => res.send(err).status(500));
   });
+
+
+        expressApp.post('/actualizarDataINL', (req, res) => {
+
+    db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
+      u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
+       (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
+              (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
+        FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
+      WHERE u.idCliente = ?  GROUP BY u.idCliente`,[req.body.idCliente]).then((data) => {
+      console.log(data);
+      if (data) {
+        return res.send({
+          data: data
+          });
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
 
 
         expressApp.post('/doLoginApiAE', (req, res) => {
