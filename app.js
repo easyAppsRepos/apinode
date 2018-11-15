@@ -4818,6 +4818,12 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
 
 
   expressApp.post('/getCentroInfo', (req, res) => {
+
+
+     if( req.body.numDia==0){ssdd=6;}
+  else{ssdd=req.body.numDia-1;}
+
+
      Promise.all([
     db(`SELECT c.*, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
@@ -4826,7 +4832,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       (SELECT idUsuarioFavorito 
       FROM usuario_favorito WHERE idCentro = ? AND idCliente = ? AND estado = 1) as favorito
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
-      GROUP BY c.idCentro`,[req.body.idCentro,req.body.numDia,req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
+      GROUP BY c.idCentro`,[req.body.idCentro,ssdd,req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
       (SELECT co.precioOferta FROM control_oferta AS co WHERE co.idServicio = s.idServicio AND co.idCentro = ? AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
       FROM servicio as s, categoria as c 
