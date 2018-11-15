@@ -1644,7 +1644,8 @@ expressApp.post('/getCitaPendientesN', function(req, res) {
       WHERE idCliente = ? AND estado = 5 
       AND (CONVERT_TZ(now(),'+00:00','-05:00')) < horaInicio 
       ORDER BY idCita ASC LIMIT 1 `,[req.body.idCliente]),
-      db(`SELECT * FROM animacionesUser WHERE idCliente = ? AND estado = 1 LIMIT 1`,[req.body.idCliente])]).then((data) => {
+      db(`SELECT * FROM animacionesUser WHERE idCliente = ? 
+        AND estado = 1 ORDER BY idAnimacionesUser DESC LIMIT 1`,[req.body.idCliente])]).then((data) => {
      // console.log(data);
       res.json({citas:data[0], animaciones:data[1]});
     }).catch(err => res.send(err).status(500));
@@ -2990,6 +2991,16 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
         expressApp.post('/eliminarUC', function(req, res) {
      db(`DELETE FROM usuario_consola WHERE idUsuarioConsola = ?`,[req.body.idUsuarioConsola])
+      .then((data) => {
+         if (!data) res.send().status(500);
+        return res.send(data);
+
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+        expressApp.post('/quitarAnimacion', function(req, res) {
+     db(`UPDATE animacionesUser set estado = 0 WHERE idCliente = ?`,[req.body.idCliente])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
