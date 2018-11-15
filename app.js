@@ -6772,7 +6772,12 @@ serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
 
 */
 
-  expressApp.get('/test', (req, res) =>res.send('Api is running in port 3000'));
+  expressApp.get('/test', (req, res) =>{
+    moment.locale('es');
+    var env =  moment('2018-11-16 02:20:00', "YYYY-MM-DD HH:mm:ss").format("LLL");
+    res.send(env);
+
+  });
 
 
 const server = http.createServer(expressApp);
