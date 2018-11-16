@@ -14,7 +14,7 @@ const { twilo } = require('../../twilocred');
 
 const accountSid = twilo.sid;
 const authToken = twilo.token;
-const client = require('twilio')(accountSid, authToken);
+const clientTwilo = require('twilio')(accountSid, authToken);
 
 
 var https_options = {
@@ -4338,7 +4338,7 @@ data.additionalData.puntosGanados,
       MAX(s.precio) as pMax, 
       MIN(s.precio) as pMin, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
-      AVG(ec.puntuacion) as rate, 
+       ROUND(AVG(ec.puntuacion),2) as rate, 
       ( 6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
    * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
    * sin( radians(c.latitud)))) AS distance 
@@ -6861,7 +6861,17 @@ serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
 
 */
 
-  expressApp.get('/test', (req, res) =>res.send('Api is running in port 3000'));
+  expressApp.get('/test', (req, res) =>{
+/*
+    clientTwilo.messages.create({
+     body: 'PruebaSMS Confirmar',
+     from: '+15017122661',
+     to: '+50769453583'
+   })
+  .then(message => console.log(message.sid))
+  .done();
+*/
+     });
 
 
 const server = http.createServer(expressApp);
