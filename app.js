@@ -3996,7 +3996,7 @@ data.additionalData.puntosGanados,
 
    expressApp.post('/getUserInfo', (req, res) => {
     db(`SELECT c.*,
-      (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
+      (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp 
                FROM cliente as c  WHERE c.idCliente = ?`,[req.body.idCliente])
       .then((data) => {
