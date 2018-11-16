@@ -2079,7 +2079,7 @@ else{
       }).catch(err => res.send(err).status(500));
   });
 
-
+// ORDER BY FIELD(r.estado, 5, 1, 2,3,4), r.horaInicio DESC
   expressApp.post('/reservasUser', (req, res) => {
     db(`SELECT c.nombre as nombreCentro, c.idFoto, r.idCita, r.idCentro, r.horaInicio, ee.nombre as nombreEmpleado,
       (SELECT COUNT(sc.idServicioCita) FROM servicio_cita as sc WHERE sc.idCita = r.idCita) as cantServicios,
@@ -2087,7 +2087,7 @@ else{
       (SELECT idServicio FROM servicio_cita as ccc WHERE ccc.idCita = r.idCita ORDER BY ccc.idServicioCita ASC) LIMIT 1) as servicioMain,
       r.estado FROM centro as c, cita as r 
       LEFT JOIN empleado as ee ON ee.idEmpleado = r.idEmpleado 
-      WHERE c.idCentro = r.idCentro AND r.idCliente = ? ORDER BY FIELD(r.estado, 5, 1, 2,3,4), r.horaInicio DESC`,[req.body.idCliente])
+      WHERE c.idCentro = r.idCentro AND r.idCliente = ? ORDER BY r.horaInicio DESC`,[req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
