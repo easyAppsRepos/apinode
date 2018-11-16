@@ -6874,15 +6874,15 @@ serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
 */
 
   expressApp.get('/test', (req, res) =>{
-/*
+
     clientTwilo.messages.create({
      body: 'PruebaSMS Confirmar',
-     from: '+15017122661',
+     from: '+50769453583',
      to: '+50769453583'
    })
   .then(message => console.log(message.sid))
   .done();
-*/
+
      });
 
 
