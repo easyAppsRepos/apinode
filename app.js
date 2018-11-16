@@ -3994,6 +3994,15 @@ data.additionalData.puntosGanados,
 
 
 
+   expressApp.post('/getUserInfo', (req, res) => {
+    db(`SELECT * FROM cliente  WHERE idCliente = ?`,[req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
     expressApp.post('/cargaUsuariosConsola', (req, res) => {
     db(`SELECT uc.* FROM usuario_consola  as uc WHERE uc.parentUser = ?`,[req.body.idUsuario])
       .then((data) => {
