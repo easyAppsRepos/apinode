@@ -6548,7 +6548,15 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       var numss='123456789';
       if (data.insertId) {
 
-            
+          clientTwilo.messages.create({
+          body: 'Codigo de verificacion YourBeauty: '+hashEmail,
+          from: '+15154978942',
+          to: '+507'+req.body.telefono
+          })
+          .then(message => console.log(message.sid))
+          .done();
+
+
           nodemailer.createTestAccount((err, account) => {
           console.log(err);
           // create reusable transporter object using the default SMTP transport
