@@ -6199,7 +6199,7 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
     var insertQ = ''; 
     req.body.servicios.forEach((item, index)=>{
       if(index==0){
-    insertQ +='('+req.body.idCentro+',"LOWER('+item.nombreServicio+'"),'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
+    insertQ +='('+req.body.idCentro+',LOWER("'+item.nombreServicio+'"),'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
        }
        else{
           insertQ +=', ('+req.body.idCentro+',LOWER("'+item.nombreServicio+'"),'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
