@@ -210,6 +210,17 @@ function makeid() {
   return text;
 }
 
+function makeid2() {
+  var text = "";
+  var possible = "0123456789";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+
 
 function enviarEmailStaff(email, clave,nombreCli,nombreCen){
 
@@ -6527,7 +6538,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 //"INSERT INTO Usuarios(nombre, email, fbId, imagenFB) values(?, ?, ?, ?)"
     expressApp.post('/addUserEmail', (req, res) => {
 
-      var hashEmail = makeid();
+      var hashEmail = makeid2();
 
 
     db(`INSERT INTO cliente(nombre,email,telefono,password, verificacionKey, estado) 
