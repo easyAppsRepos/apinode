@@ -6160,7 +6160,7 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
     var insertQ = ''; 
     var duracion = parseInt(req.body.duracionH) + parseInt(req.body.duracionM);
      db(`INSERT INTO servicio(idCentro, nombre, idCategoria, idSubcategoria, duracion, precio ) 
-      VALUES (?,?,?,?,?,?)`,[req.body.idCentro,req.body.nombreServicio,req.body.idCategoria,
+      VALUES (?,LOWER(?),?,?,?,?)`,[req.body.idCentro,req.body.nombreServicio,req.body.idCategoria,
       req.body.idSubcategoria,duracion,req.body.precio]).then((data) => {
 
          if (!data) {res.send().status(500);}
@@ -6199,10 +6199,10 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
     var insertQ = ''; 
     req.body.servicios.forEach((item, index)=>{
       if(index==0){
-    insertQ +='('+req.body.idCentro+',"'+item.nombreServicio+'",'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
+    insertQ +='('+req.body.idCentro+',"LOWER('+item.nombreServicio+'"),'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
        }
        else{
-          insertQ +=', ('+req.body.idCentro+',"'+item.nombreServicio+'",'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
+          insertQ +=', ('+req.body.idCentro+',LOWER("'+item.nombreServicio+'"),'+item.categoriaServicio+','+item.subcategoriaServicio+','+(parseInt(item.minutoServicio)+parseInt(item.horaServicio))+','+item.precioServicio+',1)';
        }
     });
 
@@ -6780,7 +6780,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
         expressApp.post('/nuevoServicio', (req, res) => {
 
     db(`INSERT INTO servicio(nombre,duracion,precio,estado, descripcion,idCategoria, idSubcategoria, idCentro) 
-      VALUES(?, ?, ?, ?, ?, ?, ?,?)`,[req.body.nombre,req.body.duracion,req.body.precio,req.body.estado,
+      VALUES(LOWER(?), ?, ?, ?, ?, ?, ?,?)`,[req.body.nombre,req.body.duracion,req.body.precio,req.body.estado,
       req.body.descripcion,req.body.idCategoria,req.body.idSubcategoria,req.body.idCentro]).then((data) => {
       console.log(data);
       if (data) {
