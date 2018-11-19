@@ -1489,22 +1489,24 @@ where  exists (SELECT SUM(f.exp) as sss FROM
 
 function enviarPushEmpleados(empleado, servicios,tipo,fecha,idCita){
     
-
+moment.locale('es');
    Promise.all([db(`SELECT DISTINCT p.pushKey,p.idEmpleado FROM pushHandlerStaff as p 
       WHERE p.idEmpleado = ?  
       AND p.logOut IS NULL AND p.so = 'Android'`,[empleado]),
      db(`SELECT DISTINCT p.pushKey FROM pushHandlerStaff as p 
-      WHERE p.idEmpleado = ? AND p.logOut IS NULL AND p.so = 'iOS'`,[empleado])]).then((data) => {
+      WHERE p.idEmpleado = ? AND p.logOut IS NULL AND p.so = 'iOS'`,[empleado]),
+     db(`SELECT estado, DATE_FORMAT(horaInicio, '%l:%i  %p') as hora  FROM cita WHERE idCita = ?`,[idCita])]).then((data) => {
       //res.json(data);
       var mensajePush = ' ';
       var titulo = ''; 
-      if(tipo == 0){
+      var fecha22 = moment(fecha).format('LL');
+      if(data[2][0].estado == 1 || data[2][0].estado == '1'){
         titulo = 'Reserva por confirmar.';
-        mensajePush=servicios+" servicio"+(servicios>1 ? 's' : '')+" por confirmar para el "+fecha;
+        mensajePush=servicios+" servicio"+(servicios>1 ? 's' : '')+" por confirmar para el "+fecha22 + " a las "+data[2][0].hora;
       }
-      if(tipo == 1){
+      if(data[2][0].estado == 2 || data[2][0].estado == '2'){
          titulo = 'Nueva Reserva.';
-        mensajePush=servicios+" servicio"+(servicios>1 ? 's' : '')+" para el "+fecha;
+        mensajePush=servicios+" servicio"+(servicios>1 ? 's' : '')+" para el "+fecha22+ " a las "+data[2][0].hora;
       }
 
           var nombreCentro = ' ';
