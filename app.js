@@ -1896,7 +1896,7 @@ expressApp.get('/horaMinMax', function(req, res) {
     var resultadoEmail=1;
     db(`UPDATE empleado set password=? WHERE email=?`,[claveNeva,req.body.email])
       .then((dataf) => {
-        if (!dataf) {res.send().status(500)}
+        if (dataf.affectedRows < 1) {res.send().status(500)}
         else{
 
           nodemailer.createTestAccount((err, account) => {
