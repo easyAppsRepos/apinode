@@ -2969,8 +2969,9 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
 
     expressApp.post('/cancelarRMAS', function(req, res) {
-     db(`DELETE FROM cita as c, servicio_cita as sc 
-      WHERE c.idCita = ? AND sc.idCita = ?`,[req.body.idCita,req.body.idCita])
+     db(`DELETE FROM cita as c 
+      INNER JOIN servicio_cita as sc 
+      ON c.idCita = sc.idCita  WHERE c.idCita =`,[req.body.idCita])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
