@@ -1490,7 +1490,7 @@ where  exists (SELECT SUM(f.exp) as sss FROM
 }
 
 
-function testPush(){
+function testPush(pushTk){
 
             var message = new gcm.Message({
           "data":{
@@ -1499,8 +1499,8 @@ function testPush(){
                        "body": 'simple prueba'}
                      });
 
-              var regTokens = ['cAoupEmWQu8:APA91bGyzArxgPSUovHSIohSH1glW3reScKTXMew-nutlCgQKG_2wmMNHS9na1CHp8_9LBNZmPIeXL_yEMZfXuJioG2ZDCQI_4q6OQjcGJIX-zxC9cJDDI9MsMHX3M2eU95nIEEoZ3d_',
-              'ebbOwnnvXeI:APA91bEwWsQJyqqEJ5IL19Wy9iynxwKlTcx47Y8EpBcHIGmxx5gB0WcO609GSc3RGMDZl66O5FmdMAXNkXYjfzp3v1BZhgZnJSfUp8pCWtczMD5nsv9ElYQrIU1OELXfYFyGOk8ueBgg'];
+              var regTokens = [];
+              regTokens.push(pushTk);
 
               // Actually send the message
               sender2.send(message, { registrationTokens: regTokens }, function (err, response) {
@@ -7034,7 +7034,20 @@ serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
   .then(message => console.log(message.sid))
   .done();
 */
-testPush();
+testPush('cAoupEmWQu8:APA91bGyzArxgPSUovHSIohSH1glW3reScKTXMew-nutlCgQKG_2wmMNHS9na1CHp8_9LBNZmPIeXL_yEMZfXuJioG2ZDCQI_4q6OQjcGJIX-zxC9cJDDI9MsMHX3M2eU95nIEEoZ3d_');
+     });
+
+  expressApp.get('/test32', (req, res) =>{
+/*
+    clientTwilo.messages.create({
+     body: 'PruebaSMS Confirmar',
+     from: '+15154978942',
+     to: '+50769453583'
+   })
+  .then(message => console.log(message.sid))
+  .done();
+*/
+testPush('ebbOwnnvXeI:APA91bEwWsQJyqqEJ5IL19Wy9iynxwKlTcx47Y8EpBcHIGmxx5gB0WcO609GSc3RGMDZl66O5FmdMAXNkXYjfzp3v1BZhgZnJSfUp8pCWtczMD5nsv9ElYQrIU1OELXfYFyGOk8ueBgg');
      });
 
 
