@@ -1676,6 +1676,26 @@ expressApp.post('/getCategoriasCentro', function(req, res) {
 });
 
 
+expressApp.post('/getCategoriasCentro', function(req, res) {
+    db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 
+      AND idCategoria IN (SELECT DISTINCT idCategoria FROM servicio WHERE idCentro = ?) `,[req.body.idCentro]).then((data) => {
+      console.log(data);
+      res.json(data);
+    }).catch(err => res.send(err).status(500));
+});
+
+expressApp.post('/getCategoriasEmpleadoC', function(req, res) {
+    db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 
+      AND idCategoria IN (SELECT ss.idCategoria FROM servicioEmpleado as f, servicio ss  
+      WHERE ss.idServicio = f.idServicio AND f.idEmpleado = ? AND f.estado = 1) `,[req.body.idEmpleado]).then((data) => {
+      console.log(data);
+      res.json(data);
+    }).catch(err => res.send(err).status(500));
+});
+
+
+
+
 
 expressApp.post('/getCitaPendientesN', function(req, res) {
       Promise.all([db(`SELECT idCita FROM cita 
