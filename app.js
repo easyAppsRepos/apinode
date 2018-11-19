@@ -1290,6 +1290,12 @@ var tipox = 1;
        tipox = 1;
       }
 
+       if(tipo == 9){
+        mensajePush=" Servicio declinado"
+       tipox = 1;
+      }
+
+
             if(tipo == 2){
         mensajePush="  Felicidades! Tu reserva ha sido confirmada.";
          tipox = 1;
@@ -3390,7 +3396,13 @@ db(`UPDATE servicio_cita set estado=?
         }
         if(req.body.estado==1 && data[1].length>0 && data[1][0].idCita){
           enviarPush(req.body.idCita,2);
-        }        
+        }      
+
+                if(req.body.estado==4 ){
+          enviarPush(req.body.idCita,9);
+        }   
+
+
 
         return res.send(data);
       }).catch(err => res.send(err).status(500));
