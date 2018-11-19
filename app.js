@@ -214,7 +214,7 @@ function makeid2() {
   var text = "";
   var possible = "0123456789";
 
-  for (var i = 0; i < 5; i++)
+  for (var i = 0; i < 4; i++)
     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return text;
@@ -6513,7 +6513,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
         expressApp.post('/doLoginApiAE', (req, res) => {
 
-    db(`SELECT e.idEmpleado, e.horarioSet, e.nombre as nombreEmpleado, 
+    db(`SELECT e.idEmpleado, e.horarioSet, e.password, e.nombre as nombreEmpleado, 
       c.nombre as nombreCentro, e.email, e.idFoto,
       (SELECT g.estado FROM usuario_consola as g WHERE g.email = c.email) as centroActivo,
  e.descripcion, e.idCentro, e.tipo, e.telefono FROM empleado as e, centro as c  
