@@ -4609,7 +4609,7 @@ data.additionalData.puntosGanados,
       WHERE c.idCategoria = s.idCategoria 
       AND s.idServicio 
       IN (SELECT f.idServicio FROM servicioEmpleado as f 
-      WHERE f.idEmpleado = 3 AND f.estado = 1)`,[req.body.idEmpleado])
+      WHERE f.idEmpleado = ? AND f.estado = 1)`,[req.body.idEmpleado])
       .then((data) => {
         if (!data) res.send().status(500);
         var groups = _.groupBy(data, 'idCategoria');
