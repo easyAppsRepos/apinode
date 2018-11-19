@@ -1665,16 +1665,31 @@ expressApp.get('/categoriasHome', function(req, res) {
   });
 
 
+/*
 
+SELECT s.*, c.nombre as nombreCategoria 
+      FROM servicio as s, categoria as c 
+      WHERE c.idCategoria = s.idCategoria 
+      AND s.idServicio 
+      IN (SELECT f.idServicio FROM servicioEmpleado as f 
+      WHERE f.idEmpleado = ? AND f.estado = 1)
+      */
 
      expressApp.post('/getSubcategoriasEmpleado', (req, res) => {
-    db(`SELECT * FROM subcategoria WHERE idCategoria = ? 
+    Promise.all([db(`SELECT * FROM subcategoria WHERE idCategoria = ? 
       AND idSubcategoria IN  (SELECT ss.idSubcategoria FROM servicioEmpleado as f, servicio ss  
       WHERE ss.idServicio = f.idServicio AND f.idEmpleado = ? AND f.estado = 1)`,[req.body.idCategoria,
-      req.body.idEmpleado])
+      req.body.idEmpleado]), 
+    db(`SELECT s.*
+      FROM servicio as s WHERE s.idCategoria = ? AND s.idServicio 
+      IN (SELECT f.idServicio FROM servicioEmpleado as f 
+      WHERE f.idEmpleado = ? AND f.estado = 1)`,[req.body.idCategoria,
+      req.body.idEmpleado])])
       .then((data) => {
+
         if (!data) res.send().status(500);
-        return res.send(data);
+
+        return res.send({subcats:data[0], servicios:data[1]});
       }).catch(err => res.send(err).status(500));
   });
 
