@@ -1887,6 +1887,68 @@ expressApp.get('/horaMinMax', function(req, res) {
 
 
 
+  expressApp.post('/recuperarStaffPass', (req, res) => {
+
+    var numss='123456789';
+  var claveNeva = makeid();
+  console.log(claveNeva);
+ //var claveNeva = 'asdasd';
+    var resultadoEmail=1;
+    db(`UPDATE empleado set password=? WHERE email=?`,[claveNeva,req.body.email])
+      .then((dataf) => {
+        if (!dataf) {res.send().status(500)}
+        else{
+
+          nodemailer.createTestAccount((err, account) => {
+            console.log(err);
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+         host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+      auth: {
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
+          }
+    });
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: 'yourBeautyMessageCenter@gmail.com', // sender address
+        to: req.body.email, // list of receivers
+        subject: 'Recuperacion de contraseña Ybstaff', // Subject line
+        text: 'Hemos recuperado tu contraseña! Tu contraseña Ybstaff nueva es: '+claveNeva
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+
+            if(error){
+            console.log('Error occured');
+            console.log(error.message);
+            //return;
+            resultadoEmail=0;
+            }
+            console.log(info);
+           return res.send({data:dataf,email:resultadoEmail});
+
+
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    });
+});
+          console.log(dataf);
+        }
+        //return res.send(data);
+      }).catch(err => {
+        console.log(err);
+        res.send(err).status(500);
+      });
+  });
+
+
+
+
   expressApp.post('/mensajeSoporte', (req, res) => {
 
     var resultadoEmail=1;
