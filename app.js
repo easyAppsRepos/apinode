@@ -1490,6 +1490,31 @@ where  exists (SELECT SUM(f.exp) as sss FROM
 }
 
 
+function testPush(){
+
+            var message = new gcm.Message({
+          "data":{
+                       "title": 'Test Push Android',
+                       "icon": "ic_launcher",
+                       "body": 'simple prueba'}
+                     });
+
+              var regTokens = ['cAoupEmWQu8:APA91bGyzArxgPSUovHSIohSH1glW3reScKTXMew-nutlCgQKG_2wmMNHS9na1CHp8_9LBNZmPIeXL_yEMZfXuJioG2ZDCQI_4q6OQjcGJIX-zxC9cJDDI9MsMHX3M2eU95nIEEoZ3d_',
+              'ebbOwnnvXeI:APA91bEwWsQJyqqEJ5IL19Wy9iynxwKlTcx47Y8EpBcHIGmxx5gB0WcO609GSc3RGMDZl66O5FmdMAXNkXYjfzp3v1BZhgZnJSfUp8pCWtczMD5nsv9ElYQrIU1OELXfYFyGOk8ueBgg'];
+
+              // Actually send the message
+              sender2.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if (err) {
+                console.log('error push');
+              console.error(err);}
+              else {
+                console.log('okPush');
+                console.log(response);
+              }
+              });
+
+
+}
 
 
 
@@ -7000,7 +7025,7 @@ serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
 */
 //(515) 497-8942
   expressApp.get('/test', (req, res) =>{
-
+/*
     clientTwilo.messages.create({
      body: 'PruebaSMS Confirmar',
      from: '+15154978942',
@@ -7008,7 +7033,8 @@ serverHttps.listen(8443, () => console.log(`Running on localhost:8443`));
    })
   .then(message => console.log(message.sid))
   .done();
-
+*/
+testPush();
      });
 
 
