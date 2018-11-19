@@ -1694,6 +1694,18 @@ SELECT s.*, c.nombre as nombreCategoria
   });
 
 
+
+expressApp.post('/getSubcategoriasServ', function(req, res) {
+    db(`SELECT s.*
+      FROM servicio as s WHERE s.idSubcategoria = ? AND s.idServicio 
+      IN (SELECT f.idServicio FROM servicioEmpleado as f 
+      WHERE f.idEmpleado = ? AND f.estado = 1)`,[req.body.sub,req.body.idEmpleado]).then((data) => {
+      console.log(data);
+      res.json(data);
+    }).catch(err => res.send(err).status(500));
+});
+
+
 expressApp.post('/getCategoriasCentro', function(req, res) {
     db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 
       AND idCategoria IN (SELECT DISTINCT idCategoria FROM servicio WHERE idCentro = ?) `,[req.body.idCentro]).then((data) => {
