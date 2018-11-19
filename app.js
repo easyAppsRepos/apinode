@@ -1667,13 +1667,16 @@ expressApp.get('/categoriasHome', function(req, res) {
 
 
 
-expressApp.post('/getCategoriasCentro', function(req, res) {
-    db(`SELECT  s.* FROM categoria as s WHERE s.estado = 1 
-      AND idCategoria IN (SELECT DISTINCT idCategoria FROM servicio WHERE idCentro = ?) `,[req.body.idCentro]).then((data) => {
-      console.log(data);
-      res.json(data);
-    }).catch(err => res.send(err).status(500));
-});
+     expressApp.post('/getSubcategoriasEmpleado', (req, res) => {
+    db(`SELECT * FROM subcategoria WHERE idCategoria = ? 
+      AND idSubcategoria IN  (SELECT ss.idSubcategoria FROM servicioEmpleado as f, servicio ss  
+      WHERE ss.idServicio = f.idServicio AND f.idEmpleado = ? AND f.estado = 1)`,[req.body.idCategoria,
+      req.body.idEmpleado])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
 
 
 expressApp.post('/getCategoriasCentro', function(req, res) {
