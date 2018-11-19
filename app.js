@@ -5193,7 +5193,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     db(`SELECT TIMEDIFF(ci.horaInicio,CONVERT_TZ(now(),'+00:00','-05:00')) > 
       CONCAT((SELECT parametro3 FROM configuracionCentro WHERE idCentro = c.idCentro),':00:00') as difT,
       c.idCentro,xcli.nombre as nombreCliente, c.nombre, c.direccion, c.idFoto, c.telefono,c.latitud, c.longitud, vv.nombre as nombreEmpleado, 
-      ci.idCita, ci.estado, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
+      ci.idCita, ci.estado, ci.comentarioCita, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
       ci.horaFinalEsperado,precioEsperado, ci.idCuponCliente, ci.idCliente, 
       (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento 
