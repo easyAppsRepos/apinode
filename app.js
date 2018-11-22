@@ -2133,7 +2133,7 @@ AVG(ec.puntuacion) as rate
       }
 
       //
-      if(req.body.fecha){
+      if(req.body.filtroFecha){
         stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
  WHERE c.idCentro = hh.idCentro AND hh.estado = 1 AND hh.diaSemana=`+req.body.fecha+`) > 0 AND 
  (SELECT COUNT(*) FROM horario_especial as cc 
