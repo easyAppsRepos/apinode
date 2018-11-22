@@ -2323,13 +2323,15 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         AND (he.idEmpleado = e.idEmpleado AND he.diaSemana = ?
          AND he.estado = 1 AND he.horaEntrar < ? AND he.horaSalir > ?)
          AND ? > CONVERT_TZ(now(),'+00:00','-05:00') 
+         AND ? > DATE_ADD(CONVERT_TZ(now(),'+00:00','-05:00'), INTERVAL (SELECT parametro1 FROM configuracionCentro WHERE idCentro = ?) HOUR) 
         AND c.idServicioCita IS NULL
         AND rm.idReservaManual IS NULL HAVING disponibles > 0`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"), inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),idServicio,idCentro, 
         diaSem, inicioCita.format("HH:mm:ss"), finCita.format("HH:mm:ss"),
-        inicioCita.format("YYYY-MM-DD HH:mm:ss")]));
+        inicioCita.format("YYYY-MM-DD HH:mm:ss"),
+        inicioCita.format("YYYY-MM-DD HH:mm:ss"),idCentro]));
   
     inicioCita = moment(finCita);
   //console.log(inicioCita);
