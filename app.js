@@ -2151,7 +2151,7 @@ AVG(ec.puntuacion) as rate
       if(req.body.abierto){
         stringQuery += ` AND (SELECT COUNT(*) FROM horarioCentro as hh 
  WHERE c.idCentro = hh.idCentro AND hh.diaSemana=`+req.body.diaSemana+` AND hh.horaAbrir<='`+req.body.horaSemana+`' 
-  AND hh.horaCerrar>='`+req.body.horaSemana+`') > 0 `; 
+  AND hh.horaCerrar>='`+req.body.horaSemana+`' AND hh.estado=1) > 0 `; 
       }
 
       if(req.body.horaSeleccionadaDesde){
