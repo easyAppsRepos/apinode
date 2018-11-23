@@ -3479,9 +3479,9 @@ db(`UPDATE servicio_cita set estado=?
 
         if (!datass) res.send().status(500);
 
-     Promise.all([db(`UPDATE cita set estado=? WHERE idCita = ? AND ? = 
+     Promise.all([db(`UPDATE cita set estado=? WHERE ? <> 4 AND idCita = ? AND ? = 
          ALL (SELECT estado FROM servicio_cita WHERE idCita = ?) 
-        `,[traduccionEstado,req.body.idCita,req.body.estado, req.body.idCita ]),
+        `,[traduccionEstado,req.body.estado,req.body.idCita,req.body.estado, req.body.idCita ]),
       db(`SELECT idCita FROM cita WHERE idCita = ? AND 
         estado = ?`,[req.body.idCita, traduccionEstado])])
       .then((data) => {
