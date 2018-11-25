@@ -2689,7 +2689,8 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
        db(`UPDATE cliente SET compartida = 1 WHERE idCliente = ?`,[req.body.idCliente]),
        db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
       u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
-       ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = u.idCliente AND pp.estado = 1)+(SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3)) as exp,
+       ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = u.idCliente AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3)) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
         FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
       WHERE u.idCliente = ?  GROUP BY u.idCliente`,[req.body.idCliente])])
