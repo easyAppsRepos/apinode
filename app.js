@@ -3231,7 +3231,8 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
      Promise.all([db(`UPDATE animacionesUser set estado = 0 WHERE idCliente = ?`,[req.body.idCliente]),
      db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
       u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
-       (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
+       ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = u.idCliente AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3)) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
         FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
       WHERE u.idCliente = ?  GROUP BY u.idCliente`,[req.body.idCliente])])
@@ -4029,8 +4030,9 @@ db(`UPDATE servicio_cita set estado=2
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
       AND p.logOut IS NULL AND p.so = 'iOS'`,[req.body.idCita]),
       db(`SELECT (SELECT valor FROM parametros WHERE idParametro = 7) as max,
-(SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3) as expCliente,
-(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?) as expCita`,[req.body.idCita,req.body.idCita]),
+        ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3)) as expCliente,
+(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?) as expCita`,[req.body.idCita,req.body.idCita,req.body.idCita]),
 
        db(`INSERT IGNORE INTO cupon_cliente(idCliente, idCupon,estado,regalo, fechaActivacion)
 select (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?),
@@ -4219,7 +4221,8 @@ data.additionalData.puntosGanados,
     (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado IN (5,2,1)) as activas, 
     (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as completadas,
     (SELECT COUNT(f.idCita) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 4) as canceladas,
-    (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as exp,
+     ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = c.idCliente AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3)) as exp,
     (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
      FROM cliente as c WHERE c.idCliente <> 0`,[req.body.idUsuario])
       .then((data) => {
@@ -4233,7 +4236,8 @@ data.additionalData.puntosGanados,
 
    expressApp.post('/getUserInfo', (req, res) => {
     db(`SELECT c.*,
-      (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3) as exp,
+       ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = c.idCliente AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = c.idCliente AND f.estado = 3)) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp 
                FROM cliente as c  WHERE c.idCliente = ?`,[req.body.idCliente])
       .then((data) => {
@@ -6697,7 +6701,8 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
     db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
       u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
-       (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
+        ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = u.idCliente AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3)) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
         FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
       WHERE u.email = ? AND u.password = ? GROUP BY u.idCliente`,[req.body.username,req.body.password]).then((data) => {
@@ -6719,7 +6724,8 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
     db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
       u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
-       (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
+        ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = u.idCliente AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3)) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
         FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
       WHERE u.idCliente = ?  GROUP BY u.idCliente`,[req.body.idCliente]).then((data) => {
@@ -7056,7 +7062,8 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
     db(`SELECT u.idCliente, u.nombre, u.telefono, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
       u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
-       (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
+       ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = u.idCliente AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3)) as exp,
               (SELECT valor FROM parametros WHERE idParametro = 7) as appexp 
               FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
               WHERE u.fbId = ? GROUP BY u.idCliente`,[req.body.userId]).then((data) => {
