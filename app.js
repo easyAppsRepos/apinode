@@ -36,7 +36,8 @@ const path = require('path');
 const multer  =   require('multer');
 
 
-require('events').EventEmitter.defaultMaxListeners = 15;
+require('events').EventEmitter.defaultMaxListeners = 100;
+
 
 var options = {
   token: {
