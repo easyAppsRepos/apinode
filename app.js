@@ -2682,6 +2682,27 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
   });
 
 
+  expressApp.post('/verificarPremioUs', (req, res) => {
+   Promise.all([db(`INSERT INTO premiosPuntos (puntos, idCliente) SELECT 15, ? WHERE 
+      (SELECT idCliente FROM cliente WHERE idCliente = ? 
+       AND compartida = 0)>0`,[req.body.idCliente, req.body.idCliente]),
+       db(`UPDATE cliente SET compartida = 1 WHERE idCliente = ?`,[req.body.idCliente]),
+       db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
+      u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
+       (SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3) as exp,
+              (SELECT valor FROM parametros WHERE idParametro = 7) as appexp
+        FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
+      WHERE u.idCliente = ?  GROUP BY u.idCliente`,[req.body.idCliente])])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+            var iid = data[0].insertId;
+            //compartidoNuevo
+            return res.send({compartidoNuevo:iid, puntosGanados:15,dataUser:data[2]});
+
+      }).catch(err => res.send(err).status(500));
+  });
+
 
   expressApp.post('/citasCentroFiltroSA', (req, res) => {
       db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,df.idFoto, 
