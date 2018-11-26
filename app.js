@@ -5421,9 +5421,6 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
         if (!data) res.send().status(500);
 
-
-
-
        
 
         //var groups = _.groupBy(data[0], 'nombreCategoria');
