@@ -2317,17 +2317,17 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
  FROM horarioEmpleado as he, empleado as e 
 
         LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,1,2) 
-        AND horaFin => ? AND horaInicio =< ?)
+        AND horaFin > ? AND horaInicio < ?)
 
         LEFT JOIN reservaManual as rm ON (rm.idEmpleado = e.idEmpleado  
-        AND rm.horaFinalEsperado => ? AND rm.horaInicio =< ? )
+        AND rm.horaFinalEsperado > ? AND rm.horaInicio < ? )
 
         WHERE e.idEmpleado IN (SELECT ec.idEmpleado FROM servicioEmpleado as ec 
         WHERE ec.idServicio = ? AND ec.estado = 1 ) AND e.idCentro = ? 
         AND (he.idEmpleado = e.idEmpleado AND he.diaSemana = ?
-         AND he.estado = 1 AND he.horaEntrar =< ? AND he.horaSalir => ?)
-         AND ? => CONVERT_TZ(now(),'+00:00','-05:00') 
-         AND ? => DATE_ADD(CONVERT_TZ(now(),'+00:00','-05:00'), INTERVAL (SELECT parametro1 FROM configuracionCentro WHERE idCentro = ?) HOUR) 
+         AND he.estado = 1 AND he.horaEntrar < ? AND he.horaSalir > ?)
+         AND ? > CONVERT_TZ(now(),'+00:00','-05:00') 
+         AND ? > DATE_ADD(CONVERT_TZ(now(),'+00:00','-05:00'), INTERVAL (SELECT parametro1 FROM configuracionCentro WHERE idCentro = ?) HOUR) 
         AND c.idServicioCita IS NULL
         AND rm.idReservaManual IS NULL HAVING disponibles > 0`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
