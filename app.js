@@ -2270,7 +2270,7 @@ else{
       (SELECT idServicio FROM servicio_cita as ccc WHERE ccc.idCita = r.idCita ORDER BY ccc.idServicioCita ASC) LIMIT 1) as servicioMain,
       r.estado FROM centro as c, cita as r 
       LEFT JOIN empleado as ee ON ee.idEmpleado = r.idEmpleado 
-      WHERE c.idCentro = r.idCentro AND r.idCliente = ? ORDER BY r.horaInicio DESC`,[req.body.idCliente])
+      WHERE c.idCentro = r.idCentro AND r.idCliente = ? ORDER BY r.horaInicio ASC`,[req.body.idCliente])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
