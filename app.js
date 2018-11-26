@@ -2320,7 +2320,7 @@ while (moment(controlIncremento).isSameOrBefore(horaCerrar)) {
    // text += "The number is " + i;
     //i++;
 //8 830
-funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles
+funcionesBase.push(db(`SELECT ? as control, ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles
  FROM horarioEmpleado as he, empleado as e 
 
         LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,1,2) 
@@ -2336,7 +2336,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
          AND ? >= CONVERT_TZ(now(),'+00:00','-05:00') 
          AND ? >= DATE_ADD(CONVERT_TZ(now(),'+00:00','-05:00'), INTERVAL (SELECT parametro1 FROM configuracionCentro WHERE idCentro = ?) HOUR) 
         AND c.idServicioCita IS NULL
-        AND rm.idReservaManual IS NULL HAVING disponibles > 0`,[inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
+        AND rm.idReservaManual IS NULL HAVING disponibles > 0`,[controlIncremento.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"), inicioCita.format("YYYY-MM-DD HH:mm:ss"), 
         finCita.format("YYYY-MM-DD HH:mm:ss"),idServicio,idCentro, 
