@@ -6788,8 +6788,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
           from: '+15154978942',
           to: '+507'+req.body.telefono
           })
-          .then(message => console.log(message.sid))
-          .done();
+          .then(message => console.log(message.sid)).catch(err => console.log(err));
 
 
           nodemailer.createTestAccount((err, account) => {
