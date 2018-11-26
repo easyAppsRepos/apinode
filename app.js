@@ -2291,7 +2291,7 @@ else{
       var horarioDisponible=[];
 
 
-      var bloqueIncremento = 20;
+      var bloqueIncremento = 15;
 
       if(duracion < bloqueIncremento){
         bloqueIncremento = duracion;
