@@ -5413,7 +5413,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro]),
     db(`SELECT hhe.* FROM horario_especial as hhe WHERE hhe.idCentro = ? AND hhe.fecha >= CURDATE()`,[req.body.idCentro]),
     db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro]),
-    db(`SELECT tipoReserva FROM centro WHERE idCentro = ?`,[req.body.idCentro])
+    db(`SELECT tipoReserva FROM centro WHERE idCentro = ?`,[req.body.idCentro]),
+    db(`SELECT DATE_ADD(CONVERT_TZ(now(),'+00:00','-05:00'), 
+      INTERVAL parametro2 DAY) as fechaTo FROM configuracionCentro  WHERE idCentro = ?`,[req.body.idCentro])
     ])
       .then((data) => {
 
@@ -5425,7 +5427,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
        
 
         //var groups = _.groupBy(data[0], 'nombreCategoria');
-        return res.send({servicios:data[0], horarioEspecial:data[1], horario:data[2],tipoReserva:data[3]});
+        return res.send({servicios:data[0], horarioEspecial:data[1], horario:data[2],tipoReserva:data[3],
+          fechaTo:data[4][0].fechaTo});
       }).catch(err => res.send(err).status(500));
   });
 
