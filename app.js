@@ -2345,7 +2345,7 @@ funcionesBase.push(db(`SELECT ? as control, ? as inicio, ? as fin, COUNT(DISTINC
         inicioCita.format("YYYY-MM-DD HH:mm:ss"),idCentro]));
   
 
-    inicioCita = moment(finCita);
+    inicioCita = moment(controlIncremento);
   
 
     //finCita.add(duracion,'m');
