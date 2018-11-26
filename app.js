@@ -2290,6 +2290,13 @@ else{
       var duracion = parseInt(req.body.duracion); //30
       var horarioDisponible=[];
 
+
+      var bloqueIncremento = 20;
+
+      if(duracion < bloqueIncremento){
+        bloqueIncremento = duracion;
+      }
+
 var inicioCita = moment({year:fecha.split('-')[0],month:(parseInt(fecha.split('-')[1])-1),
 day:fecha.split('-')[2], hours: req.body.horaAbrir.split(':')[0], 
 minutes: req.body.horaAbrir.split(':')[1]});
@@ -2309,7 +2316,7 @@ var idCentro =   req.body.idCentro;
 //console.log(time.format("HH:mm"));
 //mientras que la hora de cerrar del centro sea mayor o igual que la hora final de la cita
 while (moment(finCita).isSameOrBefore(horaCerrar)) {
-console.log(inicioCita.format("YYYY-MM-DD HH:mm:ss"));
+//console.log(inicioCita.format("YYYY-MM-DD HH:mm:ss"));
    // text += "The number is " + i;
     //i++;
 //8 830
@@ -2338,8 +2345,10 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         inicioCita.format("YYYY-MM-DD HH:mm:ss"),idCentro]));
   
     inicioCita = moment(finCita);
-  //console.log(inicioCita);
-    finCita.add(duracion,'m');
+  
+
+    //finCita.add(duracion,'m');
+    finCita.add(bloqueIncremento,'m');
     
 }
 
