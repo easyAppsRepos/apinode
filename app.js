@@ -2325,7 +2325,7 @@ funcionesBase.push(db(`SELECT ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado
         WHERE e.idEmpleado IN (SELECT ec.idEmpleado FROM servicioEmpleado as ec 
         WHERE ec.idServicio = ? AND ec.estado = 1 ) AND e.idCentro = ? 
         AND (he.idEmpleado = e.idEmpleado AND he.diaSemana = ?
-         AND he.estado = 1 AND he.horaEntrar < ? AND he.horaSalir > ?)
+         AND he.estado = 1 AND he.horaEntrar <= ? AND he.horaSalir >= ?)
          AND ? >= CONVERT_TZ(now(),'+00:00','-05:00') 
          AND ? >= DATE_ADD(CONVERT_TZ(now(),'+00:00','-05:00'), INTERVAL (SELECT parametro1 FROM configuracionCentro WHERE idCentro = ?) HOUR) 
         AND c.idServicioCita IS NULL
