@@ -2241,7 +2241,6 @@ AVG(ec.puntuacion) as rate
 
 
       }
-
 else{
         if(req.body.orden){
 
