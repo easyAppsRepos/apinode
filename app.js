@@ -2230,11 +2230,11 @@ AVG(ec.puntuacion) as rate
 
 
 
- stringQuery += ` GROUP BY c.idCentro HAVING distance < 25 `; 
+ stringQuery += ` GROUP BY c.idCentro HAVING distance < 25 ORDER BY distance ASC `; 
 
   if(req.body.ordenOpiniones){
         //stringQuery += ` ORDER BY pMax `+req.body.orden+` `; 
-    stringQuery += ` ORDER BY rate DESC `; 
+    stringQuery += `, rate DESC `; 
         if(req.body.orden){
         stringQuery += ` , pMin `+req.body.orden+` `; 
       }
@@ -2246,7 +2246,7 @@ else{
         if(req.body.orden){
 
                 //stringQuery += ` ORDER BY rate DESC `; 
-                  stringQuery += ` ORDER BY pMin `+req.body.orden+` `; 
+                  stringQuery += `, pMin `+req.body.orden+` `; 
               }
       }
 
