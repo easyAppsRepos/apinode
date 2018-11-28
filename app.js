@@ -2862,7 +2862,7 @@ day:fecha.split('-')[2], hours: req.body.horaCerrar.split(':')[0],
 minutes: req.body.horaCerrar.split(':')[1]});
 
 var finCita = moment({year:fecha.split('-')[0],month:(parseInt(fecha.split('-')[1])-1),
-day:fecha.split('-')[2], hours: req.body.horaAbrir.split(':')[0], minutes: req.body.horaAbrir.split(':')[1]});
+day:fecha.split('-')[2], hours: req.body.horaAbrir.split(':')[0], minutes: req.body.horaAbrir.split(':')[1]}).add(duracion,'m');
 
 var funcionesBase = [];
 var idServicio = req.body.idServicio;
@@ -2878,7 +2878,8 @@ while (moment(finCita).isSameOrBefore(horaCerrar)) {
 //.log(finCita);
 //console.log(horaCerrar);
 
- finCita.add(duracion,'m');
+ //new 
+ //finCita.add(duracion,'m');
 
 funcionesBase.push(db(`SELECT ? as control, ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles
  FROM horarioEmpleado as he, empleado as e 
