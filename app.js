@@ -1240,7 +1240,7 @@ var horaI = req.body.fecha+' '+elementw.inicio;
 
 
 
-   function enviarEmailUsuarioNR(email,nombreCen,nombreCli,fecha,hora,servicios){
+   function enviarEmailUsuarioNR(email,nombreCen,nombreCli,fecha,hora,servicios,tipo){
 
   var numss='123456789';
 
@@ -1250,7 +1250,8 @@ moment.locale('es');
     var horaD = moment(hora, "YYYY-MM-DD HH:mm:ss").format("LT");
 
   var serviciosString = '';
-
+  var stringMessage = '';
+  var asuntoEm = '';
   servicios.forEach(item=>{
 
     var horaII = moment(item.inicio, "HH:mm:ss").format("LT");
@@ -1318,6 +1319,21 @@ moment.locale('es');
 `
   });
 
+  if(tipo == 1){
+    asuntoEm = 'YourBeauty - Nueva Reserva';
+    stringMessage = `${nombreCen} ha recibido tu 
+    solicitud de reserva de cita para el ${fechaD} a las ${horaD}. 
+    Debes esperar a que se confirme tu reserva. Recibirás una notificación 
+    en el que se indicará el estado de tu reserva.`;
+  }
+  if(tipo == 2){
+     asuntoEm = 'YourBeauty - Reserva Reprogramada';
+    stringMessage = `${nombreCen} ha recibido tu 
+    solicitud de modificación de reserva para el dia ${fechaD} a las ${horaD}. 
+    Tu solicitud esta pendiente de aceptación, serás notificado una vez se confirme.`;
+
+  }
+
 
   nodemailer.createTestAccount((err, account) => {
             console.log(err);
@@ -1336,7 +1352,7 @@ moment.locale('es');
     let mailOptions = {
         from: 'yourBeautyMessageCenter@gmail.com', // sender address
         to: email, // list of receivers
-        subject: 'YourBeauty - Nueva Reserva', // Subject line
+        subject: asuntoEm, // Subject line
         html:`<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width">
@@ -1592,7 +1608,8 @@ a[x-apple-data-detectors=true] {
  <div class="">
 
   <div style="color:#555555;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;line-height:150%; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"> 
-    <div style="font-size:12px;line-height:18px;color:#555555;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: left">${nombreCen} ha recibido tu solicitud de reserva de cita para el ${fechaD} a las ${horaD}. Debes esperar a que se confirme tu reserva. Recibirás una notificación en el que se indicará el estado de tu reserva.&#160;</p></div>  
+    <div style="font-size:12px;line-height:18px;color:#555555;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: left">
+    ${stringMessage} </p></div>  
   </div>
 </div>
 
@@ -4229,6 +4246,12 @@ db(`UPDATE servicio_cita set estado=2
       estado=1  WHERE idCita = ?`,[notaR,req.body.inicio,
       req.body.fin,idCita]));
 
+      
+
+     arrayFunctions.unshift(db(`SELECT c.confirmacionAutomatica,cli.email, cli.nombre as nombreCliente, ce.nombre as nombreCentro   
+          FROM configuracionCentro as c, cliente as cli, centro as ce, cita as r 
+           WHERE r.idCita = ? AND c.idCentro = r.idCentro AND ce.idCentro = r.idCentro AND cli.idCliente = r.idCliente LIMIT 1`,[idCita]));
+
      Promise.all(arrayFunctions).then((data) => {
         if (!data) res.send().status(500);
 
@@ -4241,6 +4264,10 @@ db(`UPDATE servicio_cita set estado=2
             //console.log(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
             enviarPushEmpleados(elementw, cant,1,fecha,idCita);
           });
+
+          enviarEmailUsuarioNR(data[0][0].email,data[0][0].nombreCentro,
+              data[0][0].nombreCliente,
+              req.body.fecha,req.body.inicio,req.body.servicios, 2);
 
 
         return res.send(data);
@@ -5755,7 +5782,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
             enviarPushEmpleados(elementw, cant,1,fecha,idCitaAdded);
             enviarEmailUsuarioNR(data[1][0].email,data[1][0].nombreCentro,
               data[1][0].nombreCliente,
-              req.body.fecha,req.body.fechaInicio,req.body.servicios);
+              req.body.fecha,req.body.fechaInicio,req.body.servicios, 1);
           });
 
          return res.send({insertId:idCita });
