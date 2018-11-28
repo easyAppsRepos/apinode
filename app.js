@@ -2875,8 +2875,8 @@ while (moment(finCita).isSameOrBefore(horaCerrar)) {
    // text += "The number is " + i;
     //i++;
 //8 830
-console.log(finCita);
-console.log(horaCerrar);
+//.log(finCita);
+//console.log(horaCerrar);
 
  finCita.add(duracion,'m');
 
@@ -2912,7 +2912,7 @@ funcionesBase.push(db(`SELECT ? as control, ? as inicio, ? as fin, COUNT(DISTINC
    
     controlIncremento.add(bloqueIncremento,'m');
     inicioCita = moment(controlIncremento);
-     finCita = inicioCita.add(duracion,'m');
+     finCita = moment(inicioCita).add(duracion,'m');
 }
 
   Promise.all(funcionesBase).then((data) => {
