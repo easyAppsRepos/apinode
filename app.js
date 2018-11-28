@@ -1240,7 +1240,7 @@ var horaI = req.body.fecha+' '+elementw.inicio;
 
 
 
-   function enviarEmailUsuarioNR(email,nombreCen,nombreCli,fecha,hora,servicios,tipo){
+   function enviarEmailUsuarioNR(direccion, email,nombreCen,nombreCli,fecha,hora,servicios,tipo){
 
   var numss='123456789';
 
@@ -1609,7 +1609,18 @@ a[x-apple-data-detectors=true] {
 
   <div style="color:#555555;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;line-height:150%; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"> 
     <div style="font-size:12px;line-height:18px;color:#555555;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: left">
-    ${stringMessage} </p></div>  
+    ${stringMessage} </p>
+
+    <br>
+
+    ${nombreCen}
+
+    <br>
+
+    ${direccion}
+
+
+    </div>  
   </div>
 </div>
 
@@ -4248,7 +4259,8 @@ db(`UPDATE servicio_cita set estado=2
 
       
 
-     arrayFunctions.unshift(db(`SELECT c.confirmacionAutomatica,cli.email, cli.nombre as nombreCliente, ce.nombre as nombreCentro   
+     arrayFunctions.unshift(db(`SELECT c.confirmacionAutomatica,cli.email, 
+      cli.nombre as nombreCliente, ce.nombre as nombreCentro, ce.direccion    
           FROM configuracionCentro as c, cliente as cli, centro as ce, cita as r 
            WHERE r.idCita = ? AND c.idCentro = r.idCentro AND ce.idCentro = r.idCentro AND cli.idCliente = r.idCliente LIMIT 1`,[idCita]));
 
@@ -4265,7 +4277,7 @@ db(`UPDATE servicio_cita set estado=2
             enviarPushEmpleados(elementw, cant,1,fecha,idCita);
           });
 
-          enviarEmailUsuarioNR(data[0][0].email,data[0][0].nombreCentro,
+          enviarEmailUsuarioNR(data[0][0].direccion,data[0][0].email,data[0][0].nombreCentro,
               data[0][0].nombreCliente,
               req.body.fecha,req.body.inicio,req.body.servicios, 2);
 
@@ -5728,7 +5740,8 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
          THEN 2 ELSE 1 END ) FROM configuracionCentro WHERE idCentro = ? LIMIT 1),?,?,?)
         `,[req.body.idCentro, req.body.idCliente,req.body.fechaInicio,
         req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), req.body.idCentro, req.body.idCuponCliente, cliR,idPaquete]),
-        db(`SELECT c.confirmacionAutomatica,cli.email, cli.nombre as nombreCliente, ce.nombre as nombreCentro  
+        db(`SELECT c.confirmacionAutomatica,cli.email, cli.nombre as nombreCliente, 
+          ce.nombre as nombreCentro, ce.direccion   
           FROM configuracionCentro as c, cliente as cli, centro as ce
            WHERE c.idCentro = ? AND ce.idCentro = ? AND cli.idCliente = ? LIMIT 1`,[req.body.idCentro, req.body.idCentro, req.body.idCliente])])
       .then((data) => {
@@ -5780,7 +5793,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
             console.log(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
             enviarPushEmpleados(elementw, cant,1,fecha,idCitaAdded);
-            enviarEmailUsuarioNR(data[1][0].email,data[1][0].nombreCentro,
+            enviarEmailUsuarioNR(data[1][0].direccion,data[1][0].email,data[1][0].nombreCentro,
               data[1][0].nombreCliente,
               req.body.fecha,req.body.fechaInicio,req.body.servicios, 1);
           });
