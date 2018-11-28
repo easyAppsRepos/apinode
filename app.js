@@ -1244,11 +1244,18 @@ var horaI = req.body.fecha+' '+elementw.inicio;
 
   var numss='123456789';
 
+moment.locale('es');
 
+    var fechaD = moment(fecha, "YYYY-MM-DD").format("LL");
+    var horaD = moment(hora, "YYYY-MM-DD HH:mm:ss").format("LT");
 
   var serviciosString = '';
 
   servicios.forEach(item=>{
+
+    var horaII = moment(item.inicio, "HH:mm:ss").format("LT");
+    var horaFF = moment(item.fin, "HH:mm:ss").format("LT");
+
     /*
 `+item.nombre+`
 `+item.inicio+`
@@ -1257,11 +1264,15 @@ var horaI = req.body.fecha+' '+elementw.inicio;
 `+item.empleadoSeleccionado.nombre+`
 `+item.empleadoSeleccionado.idFoto+`
 
+  LL
+    LT
+
 */
+
     serviciosString += `
 <div  style="display: block">
 <div style="
-    margin-left: 20px;
+    margin-left: 10px;
     display: inline-block;    
     font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
 ">
@@ -1275,7 +1286,7 @@ var horaI = req.body.fecha+' '+elementw.inicio;
 ">
  <span style="
       font-size: 16px;
-    color: #333;    margin-left: 5px;
+    color: #333; 
     font-weight: 600;text-transform: lowercase;
 ">`+item.nombre+`</span>
 
@@ -1284,7 +1295,7 @@ var horaI = req.body.fecha+' '+elementw.inicio;
         font-size: 12px;">
 
         <ion-icon style='margin-right: 5px' name="ios-time-outline">
-        </ion-icon>`+item.inicio+` - `+item.fin+`
+        </ion-icon>`+horaII+` - `+horaFF+`
         </span>
           <span style="    color: #EC527E !important;
     float: right;
@@ -1296,11 +1307,7 @@ var horaI = req.body.fecha+' '+elementw.inicio;
         <span style="     margin-top: 7px;   display: block; color: #333;
         font-size: 12px; margin-bottom: 5px">
 
-        <img src="http://50.116.17.150:3000/`+item.empleadoSeleccionado.idFoto+`" 
-         style="    display: inline-block;
-    height: 40px;
-    width: 40px;border-radius: 25px;
-    vertical-align: middle;"><span style="margin-left: 5px">`+item.empleadoSeleccionado.nombre+`</span>
+       <span style="margin-left: 5px">`+item.empleadoSeleccionado.nombre+`</span>
 
 
         </span>
@@ -1585,7 +1592,7 @@ a[x-apple-data-detectors=true] {
  <div class="">
 
   <div style="color:#555555;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;line-height:150%; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"> 
-    <div style="font-size:12px;line-height:18px;color:#555555;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: left">${nombreCen} ha recibido tu solicitud de reserva de cita para el ${fecha} a las ${hora}. Debes esperar a que se confirme tu reserva. Recibirás una notificación en el que se indicará el estado de tu reserva.&#160;</p></div>  
+    <div style="font-size:12px;line-height:18px;color:#555555;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: left">${nombreCen} ha recibido tu solicitud de reserva de cita para el ${fechaD} a las ${horaD}. Debes esperar a que se confirme tu reserva. Recibirás una notificación en el que se indicará el estado de tu reserva.&#160;</p></div>  
   </div>
 </div>
 
