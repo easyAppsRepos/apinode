@@ -1247,15 +1247,15 @@ var horaI = req.body.fecha+' '+elementw.inicio;
 moment.locale('es');
 
     var fechaD = moment(fecha, "YYYY-MM-DD").format("LL");
-    var horaD = moment(hora, "YYYY-MM-DD HH:mm:ss").format("LT");
+    var horaD = moment(hora, "YYYY-MM-DD HH:mm:ss").format("hh:mm a");
 
   var serviciosString = '';
   var stringMessage = '';
   var asuntoEm = '';
   servicios.forEach(item=>{
 
-    var horaII = moment(item.inicio, "HH:mm:ss").format("LT");
-    var horaFF = moment(item.fin, "HH:mm:ss").format("LT");
+    var horaII = moment(item.inicio, "HH:mm:ss").format("hh:mm a");
+    var horaFF = moment(item.fin, "HH:mm:ss").format("hh:mm a");
 
     /*
 `+item.nombre+`
