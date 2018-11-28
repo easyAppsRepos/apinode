@@ -2875,6 +2875,9 @@ while (moment(finCita).isSameOrBefore(horaCerrar)) {
    // text += "The number is " + i;
     //i++;
 //8 830
+console.log(finCita);
+console.log(horaCerrar);
+
 funcionesBase.push(db(`SELECT ? as control, ? as inicio, ? as fin, COUNT(DISTINCT e.idEmpleado) as disponibles
  FROM horarioEmpleado as he, empleado as e 
 
