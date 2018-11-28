@@ -2870,7 +2870,7 @@ var idCentro =   req.body.idCentro;
 
 //console.log(time.format("HH:mm"));
 //mientras que la hora de cerrar del centro sea mayor o igual que la hora final de la cita
-while (moment(controlIncremento).isSameOrBefore(horaCerrar)) {
+while (moment(finCita).isSameOrBefore(horaCerrar)) {
 //console.log(inicioCita.format("YYYY-MM-DD HH:mm:ss"));
    // text += "The number is " + i;
     //i++;
