@@ -2900,12 +2900,13 @@ funcionesBase.push(db(`SELECT ? as control, ? as inicio, ? as fin, COUNT(DISTINC
         inicioCita.format("YYYY-MM-DD HH:mm:ss"),idCentro]));
   
 
-    inicioCita = moment(controlIncremento);
+    
   
 
     //finCita.add(duracion,'m');
     finCita.add(duracion,'m');
     controlIncremento.add(bloqueIncremento,'m');
+    inicioCita = moment(controlIncremento);
 }
 
   Promise.all(funcionesBase).then((data) => {
