@@ -1296,11 +1296,12 @@ moment.locale('es');
     margin-top: 10px;
 ">
 <div>
- <span style="
+<span>
+ Servicio:<span style="
       font-size: 16px;
     color: #333; 
     font-weight: 600;text-transform: lowercase;
-">Nombre del servicio:`+item.nombre+`</span>
+">`+item.nombre+`</span></span>
 
           <span style="    color: #EC527E !important;
     float: right;
@@ -1321,7 +1322,7 @@ moment.locale('es');
         <span style="     margin-top: 7px;   display: block; color: #333;
         font-size: 12px; margin-bottom: 5px">
 
-       <span style="margin-left: 5px">Staff:`+nombreEmpleado+`</span>
+       <span style="">Staff:`+nombreEmpleado+`</span>
 
 
         </span>
