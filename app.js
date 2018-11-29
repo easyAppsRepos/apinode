@@ -1240,7 +1240,7 @@ var horaI = req.body.fecha+' '+elementw.inicio;
 
 
 
-   function enviarEmailUsuarioNR(direccion, email,nombreCen,nombreCli,fecha,hora,servicios,tipo){
+   function enviarEmailUsuarioNR(telefono,direccion, email,nombreCen,nombreCli,fecha,hora,servicios,tipo){
 
   var numss='123456789';
 
@@ -1254,9 +1254,19 @@ moment.locale('es');
   var asuntoEm = '';
   servicios.forEach(item=>{
 
+    if(tipo == 4){
+
+    var horaII = moment(item.horaInicio, "YYYY-MM-DD HH:mm:ss").format("hh:mm a");
+    var horaFF = moment(item.horaFin, "YYYY-MM-DD HH:mm:ss").format("hh:mm a");
+    var nombreEmpleado = item.nombreEmpleado;
+
+    }
+      else{
+
     var horaII = moment(item.inicio, "HH:mm:ss").format("hh:mm a");
     var horaFF = moment(item.fin, "HH:mm:ss").format("hh:mm a");
-
+    var nombreEmpleado = item.empleadoSeleccionado.nombre;
+    }
     /*
 `+item.nombre+`
 `+item.inicio+`
@@ -1285,19 +1295,13 @@ moment.locale('es');
 
     margin-top: 10px;
 ">
+<div>
  <span style="
       font-size: 16px;
     color: #333; 
     font-weight: 600;text-transform: lowercase;
-">`+item.nombre+`</span>
+">Nombre del servicio:`+item.nombre+`</span>
 
-  <div style="    margin-top: 7px;">
-       <span style="margin-right: 20px;   color: #333;
-        font-size: 12px;">
-
-        <ion-icon style='margin-right: 5px' name="ios-time-outline">
-        </ion-icon>`+horaII+` - `+horaFF+`
-        </span>
           <span style="    color: #EC527E !important;
     float: right;
     min-width: 41px;
@@ -1305,10 +1309,19 @@ moment.locale('es');
     font-size: 16px;
     font-weight: 500;padding-left: 35px;">$`+item.precioFinal+`
         </span>
+        </div>
+  <div style="    margin-top: 7px;">
+       <span style="margin-right: 20px;   color: #333;
+        font-size: 12px;">
+
+        <ion-icon style='margin-right: 5px' name="ios-time-outline">
+        </ion-icon>Hora:`+horaII+` - `+horaFF+`
+        </span>
+
         <span style="     margin-top: 7px;   display: block; color: #333;
         font-size: 12px; margin-bottom: 5px">
 
-       <span style="margin-left: 5px">`+item.empleadoSeleccionado.nombre+`</span>
+       <span style="margin-left: 5px">Staff:`+nombreEmpleado+`</span>
 
 
         </span>
@@ -1334,6 +1347,12 @@ moment.locale('es');
 
   }
 
+  if(tipo == 3 || tipo == 4){
+     asuntoEm = 'YourBeauty - Reserva Confirmada';
+    stringMessage = `${nombreCen} ha confirmado tu 
+     reserva para el dia ${fechaD} a las ${horaD}.`;
+
+  }
 
   nodemailer.createTestAccount((err, account) => {
             console.log(err);
@@ -1613,12 +1632,15 @@ a[x-apple-data-detectors=true] {
 
     <br>
 
-    ${nombreCen}
+   <span style='font-size: 16px;font-weight: 500;'> ${nombreCen} </span>
 
     <br>
 
-    ${direccion}
+    Dirección: ${direccion}
 
+    <br>
+
+    Tel. ${telefono}
 
     </div>  
   </div>
@@ -4080,7 +4102,16 @@ db(`UPDATE servicio_cita set estado=?
          ALL (SELECT estado FROM servicio_cita WHERE idCita = ?) 
         `,[traduccionEstado,req.body.estado,req.body.idCita,req.body.estado, req.body.idCita ]),
       db(`SELECT idCita FROM cita WHERE idCita = ? AND 
-        estado = ?`,[req.body.idCita, traduccionEstado])])
+        estado = ?`,[req.body.idCita, traduccionEstado]),
+      db(`SELECT c.confirmacionAutomatica,cli.email, 
+      cli.nombre as nombreCliente, ce.nombre as nombreCentro, DATE(r.horaInicio) as fecha, r.horaInicio as hi, ce.direccion, ce.telefono     
+          FROM configuracionCentro as c, cliente as cli, centro as ce, cita as r 
+           WHERE r.idCita = ? AND c.idCentro = r.idCentro 
+           AND ce.idCentro = r.idCentro AND cli.idCliente = r.idCliente LIMIT 1`,[req.body.idCita]),
+       db(`SELECT sc.*, sc.precioCobrado as precioFinal, e.nombre as nombreEmpleado, 
+        s.nombre FROM servicio_cita as sc, empleado as e, servicio as s 
+        WHERE e.idEmpleado = sc.idEmpleado 
+        AND s.idServicio = sc.idServicio AND sc.idCita = ? `,[req.body.idCita])])
       .then((data) => {
         
 
@@ -4090,6 +4121,10 @@ db(`UPDATE servicio_cita set estado=?
         }
         if(req.body.estado==1 && data[1].length>0 && data[1][0].idCita){
           enviarPush(req.body.idCita,2);
+          enviarEmailUsuarioNR(data[2][0].telefono,data[2][0].direccion,data[2][0].email,data[2][0].nombreCentro,
+              data[2][0].nombreCliente,
+              data[2][0].fecha,data[2][0].hi,data[3], 4);
+
         }      
 
                 if(req.body.estado==4 ){
@@ -4268,7 +4303,7 @@ db(`UPDATE servicio_cita set estado=2
       
 
      arrayFunctions.unshift(db(`SELECT c.confirmacionAutomatica,cli.email, 
-      cli.nombre as nombreCliente, ce.nombre as nombreCentro, ce.direccion    
+      cli.nombre as nombreCliente, ce.nombre as nombreCentro, ce.direccion, ce.telefono     
           FROM configuracionCentro as c, cliente as cli, centro as ce, cita as r 
            WHERE r.idCita = ? AND c.idCentro = r.idCentro AND ce.idCentro = r.idCentro AND cli.idCliente = r.idCliente LIMIT 1`,[idCita]));
 
@@ -4285,7 +4320,7 @@ db(`UPDATE servicio_cita set estado=2
             enviarPushEmpleados(elementw, cant,1,fecha,idCita);
           });
 
-          enviarEmailUsuarioNR(data[0][0].direccion,data[0][0].email,data[0][0].nombreCentro,
+          enviarEmailUsuarioNR(data[0][0].telefono,data[0][0].direccion,data[0][0].email,data[0][0].nombreCentro,
               data[0][0].nombreCliente,
               req.body.fecha,req.body.inicio,req.body.servicios, 2);
 
@@ -5749,7 +5784,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
         `,[req.body.idCentro, req.body.idCliente,req.body.fechaInicio,
         req.body.fechaFinal,req.body.total, (req.body.notaCita || ' '), req.body.idCentro, req.body.idCuponCliente, cliR,idPaquete]),
         db(`SELECT c.confirmacionAutomatica,cli.email, cli.nombre as nombreCliente, 
-          ce.nombre as nombreCentro, ce.direccion   
+          ce.nombre as nombreCentro, ce.direccion, ce.telefono    
           FROM configuracionCentro as c, cliente as cli, centro as ce
            WHERE c.idCentro = ? AND ce.idCentro = ? AND cli.idCliente = ? LIMIT 1`,[req.body.idCentro, req.body.idCentro, req.body.idCliente])])
       .then((data) => {
@@ -5801,9 +5836,12 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
 
             console.log(elementw, cant,1,req.body.fechaInicio,idCitaAdded);
             enviarPushEmpleados(elementw, cant,1,fecha,idCitaAdded);
-            enviarEmailUsuarioNR(data[1][0].direccion,data[1][0].email,data[1][0].nombreCentro,
+
+            var ttReserva = confir == 1 ? 3 : 1;
+
+            enviarEmailUsuarioNR(data[1][0].telefono,data[1][0].direccion,data[1][0].email,data[1][0].nombreCentro,
               data[1][0].nombreCliente,
-              req.body.fecha,req.body.fechaInicio,req.body.servicios, 1);
+              req.body.fecha,req.body.fechaInicio,req.body.servicios, ttReserva);
           });
 
          return res.send({insertId:idCita });
