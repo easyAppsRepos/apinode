@@ -5732,10 +5732,10 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       FROM usuario_favorito WHERE idCentro = ? AND idCliente = ? AND estado = 1) as favorito
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
       GROUP BY c.idCentro`,[req.body.idCentro,ssdd,req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
-    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.idSubcategoria, sc.nombre as nombreSubcategoria, s.precio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
       (SELECT co.precioOferta FROM control_oferta AS co WHERE co.idServicio = s.idServicio AND co.idCentro = ? AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
-      FROM servicio as s, categoria as c 
-      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCentro,req.body.idCentro]),
+      FROM  categoria as c, servicio as s LEFT JOIN subcategoria as sc ON sc.idSubcategoria = s.idSubcategoria
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria  AND s.estado = 1`,[req.body.idCentro,req.body.idCentro]),
     db(`SELECT ev.*, u.nombre as nombreUsuario, u.idFoto as fotoUsuario, u.imagenFb as fotoFb   
       FROM evaluacionCentro as ev, cliente as u, cita as c 
       WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCliente <> 0 AND c.idCita = ev.idCita ORDER BY ev.fechaCreacion DESC`,[req.body.idCentro]),
