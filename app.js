@@ -2001,7 +2001,7 @@ where  exists (SELECT COALESCE(SUM(f.exp),0) as sss FROM
  (SELECT gm.idCliente FROM cita as gm 
  WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3  
  HAVING (sss)>((SELECT valor FROM parametros WHERE idParametro = 7)*
- (SELECT COUNT(idAnimacionesUser) FROM animacionesUser WHERE idCC > 0 
+ (SELECT COUNT(idAnimacionesUser)+1 FROM animacionesUser WHERE idCC > 0 
  AND idCliente = (SELECT idCliente FROM cita  
  WHERE idCita = ? LIMIT 1))))`,
  [idCita,idCita,idCita])])
@@ -3885,14 +3885,26 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
 
 
   expressApp.post('/agregarOpinion', (req, res) => {
-    db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2,
+    Promise.all([db(`UPDATE evaluacionCentro set puntuacion=?,comentario=?,estado=2,
       servicio=?,staff=?,precio=?,limpieza=?,ambiente=?  
      WHERE idEvaluacionCentro = ?`,[req.body.evaluacion, req.body.comentario,
      req.body.servicio,req.body.staff,req.body.precio,req.body.limpieza,
-     req.body.ambiente,req.body.idEvaluacionCentro])
+     req.body.ambiente,req.body.idEvaluacionCentro]),
+
+    db(`INSERT INTO premiosPuntos (puntos, idCliente) SELECT (SELECT valor FROM parametros WHERE 
+      idParametro = 10), ?`,[req.body.idCliente]),
+
+       db(`SELECT u.idCliente, u.nombre, u.telefono, u.idGenero, u.email, u.imagenFb, u.fechaNacimiento, u.genero,
+      u.fbId, u.idFoto, u.estado, COUNT(c.idCita) as completadas,
+       ((SELECT COALESCE(SUM(pp.puntos),0) FROM premiosPuntos as pp WHERE pp.idCliente = u.idCliente AND pp.estado = 1)+
+       (SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente = u.idCliente AND f.estado = 3)) as exp,
+              (SELECT valor FROM parametros WHERE idParametro = 7) as appexp, 
+              (SELECT valor FROM parametros WHERE idParametro = 10) as puntosG
+        FROM cliente as u LEFT JOIN cita as c ON c.idCliente = u.idCliente AND c.estado = 3 
+      WHERE u.idCliente = ?  GROUP BY u.idCliente`,[req.body.idCliente])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send({dataUser:data[2], dataI:data[0]});
       }).catch(err => res.send(err).status(500));
   });
 
