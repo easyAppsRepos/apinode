@@ -4102,12 +4102,36 @@ expressApp.get('/enviarEmailHTML', function(req, res) {
   });
 
 
+    expressApp.post('/cancelarConfirmacion', (req, res) => {
+   db(`UPDATE servicio_cita set estado=7 
+      WHERE idServicioCita = ?`,[req.body.idServicioCita]).then((data) => {
+        if (!data) res.send().status(500);
+
+         Promise.all([ db(`UPDATE cita set estado=3 WHERE idCita = ? AND 3 = 
+         ALL (SELECT estado FROM servicio_cita WHERE idCita = ? 
+         AND estado <> 7 ) `,[req.body.idCita,req.body.idCita]),
+    db(`UPDATE cita set estado=2 WHERE idCita = ? AND 1 = 
+         ALL (SELECT estado FROM servicio_cita WHERE idCita = ? 
+         AND estado <> 7 ) `,[req.body.idCita,req.body.idCita])]).then((datas) => {
+
+          //return res.send(data);
+
+
+         })
+         .catch(err => res.send(err).status(500));;
+
+        //return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
     expressApp.post('/cambiarServicioCitaNC', (req, res) => {
 
       var traduccionEstado = req.body.estado == 0 ? 1 : 
        req.body.estado == 1 ? 2 : req.body.estado == 2 ? 5 : 
-        req.body.estado == 3 ? 3 : req.body.estado == 4 ? 4 :1;
+        req.body.estado == 3 ? 3 : req.body.estado == 4 ? 4 : 
+        req.body.estado == 7 ? 7 : 1;
         console.log(traduccionEstado);
 
 db(`UPDATE servicio_cita set estado=? 
@@ -4116,8 +4140,11 @@ db(`UPDATE servicio_cita set estado=?
         if (!datass) res.send().status(500);
 
      Promise.all([db(`UPDATE cita set estado=? WHERE ? <> 4 AND idCita = ? AND ? = 
-         ALL (SELECT estado FROM servicio_cita WHERE idCita = ?) 
+         ALL (SELECT estado FROM servicio_cita WHERE idCita = ? AND estado <> 7 ) 
         `,[traduccionEstado,req.body.estado,req.body.idCita,req.body.estado, req.body.idCita ]),
+      db(`UPDATE cita set estado=3 WHERE ? = 7 AND idCita = ? AND 3 = 
+         ALL (SELECT estado FROM servicio_cita WHERE idCita = ? 
+         AND estado <> 7 ) `,[req.body.estado,req.body.idCita,req.body.idCita]),
       db(`SELECT idCita FROM cita WHERE idCita = ? AND 
         estado = ?`,[req.body.idCita, traduccionEstado]),
       db(`SELECT c.confirmacionAutomatica,cli.email, 
@@ -4133,14 +4160,15 @@ db(`UPDATE servicio_cita set estado=?
         
 
 
-        if(req.body.estado==3 && data[1].length>0 && data[1][0].idCita){
+        if((req.body.estado==3 && data[2].length>0 && data[2][0].idCita) || 
+          req.body.estado==7 && data[1].affectedRows>0){
           completarCitaPush(req.body.idCita);
         }
-        if(req.body.estado==1 && data[1].length>0 && data[1][0].idCita){
+        if(req.body.estado==1 && data[2].length>0 && data[2][0].idCita){
           enviarPush(req.body.idCita,2);
-          enviarEmailUsuarioNR(data[2][0].telefono,data[2][0].direccion,data[2][0].email,data[2][0].nombreCentro,
-              data[2][0].nombreCliente,
-              data[2][0].fecha,data[2][0].hi,data[3], 4);
+          enviarEmailUsuarioNR(data[3][0].telefono,data[3][0].direccion,data[3][0].email,data[3][0].nombreCentro,
+              data[3][0].nombreCliente,
+              data[3][0].fecha,data[3][0].hi,data[4], 4);
 
         }      
 
