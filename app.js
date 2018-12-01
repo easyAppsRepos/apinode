@@ -1868,6 +1868,12 @@ var tipox = 1;
        tipox = 1;
       }
 
+          if(tipo == 7){
+        mensajePush=" Su reserva ha sido cancelada"
+       tipox = 1;
+      }
+
+
 
             if(tipo == 2){
         mensajePush="  Felicidades! Tu reserva ha sido confirmada.";
@@ -4171,6 +4177,11 @@ db(`UPDATE servicio_cita set estado=?
               data[3][0].fecha,data[3][0].hi,data[4], 4);
 
         }      
+
+                if(req.body.estado==7 &&  data[2].length>0){
+          enviarPush(req.body.idCita,7);
+        }   
+
 
                 if(req.body.estado==4 ){
           enviarPush(req.body.idCita,9);
