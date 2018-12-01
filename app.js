@@ -94,7 +94,7 @@ const storage2 = multer.diskStorage({
 
 function registrarIdCC(idAnimacion, idCC){
 
-db(`UPDATE animacionUser set idCC = ? WHERE idAnimacionesUser = ?`,[idCC,idAnimacion]).then((data) => {
+db(`UPDATE animacionesUser set idCC = ? WHERE idAnimacionesUser = ?`,[idCC,idAnimacion]).then((data) => {
   console.log('animSetOK');
 
       }).catch(err => console.log('errorEnCron1'));
@@ -1956,6 +1956,7 @@ function completarCitaPush(idCita){
 
 /*
 
+COMPLETAR CITA NEW 
             var ga=Number(data.additionalData.puntosGanados) * 1;
             var ge=Number(data.additionalData.totalExc)* 1;
             var gi=Number(data.additionalData.puntosActual)* 1;
@@ -1984,9 +1985,9 @@ Promise.all([
         VALUES ((SELECT idCliente FROM cita WHERE idCita = ?),
         (SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?),
         (SELECT valor FROM parametros WHERE idParametro = 7),
-        ((SELECT SUM(f.exp) FROM cita as f WHERE f.idCliente 
+        ((SELECT COALESCE(SUM(f.exp),0) FROM cita as f WHERE f.idCliente 
         = (SELECT gm.idCliente FROM cita as gm WHERE gm.idCita = ? LIMIT 1) 
-        AND f.estado = 3)-(SELECT dx.exp FROM cita as dx WHERE dx.idCita = ?))
+        AND f.estado = 3 AND f.idCita <> ?))
           )`,[idCita,idCita,idCita,idCita]),
 
        db(`INSERT IGNORE INTO cupon_cliente(idCliente, idCupon,estado,regalo, fechaActivacion)
@@ -1994,13 +1995,16 @@ select (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?),
  (SELECT idc.idCupon FROM cupon as idc WHERE idc.estado = 1 
  AND idc.premio = 1 ORDER BY RAND() LIMIT 1), 
  1,1, CURRENT_TIMESTAMP cupon_cliente
-where  exists (SELECT SUM(f.exp) as sss FROM
+where  exists (SELECT COALESCE(SUM(f.exp),0) as sss FROM
  cita as f 
  WHERE f.idCliente = 
  (SELECT gm.idCliente FROM cita as gm 
- WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3 AND f.idCita != ? 
- HAVING (sss+(SELECT exp FROM cita WHERE idCita = ?))>(SELECT valor FROM parametros WHERE idParametro = 7))`,
- [idCita,idCita,idCita,idCita])])
+ WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3  
+ HAVING (sss)>((SELECT valor FROM parametros WHERE idParametro = 7)*
+ (SELECT COUNT(idAnimacionesUser) FROM animacionesUser WHERE idCC > 0 
+ AND idCliente = (SELECT idCliente FROM cita  
+ WHERE idCita = ? LIMIT 1))))`,
+ [idCita,idCita,idCita])])
       .then((data) => {
 
         if (!data) res.send().status(500);
