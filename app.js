@@ -4151,7 +4151,8 @@ db(`UPDATE servicio_cita set estado=?
         `,[traduccionEstado,req.body.estado,req.body.idCita,req.body.estado, req.body.idCita ]),
       db(`UPDATE cita set estado=3 WHERE ? = 7 AND idCita = ? AND 3 = 
          ALL (SELECT estado FROM servicio_cita WHERE idCita = ? 
-         AND estado <> 7 ) `,[req.body.estado,req.body.idCita,req.body.idCita]),
+         AND estado <> 7 ) AND (SELECT COUNT(*) FROM servicio_cita 
+         WHERE estado != 7 AND idCita = ?) > 0`,[req.body.estado,req.body.idCita,req.body.idCita,req.body.idCita]),
       db(`SELECT idCita FROM cita WHERE idCita = ? AND 
         estado = ?`,[req.body.idCita, traduccionEstado]),
       db(`SELECT c.confirmacionAutomatica,cli.email, 
