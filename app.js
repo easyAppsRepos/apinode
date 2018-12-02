@@ -5903,7 +5903,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
               req.body.fecha,req.body.fechaInicio,req.body.servicios, ttReserva);
           });
 
-         return res.send({insertId:idCita });
+         return res.send({insertId:idCita, confirmada:confir });
       }).catch(err => res.send(err).status(500));
 
 
