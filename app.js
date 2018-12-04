@@ -4421,14 +4421,16 @@ db(`UPDATE servicio_cita set estado=2
 
 
     expressApp.post('/editarUC', (req, res) => {
-    db(`UPDATE usuario_consola set nombreTitular=?,email=?,estado=?,ruc=?,
+     Promise.all([db(`UPDATE usuario_consola set nombreTitular=?,email=?,estado=?,ruc=?,
       inicioContrato=?,finContrato=?, tipoContrato=?, observaciones=? 
       WHERE idUsuarioConsola = ?`,[req.body.nombreTitular,req.body.email,
       req.body.estado,
-      req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato,req.body.observaciones,req.body.idUsuarioConsola])
+      req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato,
+      req.body.observaciones,req.body.idUsuarioConsola]),
+     db(`UPDATE centro set estado=? WHERE email = ?`,[req.body.estado,req.body.email])])
       .then((data) => {
         if (!data) res.send().status(500);
-        return res.send(data);
+        return res.send(data[0]);
       }).catch(err => res.send(err).status(500));
   });
 
