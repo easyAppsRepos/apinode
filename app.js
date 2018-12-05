@@ -4100,8 +4100,8 @@ expressApp.get('/enviarEmailHTML', function(req, res) {
 
 
     expressApp.post('/cancelarCita', (req, res) => {
-     Promise.all([db(`UPDATE cita set estado=4 WHERE idCita = ?`,[req.body.idCita]),
-      db(`UPDATE servicio_cita set estado=4 WHERE idCita = ?`,[req.body.idCita])])
+     Promise.all([db(`UPDATE cita set estado=7 WHERE idCita = ?`,[req.body.idCita]),
+      db(`UPDATE servicio_cita set estado=7 WHERE idCita = ?`,[req.body.idCita])])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
