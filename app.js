@@ -5874,10 +5874,11 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
           var horaI = req.body.fecha+' '+elementw.inicio;
              var horaF = req.body.fecha+' '+elementw.fin;
             arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado,
-              idEmpleado,horaInicio, horaFin) 
-            VALUES (?,?,(SELECT confirmacionAutomatica FROM configuracionCentro WHERE idCentro = ? LIMIT 1),?,?,?,?)
+              idEmpleado,horaInicio, horaFin,precioMomentoCompra) 
+            VALUES (?,?,(SELECT confirmacionAutomatica FROM configuracionCentro WHERE idCentro = ? LIMIT 1),?,?,?,?,
+            (SELECT xxs.precio FROM servicio as xxs WHERE xxs.idServicio = ? LIMIT 1))
             `,[data[0].insertId, elementw.idServicio,req.body.idCentro,(parseFloat(elementw.precioFinal) || 0),
-            elementw.empleadoSeleccionado.idEmpleado,horaI, horaF]));
+            elementw.empleadoSeleccionado.idEmpleado,horaI, horaF,elementw.idServicio]));
 
             confirmacionLista.push(elementw.empleadoSeleccionado.idEmpleado);
 
@@ -5951,10 +5952,10 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
           var horaI = req.body.fecha+' '+elementw.inicio;
              var horaF = req.body.fecha+' '+elementw.fin;
             arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado,
-              idEmpleado,horaInicio, horaFin) 
-            VALUES (?,?,1,?,?,?,?)
+              idEmpleado,horaInicio, horaFin,precioMomentoCompra) 
+            VALUES (?,?,1,?,?,?,?,(SELECT xxs.precio FROM servicio as xxs WHERE xxs.idServicio = ? LIMIT 1))
             `,[data.insertId, elementw.idServicio,(parseFloat(elementw.precioFinal) || 0),
-            elementw.empleadoSeleccionado.idEmpleado,horaI, horaF]));
+            elementw.empleadoSeleccionado.idEmpleado,horaI, horaF,elementw.idServicio]));
 
           });
       Promise.all(arrayFunctions).then((data) => {
@@ -5997,10 +5998,10 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
           var horaI = elementw.inicio+':00';
              var horaF = elementw.fin+':00';
             arrayFunctions.push(db(`INSERT INTO servicio_cita (idCita, idServicio, estado,precioCobrado,
-              idEmpleado,horaInicio, horaFin) 
-            VALUES (?,?,1,?,?,?,?)
+              idEmpleado,horaInicio, horaFin, precioMomentoCompra) 
+            VALUES (?,?,1,?,?,?,?,(SELECT xxs.precio FROM servicio as xxs WHERE xxs.idServicio = ? LIMIT 1))
             `,[data.insertId, elementw.idServicio,(parseFloat(elementw.precioFinal) || 0),
-            req.body.idEmpleado,horaI, horaF]));
+            req.body.idEmpleado,horaI, horaF,elementw.idServicio]));
 
           });
       Promise.all(arrayFunctions).then((data) => {
