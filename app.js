@@ -1297,11 +1297,11 @@ moment.locale('es');
 ">
 <div>
 <span>
- Servicio:<span style="
+ <span style="
       font-size: 16px;
     color: #333; 
     font-weight: 600;text-transform: lowercase;
-">`+item.nombre+`</span></span>
+">Servicio:  `+item.nombre+`</span></span>
 
           <span style="    color: #EC527E !important;
     float: right;
@@ -1316,13 +1316,13 @@ moment.locale('es');
         font-size: 12px;">
 
         <ion-icon style='margin-right: 5px' name="ios-time-outline">
-        </ion-icon>Hora:`+horaII+` - `+horaFF+`
+        </ion-icon>Hora:  `+horaII+` - `+horaFF+`
         </span>
 
         <span style="     margin-top: 7px;   display: block; color: #333;
         font-size: 12px; margin-bottom: 5px">
 
-       <span style="">Staff:`+nombreEmpleado+`</span>
+       <span style="">Staff:  `+nombreEmpleado+`</span>
 
 
         </span>
@@ -1641,7 +1641,7 @@ a[x-apple-data-detectors=true] {
 
     <br>
 
-    Tel. ${telefono}
+    Teléfono: ${telefono}
 
     </div>  
   </div>
