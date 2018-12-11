@@ -3115,7 +3115,7 @@ DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente,
  AND c.idCliente = (SELECT idCliente FROM cita WHERE idCita = ?) 
  AND c.idCentro = (SELECT idCentro FROM cita WHERE idCita = ?) ORDER BY fechaCita DESC`,[req.body.idCita,req.body.idCita]), 
    db(`SELECT sc.idServicioCita, sc.idEmpleado, s.nombre as nombreServicio,s.duracion, 
-      sc.precioCobrado, sc.estado as estadoServicio,
+      sc.precioCobrado,sc.precioMomentoCompra, sc.estado as estadoServicio,
       DATE_FORMAT(sc.horaInicio, '%Y/%m/%d') as fechaServicio, TIME_FORMAT(sc.horaInicio, '%h:%i%p') as inicioServicio, 
       TIME_FORMAT(sc.horaFin, '%h:%i%p') as finServicio,sc.idCita, 
       e.nombre as nombreEmpleado,e.idFoto as empleadoFoto FROM  servicio as s, servicio_cita as sc 
