@@ -3121,7 +3121,7 @@ DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente,
       e.nombre as nombreEmpleado,e.idFoto as empleadoFoto FROM  servicio as s, servicio_cita as sc 
       JOIN empleado as e ON (sc.idEmpleado = e.idEmpleado) 
       WHERE  sc.idCita = ? AND sc.idServicio = s.idServicio`,[req.body.idCita]),
-   db(`SELECT cli.nombre as nombreCliente, cli.idCliente, cli.email, cli.idFoto, 
+   db(`SELECT cli.nombre as nombreCliente, cli.telefono,cli.idCliente, cli.email, cli.idFoto, 
     (SELECT COUNT(idCita) FROM cita WHERE estado = 3 AND idCliente = cli.idCliente 
     AND idCentro = ?) as completadas,
     (SELECT idCentro FROM cita WHERE idCita = ?) as idCentro,
