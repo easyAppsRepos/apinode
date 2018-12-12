@@ -6773,7 +6773,8 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
 
         expressApp.post('/verificarEmail', function(req, res) {
 
-    db(`SELECT email FROM usuario_consola WHERE  email = ?`,[req.body.email]).then((data) => {
+    db(`SELECT ? as email FROM empleado as e, usuario_consola as uc 
+      WHERE  uc.email = ? OR e.email = ? LIMIT 1`,[req.body.email,req.body.email,req.body.email]).then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
 
@@ -6783,7 +6784,8 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
 
         expressApp.post('/verificarEmail2', function(req, res) {
 
-    db(`SELECT email FROM empleado WHERE  email = ?`,[req.body.email]).then((data) => {
+    db(`SELECT ? as email FROM empleado as e, usuario_consola as uc 
+      WHERE  uc.email = ? OR e.email = ? LIMIT 1`,[req.body.email,req.body.email,req.body.email]).then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
 
