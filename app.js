@@ -6988,6 +6988,7 @@ TIME_FORMAT(horaSalir, '%h:%i%p') as horaFF FROM horario_especial_empleado WHERE
       if(item.tipo==1){
         clave = '(SELECT password FROM usuario_consola WHERE email ="'+item.email+'")';
         clave2 = '(SELECT password FROM usuario_consola WHERE email ="'+item.email+'")';
+        dataFE.splice(index, 1);
       }
       else{
         clave = makeid();
