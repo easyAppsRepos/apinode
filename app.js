@@ -7401,7 +7401,7 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       WHERE u.email = ? AND u.password = ? AND c.idCentro = u.idCentro`,[req.body.email,req.body.password]).then((data) => {
       console.log(data);
 
-      if (data[0].idUsuarioConsola) {
+      if (data[0].email) {
 
         var dataSend = data[0];
 
