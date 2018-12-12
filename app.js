@@ -6282,6 +6282,35 @@ AND c.idCliente = r.idCliente ORDER BY ec.fechaCreacion DESC LIMIT 5 `,[req.body
 
 
         expressApp.post('/getEventosUserNC', (req, res) => {
+
+if(req.body.admin == 1){
+
+      Promise.all([db(`SELECT (SELECT COUNT(DISTINCT ccc.idServicioCita) 
+      FROM cita as rrr, servicio_cita as ccc WHERE DATE(ccc.horaInicio) = DATE(sc.horaInicio) 
+      AND sc.idCita = rrr.idCita AND rrr.idCentro = ? AND ccc.estado = 0) as pendientes,cli.nombre as nombreCliente, s.nombre as nombreServicio,
+DAY(sc.horaInicio) as d, MONTH(sc.horaInicio) as m, YEAR(sc.horaInicio) as y, HOUR(sc.horaInicio) as h, MINUTE(sc.horaInicio) as min,
+ HOUR(sc.horaFin) as h2, MINUTE(sc.horaFin) as min2,
+sc.idCita, sc.estado, c.clienteReferencia, c.estado as estadoCita FROM cliente as cli, servicio as s,  cita as c , servicio_cita as sc
+WHERE cli.idCliente = c.idCliente AND c.idCita = sc.idCita AND sc.idServicio = s.idServicio 
+AND c.idCentro = ? ORDER BY FIELD(sc.estado,0) DESC, 
+sc.horaInicio DESC`,[req.body.idCentro,req.body.idCentro]),
+    db(`SELECT rm.*, 
+    DAY(rm.horaInicio) as d, MONTH(rm.horaInicio) as m, 
+    YEAR(rm.horaInicio) as y, HOUR(rm.horaInicio) as h, 
+    MINUTE(rm.horaInicio) as min,
+    HOUR(rm.horaFinalEsperado) as h2, MINUTE(rm.horaFinalEsperado) as min2 
+    FROM reservaManual as rm WHERE rm.idCentro = ?`,[req.body.idCentro])])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+        var arrayM = data[0].concat(data[1]);
+
+        return res.send(arrayM);
+      }).catch(err => res.send(err).status(500));
+
+}
+else{
+
     Promise.all([db(`SELECT (SELECT COUNT(DISTINCT idServicioCita) 
       FROM servicio_cita WHERE DATE(horaInicio) =  DATE(sc.horaInicio) 
       AND idEmpleado = ? AND estado = 0) as pendientes,cli.nombre as nombreCliente, s.nombre as nombreServicio,
@@ -6304,6 +6333,9 @@ sc.horaInicio DESC`,[req.body.idEmpleado,req.body.idEmpleado]),
 
         return res.send(arrayM);
       }).catch(err => res.send(err).status(500));
+}
+
+
   });
 
 
