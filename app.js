@@ -2604,7 +2604,7 @@ expressApp.get('/horaMinMax', function(req, res) {
   console.log(claveNeva);
  //var claveNeva = 'asdasd';
     var resultadoEmail=1;
-    db(`UPDATE usuario_consola set password=? WHERE email=?`,[claveNeva,req.body.email])
+    db(`UPDATE empleado set password=? WHERE email=?`,[claveNeva,req.body.email])
       .then((dataf) => {
         if (!dataf) {res.send().status(500)}
         else{
@@ -7064,7 +7064,7 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
 
           
            //enviarEmailStaff(req.body.email, clave);
-           
+
            enviarEmailStaff(req.body.email, clave,req.body.nombre,data[1][0].nombre);
         return res.send(data[0]);
 
