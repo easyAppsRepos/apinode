@@ -7391,6 +7391,42 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
     }).catch(err => res.send(err).status(500));
   });
 
+
+
+    expressApp.post('/loginNC2', (req, res) => {
+
+    db(`SELECT c.idCentro, c.nombre as nombreCentro, u.email, u.nombre as nombreTitular, u.nombre,
+     u.tipo, u.estado, (SELECT ucc.pasos FROM usuario_consola as ucc WHERE 
+      c.email = ucc.email) as pasos FROM usuario_consola as u, centro as c  
+      WHERE u.email = ? AND u.password = ? AND c.idCentro = u.idCentro`,[req.body.email,req.body.password]).then((data) => {
+      console.log(data);
+
+      if (data[0].idUsuarioConsola) {
+
+        var dataSend = data[0];
+
+        if(data[0].pasos==10){
+            dataSend.completo=true;
+            dataSend.accessToken='access-token-' + Math.random();
+            dataSend.refreshToken='access-token-' + Math.random();
+            dataSend.roles=["ADMIN"];
+        }
+        else{
+            dataSend.completo=false;
+        }
+
+        return res.send(dataSend);  
+
+      }
+      else{
+        return res.send(err).status(500);
+      }
+      
+    }).catch(err => res.send(err).status(500));
+  });
+
+
+
     expressApp.post('/login', (req, res) => {
 
     db(`SELECT u.idUsuarioConsola, u.email, u.nombre, u.tipo, u.estado, 
