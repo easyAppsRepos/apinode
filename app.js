@@ -6983,14 +6983,27 @@ TIME_FORMAT(horaSalir, '%h:%i%p') as horaFF FROM horario_especial_empleado WHERE
     var dataFE = req.body;
     req.body.forEach((item, index)=>{
 
-        var clave = makeid();
-      dataFE[index].clave = clave;
+        var clave = '';
+        var clave2 = '';
+      if(item.tipo==1){
+        clave = '(SELECT password FROM usuario_consola WHERE email ="'+item.email+'")';
+        clave2 = '(SELECT password FROM usuario_consola WHERE email ="'+item.email+'")';
+      }
+      else{
+        clave = makeid();
+        clave2 = '"'+clave+'"';
+
+        dataFE[index].clave = clave;
+
+
+        }
+
       var tel = item.telefono || ' ';
       if(index==0){
-    insertQ +='('+item.idCentro+',"'+clave+'"'+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+tel+'","'+item.email+'")';
+    insertQ +='('+item.idCentro+','+clave2+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+tel+'","'+item.email+'")';
        }
        else{
-          insertQ +=', ('+item.idCentro+',"'+clave+'"'+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+tel+'","'+item.email+'")';
+          insertQ +=', ('+item.idCentro+','+clave2+',"'+item.nombre+'",'+item.tipo+',"'+item.descripcion+'","'+tel+'","'+item.email+'")';
        }
     });
 
