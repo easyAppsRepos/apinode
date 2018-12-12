@@ -7064,11 +7064,8 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
 
           
            //enviarEmailStaff(req.body.email, clave);
-           if(req.body.tipo==2){
-              enviarEmailStaff(req.body.email, clave,req.body.nombre,data[1][0].nombre);
-           }
-
            
+           enviarEmailStaff(req.body.email, clave,req.body.nombre,data[1][0].nombre);
         return res.send(data[0]);
 
       }).catch(err => res.send(err).status(500));
