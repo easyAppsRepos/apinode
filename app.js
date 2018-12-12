@@ -6983,6 +6983,8 @@ TIME_FORMAT(horaSalir, '%h:%i%p') as horaFF FROM horario_especial_empleado WHERE
           var idCentro = req.body[0].idCentro;
     var insertQ = ''; 
     var dataFE = req.body;
+    var itemElim = 0;
+    var indexElim = 0;
     req.body.forEach((item, index)=>{
 
         var clave = '';
@@ -6990,7 +6992,8 @@ TIME_FORMAT(horaSalir, '%h:%i%p') as horaFF FROM horario_especial_empleado WHERE
       if(item.tipo==1){
         clave = '(SELECT password FROM usuario_consola WHERE email ="'+item.email+'")';
         clave2 = '(SELECT password FROM usuario_consola WHERE email ="'+item.email+'")';
-        dataFE.splice(index, 1);
+        itemElim = 1;
+        indexElim = index;
       }
       else{
         clave = makeid();
@@ -7010,6 +7013,7 @@ TIME_FORMAT(horaSalir, '%h:%i%p') as horaFF FROM horario_especial_empleado WHERE
        }
     });
 
+    if(itemElim>0){dataFE.splice(indexElim, 1);}
 
     Promise.all([db(`INSERT INTO empleado(idCentro,password,nombre,tipo,descripcion,telefono,email) VALUES `+insertQ+` `),
       db(`INSERT INTO horarioEmpleado(diaSemana,horaEntrar,horaSalir,estado,idEmpleado) 
