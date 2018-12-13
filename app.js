@@ -1979,7 +1979,7 @@ Promise.all([
     db(`UPDATE cita set  estado=3,
       exp=((SELECT COALESCE(SUM(sc.precioCobrado),0) FROM servicio_cita as sc 
       WHERE idCita = ? AND estado = 3 )*(SELECT valor FROM parametros WHERE idParametro=2)),
-      comision=(precioEsperado*((SELECT valor FROM parametros WHERE idParametro=1)/100)) WHERE idCita = ?`,[idCita,idCita]), 
+      comision=1 WHERE idCita = ?`,[idCita,idCita]), 
     db(`INSERT INTO evaluacionCentro (idCentro,idCita) 
       VALUES((SELECT x.idCentro FROM cita as x WHERE x.idCita = ?), ?)`,[idCita,idCita]),
     db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
