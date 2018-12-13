@@ -6065,14 +6065,14 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
     expressApp.post('/getDataCitaAE', (req, res) => {
      Promise.all([
     db(`SELECT c.idCentro,xcli.nombre as nombreCliente, c.nombre, c.direccion, xcli.idFoto, c.telefono, 
-      ci.idCita, ci.estado, ci.clienteReferencia, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
+      ci.idCita, ci.estado, ci.idPaquete, ci.clienteReferencia, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
       ci.horaFinalEsperado,precioEsperado, ci.idCuponCliente, ci.idCliente, 
       (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento 
       FROM cliente as xcli, centro as c, cita as ci  
       WHERE ci.idCita = ? AND c.idCentro = ci.idCentro AND xcli.idCliente = ci.idCliente`,[req.body.idCita]),
     db(`SELECT s.idServicio, sc.estado, s.nombre, s.duracion, s.precio, sc.precioCobrado, sc.idCita,
-     sc.idServicioCita,
+     sc.idServicioCita,sc.precioMomentoCompra,
      DAY(sc.horaInicio) as d, MONTH(sc.horaInicio) as m, YEAR(sc.horaInicio) as y, 
      HOUR(sc.horaInicio) as h, MINUTE(sc.horaInicio) as min,
       HOUR(sc.horaFin) as h2, MINUTE(sc.horaFin) as min2, s.idCategoria, e.idFoto as idFotoE,
