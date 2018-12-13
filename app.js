@@ -4719,7 +4719,7 @@ db(`UPDATE servicio_cita set estado=2
      Promise.all([
     db(`UPDATE cita set  estado=3,
       exp=(precioEsperado*(SELECT valor FROM parametros WHERE idParametro=2)),
-      comision=(precioEsperado*((SELECT valor FROM parametros WHERE idParametro=1)/100)) WHERE idCita = ?`,[req.body.idCita]), 
+      comision=1 WHERE idCita = ?`,[req.body.idCita]), 
     db(`INSERT INTO evaluacionCentro (idCentro,idCita) 
       VALUES((SELECT x.idCentro FROM cita as x WHERE x.idCita = ?), ?)`,[req.body.idCita,req.body.idCita]),
     db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
