@@ -3618,8 +3618,8 @@ LEFT JOIN servicio_cita as c ON (c.idEmpleado = e.idEmpleado AND c.estado IN (0,
     var insertQ = ''; 
 
 
-    db(`INSERT INTO paquete_centro (estado,nombre,tiempo,precioTotal, idCentro, fechaVencimiento) 
-      VALUES(1,?,?,?,?, DATE_ADD(CURRENT_DATE(), INTERVAL 7 DAY))`,[req.body.nombrePaquete,req.body.duracion,
+    db(`INSERT INTO paquete_centro (estado,nombre,tiempo,precioTotal, idCentro, fechaVencimiento,costo) 
+      VALUES(1,?,?,?,?, DATE_ADD(CURRENT_DATE(), INTERVAL 7 DAY),(SELECT valor FROM parametros WHERE idParametro = 6))`,[req.body.nombrePaquete,req.body.duracion,
       req.body.precio,req.body.idCentro])
       .then((data) => {
         if (!data) res.send().status(500);
