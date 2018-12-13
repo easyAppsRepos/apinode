@@ -1856,40 +1856,49 @@ var tipox = 1;
       WHERE c.idCentro = r.idCentro AND r.idCita = ?`,[idCita])]).then((data) => {
 
       moment.locale('es');
+
+      var nombreCentro = data[2][0].nombre;
       //res.json(data);
-      var mensajePush = ' '; 
+      var mensajePushA = ' '; 
+       var mensajePushI = ' '; 
+
       if(tipo == 1){
-        mensajePush=" Solicitud de reprogramación de reserva"
+        mensajePushA=nombreCentro+" ha solicitado una reprogramación";
+        mensajePushI=nombreCentro+" ha solicitado una reprogramación";
        tipox = 1;
       }
 
        if(tipo == 9){
-        mensajePush=" Servicio declinado"
+        mensajePushA= nombreCentro+" ha declinado un servicio";
+        mensajePushI= nombreCentro+" ha declinado un servicio";
        tipox = 1;
       }
 
           if(tipo == 7){
-        mensajePush=" Su reserva ha sido cancelada"
+        mensajePushA=nombreCentro+" ha cancelado la reserva";
+          mensajePushI=nombreCentro+" ha cancelado la reserva";
        tipox = 1;
       }
 
 
 
             if(tipo == 2){
-        mensajePush="  Felicidades! Tu reserva ha sido confirmada.";
+        mensajePushA="Felicidades! Tu reserva ha sido confirmada";
+             mensajePushI="Felicidades! "+nombreCentro+" ha confirmado tu reserva.";
          tipox = 1;
 
       }
 
                   if(tipo == 4){
         var horaInicioReserva = moment(data[2][0].horaInicio, "YYYY-MM-DD HH:mm:ss").format("LLL");
-        mensajePush=" Recordatorio de cita para el "+horaInicioReserva;
+        mensajePushA="Recordatorio de cita para el "+horaInicioReserva;
+        mensajePushI=nombreCentro+". Recordatorio de cita para el "+horaInicioReserva;
          tipox = 1;
 
       }
 
 
-          var nombreCentro = data[2][0].nombre;
+          
          
 
               if(data[1]){
@@ -1899,7 +1908,7 @@ var tipox = 1;
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     
               note.sound = "ping.aiff";
-              note.alert = nombreCentro+mensajePush;
+              note.alert = mensajePushI;
               note.payload = {'tipoNoti': tipox,"idCita":idCita};
               note.topic = "com.ionicframework.beyou";
 
@@ -1923,7 +1932,7 @@ var tipox = 1;
           "data":{
                        "title": nombreCentro,
                        "icon": "ic_launcher",
-                       "body": nombreCentro+mensajePush,
+                       "body": mensajePushA,
                        "tipoNoti": tipox, "idCita":idCita}
                      });
 
@@ -2011,7 +2020,9 @@ where  exists (SELECT COALESCE(SUM(f.exp),0) as sss FROM
  (SELECT COUNT(idAnimacionesUser)+1 FROM animacionesUser WHERE idCC > 0 
  AND idCliente = (SELECT idCliente FROM cita  
  WHERE idCita = ? LIMIT 1))))`,
- [idCita,idCita,idCita])])
+ [idCita,idCita,idCita]),
+  db(`SELECT c.nombre, c.idCentro, r.horaInicio FROM centro as c, cita as r 
+      WHERE c.idCentro = r.idCentro AND r.idCita = ?`,[idCita])])
       .then((data) => {
 
         if (!data) res.send().status(500);
@@ -2026,6 +2037,8 @@ where  exists (SELECT COALESCE(SUM(f.exp),0) as sss FROM
                    registrarIdCC(data[4].insertId,data[5].insertId);
 
                 }
+
+                 var nombreCeen = data[6][0].nombre;
             if(data[3]){
 
               var note = new apn.Notification();
@@ -2033,7 +2046,7 @@ where  exists (SELECT COALESCE(SUM(f.exp),0) as sss FROM
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     
               note.sound = "ping.aiff";
-              note.alert = "Has ganado puntos! Tu cita ha sido marcada como completada";
+              note.alert = "Has ganado puntos! "+nombreCeen+" ha completado tu reserva";
               note.payload = {'tipoNoti': 2};
               note.topic = "com.ionicframework.beyou";
 
@@ -2051,9 +2064,9 @@ where  exists (SELECT COALESCE(SUM(f.exp),0) as sss FROM
 
                          var message = new gcm.Message({
                           "data":{
-                                       "title": "Cita Finalizada",
+                                       "title": nombreCeen,
                                        "icon": "ic_launcher",
-                                       "body": "Has ganado puntos! Tu cita ha sido marcada como completada",
+                                       "body": "Has ganado puntos! Tu reserva ha sido completada",
                                        "tipoNoti": "2"
                                        
                                        }});
@@ -4768,7 +4781,9 @@ where  exists (SELECT SUM(f.exp) as sss FROM
  (SELECT gm.idCliente FROM cita as gm 
  WHERE gm.idCita = ? LIMIT 1) AND f.estado = 3 AND f.idCita != ? 
  HAVING (sss+(SELECT exp FROM cita WHERE idCita = ?))>(SELECT valor FROM parametros WHERE idParametro = 7))`,
- [req.body.idCita,req.body.idCita,req.body.idCita,req.body.idCita])])
+ [req.body.idCita,req.body.idCita,req.body.idCita,req.body.idCita]),
+        db(`SELECT c.nombre, c.idCentro, r.horaInicio FROM centro as c, cita as r 
+      WHERE c.idCentro = r.idCentro AND r.idCita = ?`,[idCita])])
       .then((data) => {
 
         if (!data) res.send().status(500);
@@ -4781,6 +4796,9 @@ where  exists (SELECT SUM(f.exp) as sss FROM
                 if(data[5].insertId > 0){
                    idCC = data[5].insertId;
                 }
+
+                 var nombreCeen = data[6][0].nombre;
+
             if(data[3]){
 
            
@@ -4789,7 +4807,7 @@ where  exists (SELECT SUM(f.exp) as sss FROM
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     
               note.sound = "ping.aiff";
-              note.alert = "Has ganado puntos! Tu cita ha sido marcada como completada";
+              note.alert = "Has ganado puntos! "+nombreCeen+" ha completado tu reserva";
               note.payload = {'tipoNoti': 2, 'puntosGanados':pg,'totalExc':te,'puntosActual':pa,'idCC':idCC};
               note.topic = "com.ionicframework.beyou";
 
@@ -4826,9 +4844,9 @@ data.additionalData.puntosGanados,
               */
                          var message = new gcm.Message({
                           "data":{
-                                       "title": "Cita Finalizada",
+                                       "title": nombreCeen,
                                        "icon": "ic_launcher",
-                                       "body": "Has ganado puntos! Tu cita ha sido marcada como completada",
+                                       "body": "Has ganado puntos! Has ganado puntos! Tu reserva ha sido completada.",
                                        "tipoNoti": "2","puntosGanados":pg,
                                        "totalExc":te,"puntosActual":pa,'idCC':idCC
                                        
@@ -5819,7 +5837,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
       GROUP BY c.idCentro`,[req.body.idCentro,ssdd,req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.idSubcategoria, sc.nombre as nombreSubcategoria, s.precio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
-      (SELECT co.precioOferta FROM control_oferta AS co WHERE co.idServicio = s.idServicio AND co.idCentro = ? AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
+      (SELECT co.precioOferta FROM control_oferta AS co WHERE co.idServicio = s.idServicio AND co.idCentro = ? AND co.estado = 1 AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
       FROM  categoria as c, servicio as s LEFT JOIN subcategoria as sc ON sc.idSubcategoria = s.idSubcategoria
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria  AND s.estado = 1 
       ORDER BY ISNULL(sc.nombre), sc.nombre ASC`,[req.body.idCentro,req.body.idCentro]),
