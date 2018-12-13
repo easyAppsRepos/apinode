@@ -3965,6 +3965,28 @@ AND MONTH(sc.horaInicio) = ? GROUP BY DATE(sc.horaInicio) `,[req.body.idCentro, 
 
 
 
+    expressApp.post('/getActualizacionMes2', (req, res) => {
+
+
+   Promise.all([db(`SELECT DATE(sc.horaInicio) as date, COUNT(DISTINCT sc.idServicioCita) as cant 
+FROM cita as r, servicio_cita as sc WHERE sc.estado = 0 
+AND r.idCentro = ? AND r.idCita = sc.idCita
+AND YEAR(sc.horaInicio) = ? 
+AND MONTH(sc.horaInicio) = ? GROUP BY DATE(sc.horaInicio) `,[req.body.idCentro, req.body.year, req.body.mes]),
+   db(`SELECT DATE(sc.horaInicio) as date, COUNT(DISTINCT sc.idServicioCita) as cant 
+FROM cita as r, servicio_cita as sc WHERE sc.estado = 1 
+AND r.idCentro = ? AND r.idCita = sc.idCita
+AND YEAR(sc.horaInicio) = ? 
+AND MONTH(sc.horaInicio) = ? GROUP BY DATE(sc.horaInicio) `,[req.body.idCentro, req.body.year, req.body.mes])]) 
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send({porconfirmar:data[0], confirmados:data[1]});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
     expressApp.post('/editarEmpleadoAE2', (req, res) => {
 
 
