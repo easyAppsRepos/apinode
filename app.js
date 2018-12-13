@@ -3109,7 +3109,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
   expressApp.post('/getCitaDetalleNC', (req, res) => {
    Promise.all([db(`SELECT TIME_FORMAT(c.horaInicio, '%h:%i%p') as inicioCita, c.estado, c.clienteReferencia,
 DATE_FORMAT(c.horaInicio, '%Y/%m/%d') as fechaCita, cli.idCliente, 
- c.precioEsperado, c.idPaquete, c.idCita as idCita, cli.nombre as nombreCliente,
+ c.precioEsperado, c.idPaquete, c.comentarioCita,c.idCita as idCita, cli.nombre as nombreCliente,
  (SELECT COUNT(DISTINCT xx.idEmpleado) 
       FROM servicio_cita as xx WHERE xx.idCita = c.idCita) as cantEmpleados,
  (SELECT COUNT(idServicioCita) FROM servicio_cita as sc WHERE c.idCita = sc.idCita) as cantServicios 
