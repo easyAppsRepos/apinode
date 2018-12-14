@@ -6492,7 +6492,7 @@ idCentro,fecha,abierto,estado,fechaCreacion,timespan FROM horario_especial WHERE
 
         expressApp.post('/getHorario2', (req, res) => {
    Promise.all([db(`SELECT * FROM horarioCentro WHERE idCentro = ?`,[req.body.idCentro]),
-    db(`SELECT * FROM horario_especial WHERE idCentro =1 AND fecha >= DATE(NOW())`,[req.body.idCentro])]).then((data) => {
+    db(`SELECT * FROM horario_especial WHERE idCentro =? AND fecha >= DATE(NOW())`,[req.body.idCentro])]).then((data) => {
         if (!data) res.send().status(500);
         return res.send({horario:data[0], especiales:data[1]});
       }).catch(err => res.send(err).status(500));
