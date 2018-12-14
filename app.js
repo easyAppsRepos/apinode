@@ -5057,9 +5057,16 @@ data.additionalData.puntosGanados,
       }).catch(err => res.send(err).status(500));
   });
 
+/*despuesd d estado,
 
+    TRUNCATE(SUM(CASE WHEN (r.estado = 4 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionCanceladas,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 1 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionPorConfirmar,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 5 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionEConfirmar,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 2 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionConfirmadas,
+    TRUNCATE(SUM(CASE WHEN (r.estado = 3 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionCompletadas,
+    */
         expressApp.post('/cargaUsuariosConsolaNC', (req, res) => {
-    db(`SELECT  c.nombre, c.idCentro, c.idFoto, c.email,
+    db(`SELECT  c.*,
       (SELECT uc.nombreTitular FROM usuario_consola as uc WHERE uc.email = c.email) as nombreTitular,
 (SELECT uc.ruc FROM usuario_consola as uc WHERE uc.email = c.email) as ruc,
 (SELECT uc.inicioContrato FROM usuario_consola as uc WHERE uc.email = c.email) as inicioContrato,
@@ -5068,11 +5075,6 @@ data.additionalData.puntosGanados,
 (SELECT uc.idUsuarioConsola FROM usuario_consola as uc WHERE uc.email = c.email) as idUsuarioConsola,
 (SELECT uc.observaciones FROM usuario_consola as uc WHERE uc.email = c.email) as observaciones,
 (SELECT uc.estado FROM usuario_consola as uc WHERE uc.email = c.email) as estado,
-    TRUNCATE(SUM(CASE WHEN (r.estado = 4 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionCanceladas,
-    TRUNCATE(SUM(CASE WHEN (r.estado = 1 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionPorConfirmar,
-    TRUNCATE(SUM(CASE WHEN (r.estado = 5 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionEConfirmar,
-    TRUNCATE(SUM(CASE WHEN (r.estado = 2 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionConfirmadas,
-    TRUNCATE(SUM(CASE WHEN (r.estado = 3 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionCompletadas,
     COUNT(DISTINCT CASE WHEN r.estado = 1 THEN r.idCita ELSE NULL END) AS porconfirmar,
     COUNT(DISTINCT CASE WHEN r.reprogramada = 1 THEN r.idCita ELSE NULL END) AS reprogramadas,
     COUNT(DISTINCT CASE WHEN r.declinada = 1 THEN r.idCita ELSE NULL END) AS declinadas,
