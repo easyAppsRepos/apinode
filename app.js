@@ -5074,7 +5074,7 @@ data.additionalData.puntosGanados,
     COUNT(DISTINCT CASE WHEN r.estado = 1 THEN r.idCita ELSE NULL END) AS porconfirmar,
     COUNT(DISTINCT CASE WHEN r.estado = 5 THEN r.idCita ELSE NULL END) AS econfirmar,
     COUNT(DISTINCT CASE WHEN r.estado = 2 THEN r.idCita ELSE NULL END) AS confirmadas,
-    COUNT(DISTINCT CASE WHEN r.estado = 7 THEN r.idCita ELSE NULL END) AS canceladas,
+    COUNT(DISTINCT CASE WHEN r.estado = 7 AND r.adminAction = 1 THEN r.idCita ELSE NULL END) AS canceladas,
     COUNT(DISTINCT CASE WHEN r.estado = 3 THEN r.idCita ELSE NULL END) AS completadas FROM  parametros as p, centro as c LEFT JOIN cita as r ON  r.idCentro = c.idCentro GROUP BY c.idCentro`)
       .then((data) => {
         if (!data) res.send().status(500);
