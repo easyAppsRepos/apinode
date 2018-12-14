@@ -5075,6 +5075,7 @@ data.additionalData.puntosGanados,
     TRUNCATE(SUM(CASE WHEN (r.estado = 3 AND p.idParametro=1)  THEN (r.precioEsperado*(p.valor/100)) ELSE NULL END),2) AS comisionCompletadas,
     COUNT(DISTINCT CASE WHEN r.estado = 1 THEN r.idCita ELSE NULL END) AS porconfirmar,
     COUNT(DISTINCT CASE WHEN r.reprogramada = 1 THEN r.idCita ELSE NULL END) AS reprogramadas,
+    COUNT(DISTINCT CASE WHEN r.declinada = 1 THEN r.idCita ELSE NULL END) AS declinadas,
     COUNT(DISTINCT CASE WHEN r.estado = 2 THEN r.idCita ELSE NULL END) AS confirmadas,
     COUNT(DISTINCT CASE WHEN r.estado = 7 AND r.adminAction = 1 THEN r.idCita ELSE NULL END) AS canceladas,
     COUNT(DISTINCT CASE WHEN r.estado = 3 THEN r.idCita ELSE NULL END) AS completadas FROM  parametros as p, centro as c LEFT JOIN cita as r ON  r.idCentro = c.idCentro GROUP BY c.idCentro`)
