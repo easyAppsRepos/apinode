@@ -4480,7 +4480,7 @@ db(`UPDATE servicio_cita set estado=2
 
     expressApp.post('/editarUC', (req, res) => {
      Promise.all([db(`UPDATE usuario_consola set nombreTitular=?,email=?,estado=?,ruc=?,
-      inicioContrato=?,finContrato=?, tipoContrato=?, observaciones=? 
+      inicioContrato=?,finContrato=?, plan=?, observaciones=? 
       WHERE idUsuarioConsola = ?`,[req.body.nombreTitular,req.body.email,
       req.body.estado,
       req.body.ruc,req.body.inicioContratoF,req.body.finContratoF,req.body.tipoContrato,
