@@ -5088,6 +5088,7 @@ data.additionalData.puntosGanados,
   });
 
 
+
         expressApp.post('/cargaCentrosUserSA', (req, res) => {
      Promise.all([db(` SELECT c.*,
  (SELECT COUNT(r.idCita) FROM cita as r WHERE r.horaFinalEsperado > CURRENT_TIMESTAMP AND r.estado IN (1,2,5) AND r.idCentro = c.idCentro) as activos,
