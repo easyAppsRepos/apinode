@@ -7174,8 +7174,11 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
 
         expressApp.post('/configuracionPrecioNC', function(req, res) {
 
-  db(`UPDATE usuario_consola set pasos=10, plan=?  
-        WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.plan, req.body.idCentro])
+          var incremento = req.body.plan == 1 ? 1 : req.body.plan == 2 ? 6 : req.body.plan == 3 ? 12 : 1;
+
+  db(`UPDATE usuario_consola set pasos=10, plan=?, 
+    inicioContrato = DATE(now()), finContrato = DATE(DATE_ADD(now(), INTERVAL ? MONTH))   
+        WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.plan,incremento, req.body.idCentro])
       .then((data) => {
          if (!data) res.send().status(500);
         return res.send(data);
