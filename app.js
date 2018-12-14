@@ -3308,7 +3308,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
 
 
   expressApp.post('/verificarPremioUs', (req, res) => {
-   Promise.all([db(`INSERT INTO premiosPuntos (puntos, idCliente) SELECT 15, ? WHERE 
+   Promise.all([db(`INSERT INTO premiosPuntos (puntos, idCliente) SELECT 3, ? WHERE 
       (SELECT idCliente FROM cliente WHERE idCliente = ? 
        AND compartida = 0)>0`,[req.body.idCliente, req.body.idCliente]),
        db(`UPDATE cliente SET compartida = 1 WHERE idCliente = ?`,[req.body.idCliente]),
@@ -3324,7 +3324,7 @@ c.email, r.idCita, r.idCentro, r.horaFinalReal, r.comentarioCita,r.comentarioEst
 
             var iid = data[0].insertId;
             //compartidoNuevo
-            return res.send({compartidoNuevo:iid, puntosGanados:15,dataUser:data[2]});
+            return res.send({compartidoNuevo:iid, puntosGanados:3,dataUser:data[2]});
 
       }).catch(err => res.send(err).status(500));
   });
