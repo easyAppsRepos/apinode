@@ -4219,7 +4219,9 @@ db(`UPDATE servicio_cita set estado=?
        db(`SELECT sc.*, sc.precioCobrado as precioFinal, e.nombre as nombreEmpleado, 
         s.nombre FROM servicio_cita as sc, empleado as e, servicio as s 
         WHERE e.idEmpleado = sc.idEmpleado 
-        AND s.idServicio = sc.idServicio AND sc.idCita = ? `,[req.body.idCita])])
+        AND s.idServicio = sc.idServicio AND sc.idCita = ? `,[req.body.idCita]),
+       db(`UPDATE cita set declinada=1 
+      WHERE ? = 4 AND idCita = ?`,[req.body.estado,req.body.idCita])])
       .then((data) => {
         
 
