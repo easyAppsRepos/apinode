@@ -3987,7 +3987,7 @@ AND r.idCentro = ? AND r.idCita = sc.idCita
 AND YEAR(sc.horaInicio) = ? 
 AND MONTH(sc.horaInicio) = ? GROUP BY DATE(sc.horaInicio) `,[req.body.idCentro, req.body.year, req.body.mes]),
    db(`SELECT DATE(sc.horaInicio) as date, COUNT(DISTINCT sc.idServicioCita) as cant 
-FROM cita as r, servicio_cita as sc WHERE sc.estado IN (1,4,5,2) 
+FROM cita as r, servicio_cita as sc WHERE sc.estado IN (0,1,4,5,2) 
 AND r.idCentro = ? AND r.idCita = sc.idCita
 AND YEAR(sc.horaInicio) = ? 
 AND MONTH(sc.horaInicio) = ? GROUP BY DATE(sc.horaInicio) `,[req.body.idCentro, req.body.year, req.body.mes])]) 
