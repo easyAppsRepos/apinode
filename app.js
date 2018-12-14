@@ -4263,7 +4263,7 @@ db(`UPDATE servicio_cita set estado=2
 
         if (!datass) res.send().status(500);
 
-     db(`UPDATE cita set estado=5, comentarioCita=? WHERE idCita = ?`,[req.body.comentario,req.body.idCita])
+     db(`UPDATE cita set estado=5, comentarioCita=?, reprogramada=1 WHERE idCita = ?`,[req.body.comentario,req.body.idCita])
       .then((data) => {
         
           enviarPush(req.body.idCita,1);
