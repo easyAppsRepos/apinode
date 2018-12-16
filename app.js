@@ -5682,7 +5682,7 @@ data.additionalData.puntosGanados,
     db(`SELECT (SELECT GROUP_CONCAT(gg.nombre) FROM centro as gg 
 WHERE gg.idCentro IN(SELECT cp.idCentro FROM cupon_centro as cp 
 WHERE cp.idCupon = c.idCupon)) as nombresCentro, 
-c.nombre as nombreCupon,c.fechaExpira, c.tipo, c.tipoDescuento, c.porcentajeDescuento, cc.estado, cc.fechaUso, c.idCupon 
+c.nombre as nombreCupon,c.fechaExpira, c.tipo,c.idFoto, c.tipoDescuento, c.porcentajeDescuento, cc.estado, cc.fechaUso, c.idCupon 
 FROM cupon as c, cupon_cliente as cc WHERE c.idCupon = cc.idCupon 
 AND cc.idCliente = ?`,[req.body.idCliente])
       .then((data) => {
