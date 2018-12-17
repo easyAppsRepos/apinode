@@ -6157,7 +6157,13 @@ console.log(data[1]);
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento 
       FROM cliente as xcli, centro as c, cita as ci LEFT JOIN empleado as vv ON vv.idEmpleado = ci.idEmpleado  
       WHERE ci.idCita = ? AND c.idCentro = ci.idCentro AND xcli.idCliente = ci.idCliente`,[req.body.idCita]),
-    db(`SELECT s.idServicio, s.nombre, s.duracion, s.precio, sc.precioCobrado, sc.idCita, sc.idServicioCita, sc.horaInicio, sc.estado, sc.horaFin, s.idCategoria, e.idFoto as idFotoE, e.nombre as nombreEmpleado, c.nombre as nombreCategoria  
+    db(`SELECT s.idServicio, s.nombre, s.duracion, 
+      (CASE WHEN (s.precio MOD 1 > 0) THEN FORMAT(s.precio,2) ELSE FORMAT(s.precio,0) END) as precio, 
+      sc.precioCobrado, sc.idCita, sc.idServicioCita, sc.horaInicio, 
+      sc.estado, sc.horaFin, 
+      (CASE WHEN (sc.precioMomentoCompra MOD 1 > 0) THEN FORMAT(sc.precioMomentoCompra,2) ELSE FORMAT(sc.precioMomentoCompra,0) END) as precioMomentoCompra, 
+      s.idCategoria, e.idFoto as idFotoE, e.nombre as nombreEmpleado,
+       c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c, servicio_cita as sc, empleado as e   
       WHERE e.idEmpleado = sc.idEmpleado AND s.idServicio = sc.idServicio AND sc.idCita = ? AND c.idCategoria = s.idCategoria AND s.estado = 1`,[req.body.idCita]),
     db(`SELECT h.* FROM horarioCentro AS h INNER JOIN cita as c 
@@ -6290,8 +6296,10 @@ console.log(data[1]);
 
 
   expressApp.post('/getServiciosCategoria', (req, res) => {
-     Promise.all([db(`SELECT ss.*,  
-      (SELECT co.precioOferta FROM control_oferta AS co 
+     Promise.all([db(`SELECT ss.idServicio, ss.idCentro, ss.idCategoria, ss.nombre,
+      ss.duracion, (CASE WHEN (ss.precio MOD 1 > 0) THEN FORMAT(ss.precio,2) ELSE FORMAT(ss.precio,0) END) as precio,
+      ss.estado,ss.idSubcategoria,  
+      (SELECT (CASE WHEN (co.precioOferta MOD 1 > 0) THEN FORMAT(co.precioOferta,2) ELSE FORMAT(co.precioOferta,0) END) FROM control_oferta AS co 
       WHERE co.idServicio = ss.idServicio AND co.idCentro = ? 
       AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta, c.nombre as nombreCategoria, c.idFoto as imagenCategoria FROM servicio as ss, categoria as c  
       WHERE  ss.idCentro = ? AND c.idCategoria = ss.idCategoria 
