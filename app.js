@@ -5499,7 +5499,11 @@ data.additionalData.puntosGanados,
 
 
   expressApp.post('/ofertasActivas2', (req, res) => {
-    db(`SELECT s.*, co.precioOferta as precio2,co.fechaCaducidad, c.nombre as nombreCentro, 
+    db(`SELECT s.idServicio, s.idCentro, s.idCategoria, s.nombre, s.duracion, 
+    (CASE WHEN (s.precio MOD 1 > 0) THEN FORMAT(s.precio,2) ELSE FORMAT(s.precio,0) END) as precio,
+    s.estado,s.idSubcategoria, 
+      (CASE WHEN (co.precioOferta MOD 1 > 0) THEN FORMAT(co.precioOferta,2) ELSE FORMAT(co.precioOferta,0) END) as precio2,
+      co.fechaCaducidad, c.nombre as nombreCentro, 
     (SELECT  COUNT(DISTINCT ec.puntuacion) FROM evaluacionCentro as ec WHERE ec.idCentro = c.idCentro  AND ec.estado = 2 ) as cantRate,
     (SELECT  AVG(esc.puntuacion) FROM evaluacionCentro as esc WHERE esc.idCentro = c.idCentro AND esc.estado = 2 ) as rate,
     (SELECT (6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
