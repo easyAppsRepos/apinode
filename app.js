@@ -5336,9 +5336,9 @@ data.additionalData.puntosGanados,
 
 
   expressApp.post('/getCentrosMapaFix', (req, res) => {
-    db(`SELECT c.*, 
-      ROUND(MAX(s.precio),2) as pMax, 
-      ROUND(MIN(s.precio),2) as pMin, 
+    db(`SELECT c.*,
+    (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN FORMAT(MAX(s.precio),2) ELSE FORMAT(MAX(s.precio),0) END) as pMax, 
+    (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN FORMAT(MIN(s.precio),2) ELSE FORMAT(MIN(s.precio),0) END) as pMin, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
        ROUND(AVG(ec.puntuacion),2) as rate, 
       ( 6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
@@ -5899,10 +5899,11 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
       GROUP BY c.idCentro`,[req.body.idCentro,ssdd,req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.idSubcategoria, sc.nombre as nombreSubcategoria, 
-      FORMAT(s.precio,2) as precio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
-      FORMAT((SELECT co.precioOferta FROM control_oferta AS co 
+      (CASE WHEN (s.precio MOD 1 > 0) THEN FORMAT(s.precio,2) ELSE FORMAT(s.precio,0) END) as precio, 
+          s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
+      (SELECT (CASE WHEN (co.precioOferta MOD 1 > 0) THEN FORMAT(co.precioOferta,2) ELSE FORMAT(co.precioOferta,0) END) FROM control_oferta AS co 
       WHERE co.idServicio = s.idServicio AND co.idCentro = ? 
-      AND co.estado = 1 AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1),2) as oferta  
+      AND co.estado = 1 AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
       FROM  categoria as c, servicio as s LEFT JOIN subcategoria as sc ON sc.idSubcategoria = s.idSubcategoria
       WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria  AND s.estado = 1 
       ORDER BY ISNULL(sc.nombre), sc.nombre ASC`,[req.body.idCentro,req.body.idCentro]),
