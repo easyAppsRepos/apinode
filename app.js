@@ -5446,7 +5446,8 @@ data.additionalData.puntosGanados,
       (SELECT (6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
       * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
       * sin( radians(c.latitud))))) AS distance,
-    c.idCentro, c.nombre as nombreCentro, c.idFoto, s.nombre as nombreServicio, s.duracion as duracionServicio, s.idServicio, s.idCategoria, s.idSubcategoria, s.precio as precioServicio   
+    c.idCentro, c.nombre as nombreCentro, c.idFoto, s.nombre as nombreServicio, s.duracion as duracionServicio, s.idServicio, s.idCategoria, s.idSubcategoria, 
+    (CASE WHEN (s.precio MOD 1 > 0) THEN FORMAT(s.precio,2) ELSE FORMAT(s.precio,0) END) as precioServicio   
     FROM paquete_servicio as ps, paquete_centro as pc, centro as c, servicio as s LEFT JOIN categoria as ca ON ca.idCategoria = s.idCategoria    
     WHERE pc.idPaqueteCentro = ps.idPaqueteCentro 
     AND s.idServicio = ps.idServicio 
