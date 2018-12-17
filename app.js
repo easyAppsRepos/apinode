@@ -5832,7 +5832,6 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
      if( req.body.numDia==0){ssdd=6;}
   else{ssdd=req.body.numDia-1;}
 
-
      Promise.all([
     db(`SELECT c.*, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
