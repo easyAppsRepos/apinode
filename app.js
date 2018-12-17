@@ -5873,11 +5873,11 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
          console.log(i);
         return i;});
 
-
+console.log(data[1]);
        
 
         var groups = _.groupBy(data[1], 'nombreCategoria');
-        console.log(groups);
+
         return res.send({info:data[0],servicios:groups, comentarios:comentarios, cupon:data[3],
           horario:data[4]});
       }).catch(err => res.send(err).status(500));
