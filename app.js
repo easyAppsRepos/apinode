@@ -6212,7 +6212,7 @@ console.log(data[1]);
 
     expressApp.post('/getDataCitaAE', (req, res) => {
      Promise.all([
-    db(`SELECT c.idCentro,xcli.nombre as nombreCliente, c.nombre, c.direccion, xcli.idFoto, c.telefono, 
+    db(`SELECT c.idCentro,xcli.nombre as nombreCliente, c.nombre, c.direccion, xcli.idFoto, xcli.telefono, 
       ci.idCita, ci.estado, ci.idPaquete, ci.clienteReferencia, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
       ci.horaFinalEsperado,precioEsperado, ci.idCuponCliente, ci.idCliente, 
       (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
