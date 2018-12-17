@@ -5171,23 +5171,23 @@ data.additionalData.puntosGanados,
         expressApp.post('/cargaCentrosUserSA2', (req, res) => {
      Promise.all([db(` SELECT c.*,
        (SELECT SUM(r.comision) FROM cita as r 
-       WHERE r.estado = 3 AND r.idCentro = c.idCentro) as comision,
- (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro) as canceladas,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro) as comisionCanceladas,
-  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro) as canceladasT,
- (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCentro = c.idCentro) as porconfirmar,
-  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado IN (1,5) AND r.idCentro = c.idCentro) as porconfirmarT,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCentro = c.idCentro) as comisionPorConfirmar,
-   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro) as econfirmar,
-     (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro) as econfirmarT,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro) as comisionEConfirmar,
-   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro) as confirmadas,
-        (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro) as confirmadasT,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro) as comisionConfirmadas,
-   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as completadas,
-    (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as completadasT,
+       WHERE r.estado = 3 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as comision,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 4 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as canceladas,
+  (SELECT COUNT(r.idCita)*(SELECT valor FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 7 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as comisionCanceladas,
+  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 7 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as canceladasT,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as porconfirmar,
+  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado IN (1,5) AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as porconfirmarT,
+  (SELECT COUNT(r.idCita)*(SELECT valor FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as comisionPorConfirmar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 5 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as econfirmar,
+     (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 5 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as econfirmarT,
+  (SELECT COUNT(r.idCita)*(SELECT valor FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 5 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as comisionEConfirmar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 2 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as confirmadas,
+        (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 2 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as confirmadasT,
+  (SELECT COUNT(r.idCita)*(SELECT valor FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 2 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as comisionConfirmadas,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 3 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as completadas,
+    (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 3 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as completadasT,
    (SELECT ROUND(AVG(ecc.puntuacion), 2) FROM evaluacionCentro as ecc WHERE ecc.idCentro = c.idCentro AND ecc.estado = 2 ) as calificacion,
-  (SELECT SUM(r.comision) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro) as comisionCompletadas 
+  (SELECT SUM(r.comision) FROM cita as r WHERE r.estado = 3 AND r.idCliente <> 0 AND r.idCentro = c.idCentro) as comisionCompletadas 
   FROM centro as c WHERE c.idCentro = ?`,[req.body.idCentro]),
      db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,sx.idFoto, r.precioEsperado, 
       r.comision, r.idCita, r.idCentro,
@@ -5205,10 +5205,10 @@ data.additionalData.puntosGanados,
         WHERE v.idCita = r.idCita LIMIT 1) as valoracion  
         FROM cliente as sx, centro as df, cita as r  
         WHERE df.idCentro = r.idCentro AND r.idCentro  = ? 
-        AND sx.idCliente = r.idCliente`,[req.body.idCentro]),
+        AND sx.idCliente = r.idCliente AND r.idCliente <> 0 AND`,[req.body.idCentro]),
       db(`SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision 
           FROM cita as r WHERE r.estado = 3 
-          AND r.idCentro = ?`,[req.body.idCentro])
+          AND r.idCliente <> 0 AND r.idCentro = ?`,[req.body.idCentro])
      ]).then((data) => {
         if (!data) res.send().status(500);
 
