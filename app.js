@@ -5288,8 +5288,8 @@ data.additionalData.puntosGanados,
 
   expressApp.post('/buscarServiciosGPS2', (req, res) => {
      Promise.all([db(`SELECT c.*, 
-      FORMAT(MAX(s.precio),2) as pMax, 
-      FORMAT(MIN(s.precio),2) as pMin,
+      (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN FORMAT(MAX(s.precio),2) ELSE FORMAT(MAX(s.precio),0) END) as pMax, 
+      (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN FORMAT(MIN(s.precio),2) ELSE FORMAT(MIN(s.precio),0) END) as pMin,
       (SELECT COUNT(idControlOferta) FROM control_oferta WHERE idCentro = c.idCentro 
       AND estado = 1 AND fechaCaducidad > CONVERT_TZ(now(),'+00:00','-05:00')) as ofertaActiva, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
