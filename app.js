@@ -6328,6 +6328,35 @@ console.log(data[1]);
 
   expressApp.post('/getServiciosCategoria', (req, res) => {
      Promise.all([db(`SELECT ss.idServicio, ss.idCentro, ss.idCategoria, ss.nombre,
+      ss.duracion, ss.precio,
+      ss.estado,ss.idSubcategoria,  
+      (SELECT co.precioOferta FROM control_oferta AS co 
+      WHERE co.idServicio = ss.idServicio AND co.idCentro = ? 
+      AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta, c.nombre as nombreCategoria, c.idFoto as imagenCategoria FROM servicio as ss, categoria as c  
+      WHERE  ss.idCentro = ? AND c.idCategoria = ss.idCategoria 
+      AND ss.estado = 1`,[req.body.idCentro, req.body.idCentro]),
+      db(`SELECT c.*, cl.idCuponCliente,
+(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
+FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
+     FROM cupon as c 
+      INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
+      INNER JOIN cupon_cliente as cl ON (c.idCupon = cl.idCupon AND cl.idCliente = ? AND cl.estado = 1) 
+WHERE  c.fechaExpira > CURRENT_TIMESTAMP 
+AND c.estado = 1  
+ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente])])
+      .then((data) => {
+        if (!data) res.send().status(500);
+
+      var groups = _.groupBy(data[0], 'idCategoria');
+
+
+        return res.send({servicios:data[0], cupon: data[1],categorias:groups});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+  expressApp.post('/getServiciosCategoria22', (req, res) => {
+     Promise.all([db(`SELECT ss.idServicio, ss.idCentro, ss.idCategoria, ss.nombre,
       ss.duracion, (CASE WHEN (ss.precio MOD 1 > 0) THEN FORMAT(ss.precio,2) ELSE FORMAT(ss.precio,0) END) as precio,
       ss.estado,ss.idSubcategoria,  
       (SELECT (CASE WHEN (co.precioOferta MOD 1 > 0) THEN FORMAT(co.precioOferta,2) ELSE FORMAT(co.precioOferta,0) END) FROM control_oferta AS co 
@@ -6353,6 +6382,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
         return res.send({servicios:data[0], cupon: data[1],categorias:groups});
       }).catch(err => res.send(err).status(500));
   });
+
 
 
 
