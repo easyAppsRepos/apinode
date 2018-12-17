@@ -2681,10 +2681,11 @@ expressApp.get('/horaMinMax', function(req, res) {
 
   expressApp.post('/buscarServiciosFiltro', (req, res) => {
 
-var stringQuery = `SELECT c.*, MAX(s.precio) as pMax, 
+var stringQuery = `SELECT c.*,  
  (SELECT COUNT(idControlOferta) FROM control_oferta WHERE idCentro = c.idCentro 
       AND fechaCaducidad > CONVERT_TZ(now(),'+00:00','-05:00')) as ofertaActiva,
-      MIN(s.precio) as pMin, 
+          (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN FORMAT(MAX(s.precio),2) ELSE FORMAT(MAX(s.precio),0) END) as pMax, 
+    (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN FORMAT(MIN(s.precio),2) ELSE FORMAT(MIN(s.precio),0) END) as pMin,  
 COUNT(DISTINCT ec.puntuacion) as cantRate, 
 (6371 * acos( cos( radians(`+(req.body.lat || 0)+`) ) * cos( radians( c.latitud ) ) 
          * cos( radians(c.longitud) - radians(`+(req.body.long || 0)+`)) + sin(radians(`+(req.body.lat || 0)+`)) 
