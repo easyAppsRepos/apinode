@@ -5076,12 +5076,12 @@ data.additionalData.puntosGanados,
 (SELECT uc.idUsuarioConsola FROM usuario_consola as uc WHERE uc.email = c.email) as idUsuarioConsola,
 (SELECT uc.observaciones FROM usuario_consola as uc WHERE uc.email = c.email) as observaciones,
 (SELECT uc.estado FROM usuario_consola as uc WHERE uc.email = c.email) as estado,
-    COUNT(DISTINCT CASE WHEN r.estado = 1 THEN r.idCita ELSE NULL END) AS porconfirmar,
-    COUNT(DISTINCT CASE WHEN r.reprogramada = 1 THEN r.idCita ELSE NULL END) AS reprogramadas,
-    COUNT(DISTINCT CASE WHEN r.declinada = 1 THEN r.idCita ELSE NULL END) AS declinadas,
-    COUNT(DISTINCT CASE WHEN r.estado = 2 THEN r.idCita ELSE NULL END) AS confirmadas,
-    COUNT(DISTINCT CASE WHEN r.estado = 7 AND r.adminAction = 1 THEN r.idCita ELSE NULL END) AS canceladas,
-    COUNT(DISTINCT CASE WHEN r.estado = 3 THEN r.idCita ELSE NULL END) AS completadas FROM  parametros as p, centro as c LEFT JOIN cita as r ON  r.idCentro = c.idCentro GROUP BY c.idCentro`)
+    COUNT(DISTINCT CASE WHEN (r.estado = 1 AND r.idCliente <> 0)THEN r.idCita ELSE NULL END) AS porconfirmar,
+    COUNT(DISTINCT CASE WHEN (r.reprogramada = 1 AND r.idCliente <> 0) THEN r.idCita ELSE NULL END) AS reprogramadas,
+    COUNT(DISTINCT CASE WHEN (r.declinada = 1 AND r.idCliente <> 0) THEN r.idCita ELSE NULL END) AS declinadas,
+    COUNT(DISTINCT CASE WHEN (r.estado = 2 AND r.idCliente <> 0) THEN r.idCita ELSE NULL END) AS confirmadas,
+    COUNT(DISTINCT CASE WHEN (r.estado = 7 AND r.idCliente <> 0) AND r.adminAction = 1 THEN r.idCita ELSE NULL END) AS canceladas,
+    COUNT(DISTINCT CASE WHEN (r.estado = 3 AND r.idCliente <> 0) THEN r.idCita ELSE NULL END) AS completadas FROM  parametros as p, centro as c LEFT JOIN cita as r ON  r.idCentro = c.idCentro GROUP BY c.idCentro`)
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
