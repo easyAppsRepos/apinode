@@ -5842,7 +5842,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
       GROUP BY c.idCentro`,[req.body.idCentro,ssdd,req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.idSubcategoria, sc.nombre as nombreSubcategoria, 
-      CAST(ROUND(s.precio, 2) AS DECIMAL(18,2)) as precio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
+      CAST(ROUND(s.precio, 2) AS DECIMAL(18,2)) as prxxecio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
       ROUND((SELECT co.precioOferta FROM control_oferta AS co 
       WHERE co.idServicio = s.idServicio AND co.idCentro = ? 
       AND co.estado = 1 AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1),2) as oferta  
