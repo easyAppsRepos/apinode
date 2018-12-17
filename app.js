@@ -5206,7 +5206,7 @@ data.additionalData.puntosGanados,
         WHERE v.idCita = r.idCita LIMIT 1) as valoracion  
         FROM cliente as sx, centro as df, cita as r  
         WHERE df.idCentro = r.idCentro AND r.idCentro  = ? 
-        AND sx.idCliente = r.idCliente AND r.idCliente <> 0 AND`,[req.body.idCentro]),
+        AND sx.idCliente = r.idCliente AND r.idCliente <> 0`,[req.body.idCentro]),
       db(`SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision 
           FROM cita as r WHERE r.estado = 3 
           AND r.idCliente <> 0 AND r.idCentro = ?`,[req.body.idCentro])
