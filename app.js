@@ -5832,6 +5832,63 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
      if( req.body.numDia==0){ssdd=6;}
   else{ssdd=req.body.numDia-1;}
 
+
+     Promise.all([
+    db(`SELECT c.*, 
+      COUNT(DISTINCT ec.puntuacion) as cantRate, 
+      AVG(ec.puntuacion) as rate, 
+      (SELECT CONCAT(DATE_FORMAT(xxz.horaAbrir, '%l:%i  %p'), ' - ', DATE_FORMAT(xxz.horaCerrar, '%l:%i   %p')) FROM horarioCentro as xxz WHERE xxz.idCentro = ? AND xxz.diaSemana = ? AND xxz.estado = 1) as horarioHoy,
+      (SELECT idUsuarioFavorito 
+      FROM usuario_favorito WHERE idCentro = ? AND idCliente = ? AND estado = 1) as favorito
+      FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
+      GROUP BY c.idCentro`,[req.body.idCentro,ssdd,req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
+    db(`SELECT s.idServicio, s.nombre, s.duracion, s.idSubcategoria, sc.nombre as nombreSubcategoria, s.precio, s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
+      (SELECT co.precioOferta FROM control_oferta AS co WHERE co.idServicio = s.idServicio AND co.idCentro = ? AND co.estado = 1 AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
+      FROM  categoria as c, servicio as s LEFT JOIN subcategoria as sc ON sc.idSubcategoria = s.idSubcategoria
+      WHERE s.idCentro = ? AND c.idCategoria = s.idCategoria  AND s.estado = 1 
+      ORDER BY ISNULL(sc.nombre), sc.nombre ASC`,[req.body.idCentro,req.body.idCentro]),
+    db(`SELECT ev.*, u.nombre as nombreUsuario, u.idFoto as fotoUsuario, u.imagenFb as fotoFb   
+      FROM evaluacionCentro as ev, cliente as u, cita as c 
+      WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCliente <> 0 AND ev.estado = 2 AND c.idCita = ev.idCita ORDER BY ev.fechaCreacion DESC`,[req.body.idCentro]),
+    db(`SELECT c.*, cl.idCuponCliente,
+(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
+FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
+     FROM cupon as c 
+      INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
+      INNER JOIN cupon_cliente as cl ON (c.idCupon = cl.idCupon AND cl.idCliente = ? AND cl.estado = 1) 
+WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idCliente]),
+    db(`SELECT DATE_FORMAT(horaAbrir, '%l:%i   %p') as horaAbrir, 
+      DATE_FORMAT(horaCerrar, '%l:%i   %p') as horaCerrar, estado, diaSemana FROM  
+      horarioCentro WHERE idCentro = ?`,[req.body.idCentro])])
+      .then((data) => {
+
+        if (!data) res.send().status(500);
+
+        let comentarios = data[2].map((i, index) => {
+          //console.log(i);
+
+        i.timeAgo =  moment(i.fechaCreacion).fromNow();
+         console.log(i);
+        return i;});
+
+
+       
+
+        var groups = _.groupBy(data[1], 'nombreCategoria');
+        return res.send({info:data[0],servicios:groups, comentarios:comentarios, cupon:data[3],
+          horario:data[4]});
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+  expressApp.post('/getCentroInfoFix', (req, res) => {
+
+
+     if( req.body.numDia==0){ssdd=6;}
+  else{ssdd=req.body.numDia-1;}
+
      Promise.all([
     db(`SELECT c.*, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
@@ -5882,6 +5939,8 @@ console.log(data[1]);
           horario:data[4]});
       }).catch(err => res.send(err).status(500));
   });
+
+
 
 
         expressApp.post('/reproCitaApp', (req, res) => {
