@@ -4660,6 +4660,18 @@ db(`UPDATE servicio_cita set estado=2
 
 
 
+    expressApp.post('/editarCuponImagen', upload.single('imageU'),(req, res) => {
+      console.log(req.file);
+   db(`UPDATE cupon set nombre=?, idFoto=?,codigo=?,porcentajeDescuento=?,fechaExpira=?,estado=?, premio=?,tipo=?, tipoDescuento=? 
+     WHERE idCupon = ?`,[req.body.nombre,req.file.path,req.body.codigo,
+      req.body.porcentajeDescuento,req.body.fechaExpira,req.body.estado,req.body.premio,req.body.tipo, req.body.tipoDescuento,req.body.idCupon])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
 
 
   expressApp.post('/confirmarCita', (req, res) => {
