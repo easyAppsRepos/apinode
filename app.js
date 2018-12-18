@@ -8038,7 +8038,22 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
       
     }).catch(err => res.send(err).status(500));
   });
- 
+
+    expressApp.post('/nuevoCuponImagen', upload.single('imageU2'),(req, res) => {
+
+       db(`INSERT INTO cupon(nombre,idFoto,codigo,porcentajeDescuento, fechaExpira,estado, tipo, tipoDescuento,premio) 
+      VALUES(?, ?, ?, ?, ?, ?, ?,?,?)`,[req.body.nombre,req.file.path,req.body.codigo,req.body.porcentajeDescuento,
+      req.body.fechaExpira,1,req.body.tipo, req.body.tipoDescuento,req.body.premio])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+  });
+
+
+
+
+
     expressApp.post('/addUserFb', (req, res) => {
 
     db(`INSERT INTO cliente(nombre,email,fbId,imagenFb) 
