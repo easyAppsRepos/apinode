@@ -4883,20 +4883,17 @@ data.additionalData.puntosGanados,
 
   expressApp.post('/getVentas', (req, res) => {
 
-    db(`SELECT c.nombre, c.idCentro, c.estado, SUM(f.comision) as comision, 
-      SUM(fs.precioCobrado) as sumCitas,COUNT(f.idCita) as cantCitas,
-      (SELECT k.nombre FROM usuario_consola as k, usuario_consola_centro as kk 
-      WHERE k.tipo = 1 AND kk.idCentro = c.idCentro 
-      AND k.idUsuarioConsola = kk.idUsuarioConsola LIMIT 1) as nombreCentro,
-(SELECT SUM(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  
-      AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as costoOferta, (SELECT COUNT(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  
-      AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantOferta, (SELECT SUM(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
-      AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as costoPaquete, (SELECT COUNT(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
-      AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantPaquete 
-      
-      FROM centro as c LEFT JOIN cita as f ON c.idCentro = f.idCentro 
-      AND CAST(f.horaFinalEsperado AS DATE) between ? AND ? AND  
-      f.idCliente <> 0 LEFT JOIN servicio_cita as fs ON fs.idCita = f.idCita AND fs.estado = 3 GROUP BY c.idCentro`,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2])
+    db(`SELECT SUM(r.comision) as comision, 
+(SELECT SUM(sc.precioCobrado) FROM servicio_cita as sc WHERE sc.estado = 3 AND sc.idCita 
+IN (SELECT idCita FROM cita as ss WHERE ss.idCentro = c.idCentro AND ss.idCliente <> 0 
+AND CAST(ss.horaInicio AS DATE) between ? AND ?) ) as sumCitas,
+COUNT(r.idCita) as cantCitas, 
+c.nombre, c.idCentro, c.estado,c.nombre as nombreCentro, SUM(co.costo) as costoOferta, COUNT(co.costo) as cantOferta, 
+SUM(cop.costo) as costoPaquete, COUNT(cop.costo) cantPaquete FROM centro as c 
+LEFT JOIN control_oferta as co ON (c.idCentro = co.idCentro AND CAST(co.fechaCreacion AS DATE) between ? AND ?) 
+LEFT JOIN paquete_centro as cop ON (c.idCentro = cop.idCentro AND CAST(cop.fechaCreacion AS DATE) between ? AND ?) 
+LEFT JOIN cita as r ON (r.idCliente <> 0 AND c.idCentro = r.idCentro AND r.estado = 3 AND CAST(r.horaInicio AS DATE) between ? AND ? ) 
+GROUP BY c.idCentro  `,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2])
       .then((data) => {
 
         if (!data) res.send().status(500);
