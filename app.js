@@ -4893,7 +4893,7 @@ data.additionalData.puntosGanados,
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantOferta, (SELECT SUM(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as costoPaquete, (SELECT COUNT(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantPaquete FROM centro as c LEFT JOIN cita as f ON c.idCentro = f.idCentro 
-      AND CAST(f.horaFinalEsperado AS DATE) between ? AND ? AND f.estado = 3 GROUP BY c.idCentro`,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2])
+      AND CAST(f.horaFinalEsperado AS DATE) between ? AND ? AND f.estado = 3 AND f.idCliente <> 0 GROUP BY c.idCentro`,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2])
       .then((data) => {
 
         if (!data) res.send().status(500);
