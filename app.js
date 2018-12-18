@@ -4892,7 +4892,8 @@ data.additionalData.puntosGanados,
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as costoOferta, (SELECT COUNT(co.costo) FROM control_oferta AS co WHERE co.idCentro = c.idCentro  
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantOferta, (SELECT SUM(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as costoPaquete, (SELECT COUNT(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
-      AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantPaquete FROM centro as c LEFT JOIN cita as f ON c.idCentro = f.idCentro 
+      AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantPaquete 
+      FROM servicio_cita as fs, centro as c LEFT JOIN cita as f ON c.idCentro = f.idCentro 
       AND CAST(f.horaFinalEsperado AS DATE) between ? AND ? AND fs.idCita = f.idCita AND 
       fs.estado = 3 AND f.idCliente <> 0 GROUP BY c.idCentro`,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2])
       .then((data) => {
