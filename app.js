@@ -5209,12 +5209,15 @@ data.additionalData.puntosGanados,
         AND sx.idCliente = r.idCliente AND r.idCliente <> 0`,[req.body.idCentro]),
       db(`SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision 
           FROM cita as r WHERE r.estado = 3 
-          AND r.idCliente <> 0 AND r.idCentro = ?`,[req.body.idCentro])
+          AND r.idCliente <> 0 AND r.idCentro = ?`,[req.body.idCentro]),
+       db(`SELECT r.*,  
+          FROM cita as r WHERE r.idCliente = 0 
+          AND r.idCentro = ?`,[req.body.idCentro])
      ]).then((data) => {
         if (!data) res.send().status(500);
 
             var groups = _.groupBy(data[1], 'estado');
-        var datav= {sucursales:data[0], info:groups, dataR:data[2]}
+        var datav= {sucursales:data[0], info:groups, dataR:data[2], manuales:data[3]}
         //console.log(datav);
         return res.send(datav);
       }).catch(err => res.send(err).status(500));
