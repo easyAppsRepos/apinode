@@ -5162,7 +5162,7 @@ data.additionalData.puntosGanados,
        DATE_FORMAT(r.horaFinalEsperado, '%l:%i  %p')) as horaCita,
        (CONVERT_TZ(now(),'+00:00','-05:00') > r.horaInicio) as caducada    
           FROM cita as r WHERE r.idCliente = 0 
-          AND r.idCentro = ? AND DATE(r.horaInicio) BETWEEN ? AND ?`,[req.body.idCentro,,req.body.fecha, req.body.fechaF])
+          AND r.idCentro = ? AND DATE(r.horaInicio) BETWEEN ? AND ?`,[req.body.idCentro,req.body.fecha, req.body.fechaF])
      ]).then((data) => {
         if (!data) res.send().status(500);
 
