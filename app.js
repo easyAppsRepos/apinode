@@ -4884,7 +4884,7 @@ data.additionalData.puntosGanados,
   expressApp.post('/getVentas', (req, res) => {
 
     db(`SELECT c.nombre, c.idCentro, c.estado, SUM(f.comision) as comision, 
-      SUM(f.precioEsperado) as sumCitas,COUNT(f.idCita) as cantCitas,
+      SUM(fs.precioCobrado) as sumCitas,COUNT(f.idCita) as cantCitas,
       (SELECT k.nombre FROM usuario_consola as k, usuario_consola_centro as kk 
       WHERE k.tipo = 1 AND kk.idCentro = c.idCentro 
       AND k.idUsuarioConsola = kk.idUsuarioConsola LIMIT 1) as nombreCentro,
@@ -4893,7 +4893,8 @@ data.additionalData.puntosGanados,
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantOferta, (SELECT SUM(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as costoPaquete, (SELECT COUNT(co.costo) FROM paquete_centro AS co WHERE co.idCentro = c.idCentro  
       AND CAST(co.fechaCreacion AS DATE) between ? AND ?) as cantPaquete FROM centro as c LEFT JOIN cita as f ON c.idCentro = f.idCentro 
-      AND CAST(f.horaFinalEsperado AS DATE) between ? AND ? AND f.estado = 3 AND f.idCliente <> 0 GROUP BY c.idCentro`,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2])
+      AND CAST(f.horaFinalEsperado AS DATE) between ? AND ? AND fs.idCita = f.idCita AND 
+      fs.estado = 3 AND f.idCliente <> 0 GROUP BY c.idCentro`,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2,req.body.fecha1, req.body.fecha2])
       .then((data) => {
 
         if (!data) res.send().status(500);
