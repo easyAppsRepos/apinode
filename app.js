@@ -5134,7 +5134,7 @@ data.additionalData.puntosGanados,
    (SELECT ROUND(AVG(ecc.puntuacion), 2) FROM evaluacionCentro as ecc WHERE ecc.idCentro = c.idCentro AND ecc.estado = 2 ) as calificacion,
   (SELECT SUM(r.comision) FROM cita as r WHERE r.estado = 3  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionCompletadas 
   FROM centro as c WHERE c.idCentro = ?`,[ req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
-  req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
+  req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
   req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
   req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.idCentro]),
      db(`SELECT  sx.nombre as nombreCliente, df.nombre as nombreCentro,sx.idFoto, r.precioEsperado, 
@@ -5162,7 +5162,7 @@ data.additionalData.puntosGanados,
        DATE_FORMAT(r.horaFinalEsperado, '%l:%i  %p')) as horaCita,
        (CONVERT_TZ(now(),'+00:00','-05:00') > r.horaInicio) as caducada    
           FROM cita as r WHERE r.idCliente = 0 
-          AND r.idCentro = ? AND DATE(r.horaInicio) BETWEEN ? AND ?`,[req.body.idCentro])
+          AND r.idCentro = ? AND DATE(r.horaInicio) BETWEEN ? AND ?`,[req.body.idCentro,,req.body.fecha, req.body.fechaF])
      ]).then((data) => {
         if (!data) res.send().status(500);
 
