@@ -5115,23 +5115,24 @@ data.additionalData.puntosGanados,
         expressApp.post('/cargaCentrosUserSA2Fecha', (req, res) => {
      Promise.all([db(` SELECT c.*,
        (SELECT SUM(r.comision) FROM cita as r 
-       WHERE r.estado = 3 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comision,
- (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as canceladas,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionCanceladas,
-  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 4 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as canceladasT,
- (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as porconfirmar,
-  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado IN (1,5) AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as porconfirmarT,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionPorConfirmar,
-   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as econfirmar,
-     (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as econfirmarT,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 5 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionEConfirmar,
-   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as confirmadas,
-        (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as confirmadasT,
-  (SELECT SUM(r.precioEsperado)*(SELECT valor/100 FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 2 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionConfirmadas,
-   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as completadas,
-    (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as completadasT,
+       WHERE r.estado = 3  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comision,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 7  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as canceladas,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE  r.idCliente = 0 AND (DATE(r.horaInicio) BETWEEN ? AND ?) AND r.idCentro = c.idCentro) as manuales,
+  (SELECT COUNT(r.idCita)*(SELECT valor FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 7  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionCanceladas,
+  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 7  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as canceladasT,
+ (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado IN (1,5)   AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as porconfirmar,
+  (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado IN (1,5)  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as porconfirmarT,
+  (SELECT COUNT(r.idCita)*(SELECT valor FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado IN (1,5)   AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionPorConfirmar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 5  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as econfirmar,
+     (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 5  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as econfirmarT,
+  (SELECT COUNT(r.idCita)*(SELECT valor FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 5  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionEConfirmar,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 2  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as confirmadas,
+        (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 2  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as confirmadasT,
+  (SELECT COUNT(r.idCita)*(SELECT valor FROM parametros WHERE idParametro = 1) FROM cita as r WHERE r.estado = 2  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionConfirmadas,
+   (SELECT COUNT(r.idCita) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro  AND r.idCliente <> 0 AND  DATE(r.horaInicio) BETWEEN ? AND ?) as completadas,
+    (SELECT SUM(r.precioEsperado) FROM cita as r WHERE r.estado = 3  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as completadasT,
    (SELECT ROUND(AVG(ecc.puntuacion), 2) FROM evaluacionCentro as ecc WHERE ecc.idCentro = c.idCentro AND ecc.estado = 2 ) as calificacion,
-  (SELECT SUM(r.comision) FROM cita as r WHERE r.estado = 3 AND r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionCompletadas 
+  (SELECT SUM(r.comision) FROM cita as r WHERE r.estado = 3  AND r.idCliente <> 0 AND  r.idCentro = c.idCentro AND DATE(r.horaInicio) BETWEEN ? AND ?) as comisionCompletadas 
   FROM centro as c WHERE c.idCentro = ?`,[ req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
   req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
   req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,req.body.fecha, req.body.fechaF,
@@ -5151,16 +5152,22 @@ data.additionalData.puntosGanados,
         (SELECT v.puntuacion FROM evaluacionCentro as v 
         WHERE v.idCita = r.idCita LIMIT 1) as valoracion  
         FROM cliente as sx, centro as df, cita as r  
-        WHERE df.idCentro = r.idCentro AND r.idCentro  = ? AND DATE(r.horaInicio) BETWEEN ? AND ? 
+        WHERE df.idCentro = r.idCentro  AND r.idCliente <> 0 AND r.idCentro  = ? AND DATE(r.horaInicio) BETWEEN ? AND ? 
         AND sx.idCliente = r.idCliente `,[req.body.idCentro, req.body.fecha, req.body.fechaF]),
       db(`SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision 
           FROM cita as r WHERE r.estado = 3 AND DATE(r.horaInicio) BETWEEN ? AND ? 
-          AND r.idCentro = ?`,[req.body.idCentro,req.body.fecha, req.body.fechaF])
+          AND r.idCentro = ?`,[req.body.idCentro,req.body.fecha, req.body.fechaF]),
+       db(`SELECT r.*, DATE_FORMAT(r.horaInicio, '%d/%m/%y') as FechaCita, 
+       CONCAT(DATE_FORMAT(r.horaInicio, '%l:%i  %p'), ' - ', 
+       DATE_FORMAT(r.horaFinalEsperado, '%l:%i  %p')) as horaCita,
+       (CONVERT_TZ(now(),'+00:00','-05:00') > r.horaInicio) as caducada    
+          FROM cita as r WHERE r.idCliente = 0 
+          AND r.idCentro = ? AND DATE(r.horaInicio) BETWEEN ? AND ?`,[req.body.idCentro])
      ]).then((data) => {
         if (!data) res.send().status(500);
 
             var groups = _.groupBy(data[1], 'estado');
-        var datav= {sucursales:data[0], info:groups, dataR:data[2]}
+        var datav= {sucursales:data[0], info:groups, dataR:data[2], manuales:data[3]}
         //console.log(datav);
         return res.send(datav);
       }).catch(err => res.send(err).status(500));
