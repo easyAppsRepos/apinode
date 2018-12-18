@@ -5210,7 +5210,10 @@ data.additionalData.puntosGanados,
       db(`SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision 
           FROM cita as r WHERE r.estado = 3 
           AND r.idCliente <> 0 AND r.idCentro = ?`,[req.body.idCentro]),
-       db(`SELECT r.*   
+       db(`SELECT r.*, DATE_FORMAT(r.horaInicio, '%d/%m/%y') as FechaCita, 
+       CONCAT(DATE_FORMAT(r.horaInicio, '%l:%i  %p'), ' - ', 
+       DATE_FORMAT(r.horaFinalEsperado, '%l:%i  %p')) as horaCita,
+       (CONVERT_TZ(now(),'+00:00','-05:00') > r.horaInicio) as caducada    
           FROM cita as r WHERE r.idCliente = 0 
           AND r.idCentro = ?`,[req.body.idCentro])
      ]).then((data) => {
