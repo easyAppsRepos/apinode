@@ -5210,7 +5210,7 @@ data.additionalData.puntosGanados,
       db(`SELECT SUM(r.precioEsperado) as total, SUM(r.comision) as comision 
           FROM cita as r WHERE r.estado = 3 
           AND r.idCliente <> 0 AND r.idCentro = ?`,[req.body.idCentro]),
-       db(`SELECT r.*,  
+       db(`SELECT r.*   
           FROM cita as r WHERE r.idCliente = 0 
           AND r.idCentro = ?`,[req.body.idCentro])
      ]).then((data) => {
