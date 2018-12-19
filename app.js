@@ -5969,7 +5969,7 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       FROM evaluacionCentro as ev, cliente as u, cita as c 
       WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCliente <> 0 AND ev.estado = 2 AND c.idCita = ev.idCita ORDER BY ev.fechaCreacion DESC`,[req.body.idCentro]),
     db(`SELECT c.*, cl.idCuponCliente,
-(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
+(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ',')
 FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
      FROM cupon as c 
       INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
