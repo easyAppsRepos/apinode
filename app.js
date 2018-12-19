@@ -5909,7 +5909,7 @@ AND c.estado = 1`,[req.body.idCliente,moment(Date.now()).format("YYYY-MM-DD"), r
       FROM evaluacionCentro as ev, cliente as u, cita as c 
       WHERE ev.idCentro = ? AND u.idCliente = c.idCliente AND c.idCliente <> 0 AND ev.estado = 2 AND c.idCita = ev.idCita ORDER BY ev.fechaCreacion DESC`,[req.body.idCentro]),
     db(`SELECT c.*, cl.idCuponCliente,
-(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
+(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ',')
 FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
      FROM cupon as c 
       INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
@@ -6363,7 +6363,7 @@ console.log(data[1]);
       WHERE  ss.idCentro = ? AND c.idCategoria = ss.idCategoria 
       AND ss.estado = 1`,[req.body.idCentro, req.body.idCentro]),
       db(`SELECT c.*, cl.idCuponCliente,
-(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
+(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ',')
 FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
      FROM cupon as c 
       INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
@@ -6392,7 +6392,7 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       WHERE  ss.idCentro = ? AND c.idCategoria = ss.idCategoria 
       AND ss.estado = 1`,[req.body.idCentro, req.body.idCentro]),
       db(`SELECT c.*, cl.idCuponCliente,
-(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ', ')
+(SELECT GROUP_CONCAT(DISTINCT cs.idServicio SEPARATOR ',')
 FROM cupon_servicio as cs WHERE cs.idCuponCentro=d.idCuponCentro GROUP BY NULL) as serviciosCupon
      FROM cupon as c 
       INNER JOIN cupon_centro as d ON ( d.idCupon = c.idCupon  AND d.idCentro = ?) 
