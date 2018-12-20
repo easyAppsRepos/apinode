@@ -138,6 +138,34 @@ db(`UPDATE animacionesUser set idCC = ? WHERE idAnimacionesUser = ?`,[idCC,idAni
   //task.destroy();
 
 
+  var task2 = cron.schedule('45 19 * * *', () =>  {
+
+  console.log('task cronjob');
+
+      Promise.all([db(`SELECT DISTINCT cc.idCliente FROM cupon_cliente as cc, cupon as c WHERE c.idCupon = cc.idCupon
+AND cc.estado = 1 AND c.fechaExpira > CONVERT_TZ(now(),'+00:00','-05:00') AND cc.notificado = 0 
+AND DATEDIFF(DATE(c.fechaExpira), CONVERT_TZ(now(),'+00:00','-05:00')) < 8`,[]),
+   db(`UPDATE cupon_cliente SET notificado = 1 WHERE notificado = 0 AND idCupon IN (SELECT idCupon FROM cupon WHERE fechaExpira > CONVERT_TZ(now(),'+00:00','-05:00') 
+ AND DATEDIFF(DATE(fechaExpira), CONVERT_TZ(now(),'+00:00','-05:00')) < 8)`,[])])
+      .then((data) => {
+
+         if (!data) res.send().status(500);
+
+         var itemsReservaHoy = data[0];
+
+          itemsReservaHoy.forEach(item => {
+            enviarPush(item.idCliente,55);
+          });
+
+        //return res.send(data);
+
+      }).catch(err => console.log('errorEnCron1'));
+
+
+  });
+
+  task2.start();
+
 /*CRONJOBLOGIC ENDS*/
 
 /*
@@ -1845,7 +1873,66 @@ iap.config({
 function enviarPush(idCita, tipo){
     
 var tipox = 1;
+    if(tipo == 55){
 
+         Promise.all([db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = ?  
+      AND p.logOut IS NULL AND p.so = 'Android'`,[idCita]),
+     db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
+      WHERE p.idCliente = ?  
+      AND p.logOut IS NULL AND p.so = 'iOS'`,[idCita])]).then((data) => {
+
+      moment.locale('es');
+
+              if(data[1]){
+
+              var note = new apn.Notification();
+
+              note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+    
+              note.sound = "ping.aiff";
+              note.alert = 'Cupones YourBeauty. Uno de tus cupones está cercano a expirar';
+              note.payload = {'tipoNoti': 3,"idCupon":0};
+              note.topic = "com.ionicframework.beyou";
+
+                 var regTokens = [];
+
+              data[1].forEach((elementwa, index) => {
+
+                  apnProvider.send(note, elementwa.pushKey).then( (result) => {
+                  console.log(result);
+                  });
+
+              });
+            }
+            if(data[0]){
+
+            var message = new gcm.Message({
+          "data":{
+                       "title": 'Cupones YourBeauty',
+                       "icon": "ic_launcher",
+                       "body": 'Uno de tus cupones está cercano a expirar',
+                       "tipoNoti": 3, "idCupon":0}
+                     });
+
+              var regTokens = [];
+
+              data[0].forEach((elementw, index) => {
+              regTokens.push(elementw.pushKey);
+              });
+
+              sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+              if (err) console.error(err);
+              else console.log(response);
+              });
+
+            }
+
+
+    }).catch(err => res.send(err).status(500));
+
+    }
+      else{
    Promise.all([db(`SELECT DISTINCT p.pushKey FROM pushHandler as p 
       WHERE p.idCliente = (SELECT h.idCliente FROM cita as h WHERE h.idCita = ?) 
       AND p.logOut IS NULL AND p.so = 'Android'`,[idCita]),
@@ -1961,7 +2048,7 @@ var tipox = 1;
 
 
     }).catch(err => res.send(err).status(500));
-
+    }
 }
 
 
