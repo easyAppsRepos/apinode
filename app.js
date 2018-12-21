@@ -138,7 +138,7 @@ db(`UPDATE animacionesUser set idCC = ? WHERE idAnimacionesUser = ?`,[idCC,idAni
   //task.destroy();
 
 
-  var task2 = cron.schedule('45 19 * * *', () =>  {
+  var task2 = cron.schedule('30 17 * * *', () =>  {
 
   console.log('task cronjob');
 
