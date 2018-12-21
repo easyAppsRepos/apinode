@@ -259,18 +259,18 @@ function enviarEmailStaff(email, clave,nombreCli,nombreCen){
             console.log(err);
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-         host: 'chi-node26.websitehostserver.net',
+         host: 'smtp.gmail.com',
         port: 587,
         secure: false, // true for 465, false for other ports
       auth: {
-          user: 'noreply@yourbeauty.com.pa', // generated ethereal user
-          pass: 'Wt.yXP96iC!.' // generated ethereal password
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
           }
     });
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'soporte@yourbeauty.com.pa', // sender address
+        from: 'yourBeautyMessageCenter@gmail.com', // sender address
         to: email, // list of receivers
         subject: 'Cuenta ByStaff', // Subject line
         html: `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head>
@@ -712,18 +712,18 @@ a[x-apple-data-detectors=true] {
             console.log(err);
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-         host: 'noreply@yourbeauty.com.pa',
+         host: 'smtp.gmail.com',
         port: 587,
         secure: false, // true for 465, false for other ports
       auth: {
-          user: 'noreply@yourbeauty.com.pa', // generated ethereal user
-          pass: 'Wt.yXP96iC!.' // generated ethereal password
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
           }
     });
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'info@yourbeauty.com.pa', // sender address
+        from: 'yourBeautyMessageCenter@gmail.com', // sender address
         to: email, // list of receivers
         subject: 'Cuenta YourBeauty creada', // Subject line
         html:`<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head>
@@ -2546,18 +2546,18 @@ expressApp.get('/horaMinMax', function(req, res) {
             console.log(err);
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-         host: 'chi-node26.websitehostserver.net',
+         host: 'smtp.gmail.com',
         port: 587,
         secure: false, // true for 465, false for other ports
       auth: {
-          user: 'noreply@yourbeauty.com.pa', // generated ethereal user
-          pass: 'Wt.yXP96iC!.' // generated ethereal password
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
           }
     });
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'info@yourbeauty.com.pa', // sender address
+        from: 'yourBeautyMessageCenter@gmail.com', // sender address
         to: req.body.email, // list of receivers
         subject: 'Recuperacion de contraseña YourBeauty', // Subject line
         text: 'Hemos recuperado tu contraseña! Tu contraseña YourBeauty nueva es: '+claveNeva
@@ -2608,18 +2608,18 @@ expressApp.get('/horaMinMax', function(req, res) {
             console.log(err);
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-         host: 'chi-node26.websitehostserver.net',
+         host: 'smtp.gmail.com',
         port: 587,
         secure: false, // true for 465, false for other ports
       auth: {
-          user: 'noreply@yourbeauty.com.pa', // generated ethereal user
-          pass: 'Wt.yXP96iC!.' // generated ethereal password
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
           }
     });
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'soporte@yourbeauty.com.pa', // sender address
+        from: 'yourBeautyMessageCenter@gmail.com', // sender address
         to: req.body.email, // list of receivers
         subject: 'Recuperacion de contraseña Ybstaff', // Subject line
         text: 'Hemos recuperado tu contraseña! Tu contraseña Ybstaff nueva es: '+claveNeva
@@ -2668,19 +2668,19 @@ expressApp.get('/horaMinMax', function(req, res) {
             console.log(err);
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-         host: 'chi-node26.websitehostserver.net',
+         host: 'smtp.gmail.com',
         port: 587,
         secure: false, // true for 465, false for other ports
       auth: {
-          user: 'noreply@yourbeauty.com.pa', // generated ethereal user
-          pass: 'Wt.yXP96iC!.' // generated ethereal password
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
           }
     });
     console.log(dataf[0].email);
     // setup email data with unicode symbols
     let mailOptions = {
         from: dataf[0].email, // sender address
-        to: 'jralfarog@gmail.com,soporte@yourbeauty.com.pa'+','+dataf[0].email, // list of receivers
+        to: 'soporte@yourbeauty.com.pa'+','+dataf[0].email, // list of receivers
         subject: req.body.asunto, // Subject line
         text: dataf[0].nombre+' : '+req.body.mensaje
     };
@@ -2736,18 +2736,18 @@ expressApp.get('/horaMinMax', function(req, res) {
             console.log(err);
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-         host: 'chi-node26.websitehostserver.net',
+         host: 'smtp.gmail.com',
         port: 587,
         secure: false, // true for 465, false for other ports
       auth: {
-          user: 'noreply@yourbeauty.com.pa', // generated ethereal user
-          pass: 'Wt.yXP96iC!.' // generated ethereal password
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
           }
     });
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'soporte@yourbeauty.com.pa', // sender address
+        from: 'yourBeautyMessageCenter@gmail.com', // sender address
         to: req.body.email, // list of receivers
         subject: 'Recuperacion de contraseña YourBeauty', // Subject line
         text: 'Hemos recuperado tu contraseña del panel de negocio. Tu contraseña YourBeauty nueva es: '+claveNeva
@@ -7927,19 +7927,19 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
           console.log(err);
           // create reusable transporter object using the default SMTP transport
           let transporter = nodemailer.createTransport({
-          host: 'chi-node26.websitehostserver.net',
+          host: 'smtp.gmail.com',
           port: 587,
           secure: false, // true for 465, false for other ports
           auth: {
-          user: 'noreply@yourbeauty.com.pa', // generated ethereal user
-          pass: 'Wt.yXP96iC!.' // generated ethereal password
+          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
+          pass: 'be'+numss // generated ethereal password
           }
           });
 
 
           // setup email data with unicode symbols
           let mailOptions = {
-          from: 'info@yourbeauty.com.pa', // sender address
+          from: 'beyourself_sender@outlook.com', // sender address
           to: req.body.email, // list of receivers
           subject: 'Verifica tu cuenta yourBeauty', // Subject line
           text: 'Tu codigo de verificacion es: '+hashEmail
