@@ -2792,8 +2792,8 @@ expressApp.get('/horaMinMax', function(req, res) {
 var stringQuery = `SELECT c.*,  
  (SELECT COUNT(idControlOferta) FROM control_oferta WHERE idCentro = c.idCentro 
       AND fechaCaducidad > CONVERT_TZ(now(),'+00:00','-05:00')) as ofertaActiva,
-          (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN FORMAT(MAX(s.precio),2) ELSE FORMAT(MAX(s.precio),0) END) as pMax, 
-    (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN FORMAT(MIN(s.precio),2) ELSE FORMAT(MIN(s.precio),0) END) as pMin,  
+          (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN REPLACE(FORMAT(MAX(s.precio),2), ',', '') ELSE REPLACE(FORMAT(MAX(s.precio),0), ',', '') END) as pMax, 
+    (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN REPLACE(FORMAT(MIN(s.precio),2), ',', '') ELSE REPLACE(FORMAT(MIN(s.precio),0), ',', '') END) as pMin,  
 COUNT(DISTINCT ec.puntuacion) as cantRate, 
 (6371 * acos( cos( radians(`+(req.body.lat || 0)+`) ) * cos( radians( c.latitud ) ) 
          * cos( radians(c.longitud) - radians(`+(req.body.long || 0)+`)) + sin(radians(`+(req.body.lat || 0)+`)) 
@@ -5437,8 +5437,8 @@ GROUP BY c.idCentro  `,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.bo
 
   expressApp.post('/buscarServiciosGPS2', (req, res) => {
      Promise.all([db(`SELECT c.*, 
-      (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN FORMAT(MAX(s.precio),2) ELSE FORMAT(MAX(s.precio),0) END) as pMax, 
-      (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN FORMAT(MIN(s.precio),2) ELSE FORMAT(MIN(s.precio),0) END) as pMin,
+      (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN REPLACE(FORMAT(MAX(s.precio),2), ',', '') ELSE REPLACE(FORMAT(MAX(s.precio),0), ',', '') END) as pMax, 
+      (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN REPLACE(FORMAT(MIN(s.precio),2), ',', '') ELSE REPLACE(FORMAT(MIN(s.precio),0), ',', '') END) as pMin,
       (SELECT COUNT(idControlOferta) FROM control_oferta WHERE idCentro = c.idCentro 
       AND estado = 1 AND fechaCaducidad > CONVERT_TZ(now(),'+00:00','-05:00')) as ofertaActiva, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
@@ -5486,8 +5486,8 @@ GROUP BY c.idCentro  `,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.bo
 
   expressApp.post('/getCentrosMapaFix', (req, res) => {
     db(`SELECT c.*,
-    (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN FORMAT(MAX(s.precio),2) ELSE FORMAT(MAX(s.precio),0) END) as pMax, 
-    (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN FORMAT(MIN(s.precio),2) ELSE FORMAT(MIN(s.precio),0) END) as pMin, 
+    (CASE WHEN (MAX(s.precio) MOD 1 > 0) THEN REPLACE(FORMAT(MAX(s.precio),2), ',', '') ELSE REPLACE(FORMAT(MAX(s.precio),0), ',', '') END) as pMax, 
+    (CASE WHEN (MIN(s.precio) MOD 1 > 0) THEN REPLACE(FORMAT(MIN(s.precio),2), ',', '') ELSE REPLACE(FORMAT(MIN(s.precio),0), ',', '') END) as pMin, 
       COUNT(DISTINCT ec.puntuacion) as cantRate, 
        ROUND(AVG(ec.puntuacion),2) as rate, 
       ( 6371 * acos( cos( radians(?) ) * cos( radians( c.latitud ) ) 
@@ -5642,7 +5642,7 @@ GROUP BY c.idCentro  `,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.bo
       * cos( radians(c.longitud) - radians(?)) + sin(radians(?)) 
       * sin( radians(c.latitud))))) AS distance,
     c.idCentro, c.nombre as nombreCentro, c.idFoto, s.nombre as nombreServicio, s.duracion as duracionServicio, s.idServicio, s.idCategoria, s.idSubcategoria, 
-    (CASE WHEN (s.precio MOD 1 > 0) THEN FORMAT(s.precio,2) ELSE FORMAT(s.precio,0) END) as precioServicio   
+    (CASE WHEN (s.precio MOD 1 > 0) THEN REPLACE(FORMAT(s.precio,2), ',', '') ELSE REPLACE(FORMAT(s.precio,0), ',', '') END) as precioServicio   
     FROM paquete_servicio as ps, paquete_centro as pc, centro as c, servicio as s LEFT JOIN categoria as ca ON ca.idCategoria = s.idCategoria    
     WHERE pc.idPaqueteCentro = ps.idPaqueteCentro 
     AND s.idServicio = ps.idServicio 
@@ -5675,9 +5675,9 @@ GROUP BY c.idCentro  `,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.bo
 
   expressApp.post('/ofertasActivas2', (req, res) => {
     db(`SELECT s.idServicio, s.idCentro, s.idCategoria, s.nombre, s.duracion, 
-    (CASE WHEN (s.precio MOD 1 > 0) THEN FORMAT(s.precio,2) ELSE FORMAT(s.precio,0) END) as precio,
+    (CASE WHEN (s.precio MOD 1 > 0) THEN REPLACE(FORMAT(s.precio,2), ',', '') ELSE REPLACE(FORMAT(s.precio,0), ',', '') END) as precio,
     s.estado,s.idSubcategoria, 
-      (CASE WHEN (co.precioOferta MOD 1 > 0) THEN FORMAT(co.precioOferta,2) ELSE FORMAT(co.precioOferta,0) END) as precio2,
+      (CASE WHEN (co.precioOferta MOD 1 > 0) THEN REPLACE(FORMAT(co.precioOferta,2), ',', '') ELSE REPLACE(FORMAT(co.precioOferta,0), ',', '') END) as precio2,
       co.fechaCaducidad, c.nombre as nombreCentro, 
     (SELECT  COUNT(DISTINCT ec.puntuacion) FROM evaluacionCentro as ec WHERE ec.idCentro = c.idCentro  AND ec.estado = 2 ) as cantRate,
     (SELECT  AVG(esc.puntuacion) FROM evaluacionCentro as esc WHERE esc.idCentro = c.idCentro AND esc.estado = 2 ) as rate,
@@ -6339,10 +6339,10 @@ console.log(data[1]);
       FROM cliente as xcli, centro as c, cita as ci LEFT JOIN empleado as vv ON vv.idEmpleado = ci.idEmpleado  
       WHERE ci.idCita = ? AND c.idCentro = ci.idCentro AND xcli.idCliente = ci.idCliente`,[req.body.idCita]),
     db(`SELECT s.idServicio, s.nombre, s.duracion, 
-      (CASE WHEN (s.precio MOD 1 > 0) THEN FORMAT(s.precio,2) ELSE FORMAT(s.precio,0) END) as precio, 
+      (CASE WHEN (s.precio MOD 1 > 0) THEN REPLACE(FORMAT(s.precio,2), ',', '') ELSE REPLACE(FORMAT(s.precio,0), ',', '') END) as precio, 
       sc.precioCobrado, sc.idCita, sc.idServicioCita, sc.horaInicio, 
       sc.estado, sc.horaFin, 
-      (CASE WHEN (sc.precioMomentoCompra MOD 1 > 0) THEN FORMAT(sc.precioMomentoCompra,2) ELSE FORMAT(sc.precioMomentoCompra,0) END) as precioMomentoCompra, 
+      (CASE WHEN (sc.precioMomentoCompra MOD 1 > 0) THEN REPLACE(FORMAT(sc.precioMomentoCompra,2), ',', '') ELSE REPLACE(FORMAT(sc.precioMomentoCompra,0), ',', '') END) as precioMomentoCompra, 
       s.idCategoria, e.idFoto as idFotoE, e.nombre as nombreEmpleado,
        c.nombre as nombreCategoria  
       FROM servicio as s, categoria as c, servicio_cita as sc, empleado as e   
@@ -6507,9 +6507,9 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
 
   expressApp.post('/getServiciosCategoria22', (req, res) => {
      Promise.all([db(`SELECT ss.idServicio, ss.idCentro, ss.idCategoria, ss.nombre,
-      ss.duracion, (CASE WHEN (ss.precio MOD 1 > 0) THEN FORMAT(ss.precio,2) ELSE FORMAT(ss.precio,0) END) as precio,
+      ss.duracion, (CASE WHEN (ss.precio MOD 1 > 0) THEN REPLACE(FORMAT(ss.precio,2), ',', '') ELSE REPLACE(FORMAT(ss.precio,0), ',', '') END) as precio,
       ss.estado,ss.idSubcategoria,  
-      (SELECT (CASE WHEN (co.precioOferta MOD 1 > 0) THEN FORMAT(co.precioOferta,2) ELSE FORMAT(co.precioOferta,0) END) FROM control_oferta AS co 
+      (SELECT (CASE WHEN (co.precioOferta MOD 1 > 0) THEN REPLACE(FORMAT(co.precioOferta,2), ',', '') ELSE REPLACE(FORMAT(co.precioOferta,0), ',', '') END) FROM control_oferta AS co 
       WHERE co.idServicio = ss.idServicio AND co.idCentro = ? 
       AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta, c.nombre as nombreCategoria, c.idFoto as imagenCategoria FROM servicio as ss, categoria as c  
       WHERE  ss.idCentro = ? AND c.idCategoria = ss.idCategoria 
