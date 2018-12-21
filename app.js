@@ -1268,7 +1268,7 @@ var horaI = req.body.fecha+' '+elementw.inicio;
 
 
 
-   function enviarEmailUsuarioNR(telefono,direccion, email,nombreCen,nombreCli,fecha,hora,servicios,tipo){
+   function enviarEmailUsuarioNR(telefono,direccion, email,nombreCen,nombreCli,fecha,hora,servicios,tipo,mensajeRepro){
 
   var numss='123456789';
 
@@ -1282,7 +1282,7 @@ moment.locale('es');
   var asuntoEm = '';
   servicios.forEach(item=>{
 
-    if(tipo == 4){
+    if(tipo == 4 || tipo == 5){
 
     var horaII = moment(item.horaInicio, "YYYY-MM-DD HH:mm:ss").format("hh:mm a");
     var horaFF = moment(item.horaFin, "YYYY-MM-DD HH:mm:ss").format("hh:mm a");
@@ -1382,6 +1382,14 @@ moment.locale('es');
      reserva para el dia ${fechaD} a las ${horaD}.`;
 
   }
+
+    if(tipo == 5){
+     asuntoEm = 'YourBeauty - Solicitud de reprogramación';
+    stringMessage = `${nombreCen} ha solicitado la reprogramación de 
+    la reserva. Motivo: ${mensajeRepro}`;
+
+  }
+
 
   nodemailer.createTestAccount((err, account) => {
             console.log(err);
@@ -2661,7 +2669,7 @@ expressApp.get('/horaMinMax', function(req, res) {
         from: dataf[0].email, // sender address
         to: 'soporte@yourbeauty.com.pa'+','+dataf[0].email, // list of receivers
         subject: req.body.asunto, // Subject line
-        text: 'El centro '+dataf[0].nombre+' ha iniciado una solicitud de soporte con el siguiente mensaje:'+req.body.mensaje
+        text: dataf[0].nombre+' : '+req.body.mensaje
     };
 
     // send mail with defined transport object
@@ -4322,7 +4330,7 @@ db(`UPDATE servicio_cita set estado=?
           enviarPush(req.body.idCita,2);
           enviarEmailUsuarioNR(data[3][0].telefono,data[3][0].direccion,data[3][0].email,data[3][0].nombreCentro,
               data[3][0].nombreCliente,
-              data[3][0].fecha,data[3][0].hi,data[4], 4);
+              data[3][0].fecha,data[3][0].hi,data[4], 4,'');
 
         }      
 
@@ -4353,13 +4361,26 @@ db(`UPDATE servicio_cita set estado=2
 
         if (!datass) res.send().status(500);
 
-     db(`UPDATE cita set estado=5, comentarioCita=?, reprogramada=1 WHERE idCita = ?`,[req.body.comentario,req.body.idCita])
+     Promise.all([db(`UPDATE cita set estado=5, comentarioCita=?, reprogramada=1 WHERE idCita = ?`,[req.body.comentario,req.body.idCita]),
+      db(`SELECT c.confirmacionAutomatica,cli.email, 
+      cli.nombre as nombreCliente, ce.nombre as nombreCentro, DATE(r.horaInicio) as fecha, r.horaInicio as hi, ce.direccion, ce.telefono     
+          FROM configuracionCentro as c, cliente as cli, centro as ce, cita as r 
+           WHERE r.idCita = ? AND c.idCentro = r.idCentro 
+           AND ce.idCentro = r.idCentro AND cli.idCliente = r.idCliente LIMIT 1`,[req.body.idCita]),
+       db(`SELECT sc.*, sc.precioCobrado as precioFinal, e.nombre as nombreEmpleado, 
+        s.nombre FROM servicio_cita as sc, empleado as e, servicio as s 
+        WHERE e.idEmpleado = sc.idEmpleado 
+        AND s.idServicio = sc.idServicio AND sc.idCita = ? `,[req.body.idCita])])
       .then((data) => {
         
           enviarPush(req.body.idCita,1);
-               
+          
+              enviarEmailUsuarioNR(data[1][0].telefono,data[1][0].direccion,data[1][0].email,data[1][0].nombreCentro,
+              data[1][0].nombreCliente,
+              data[1][0].fecha,data[1][0].hi,data[2], 5,req.body.comentario);
 
-        return res.send(data);
+
+        return res.send(data[0]);
       }).catch(err => res.send(err).status(500));
 
 
@@ -4526,7 +4547,7 @@ db(`UPDATE servicio_cita set estado=2
 
           enviarEmailUsuarioNR(data[0][0].telefono,data[0][0].direccion,data[0][0].email,data[0][0].nombreCentro,
               data[0][0].nombreCliente,
-              req.body.fecha,req.body.inicio,req.body.servicios, 2);
+              req.body.fecha,req.body.inicio,req.body.servicios, 2,'');
 
 
         return res.send(data);
@@ -6179,7 +6200,7 @@ console.log(data[1]);
 
             enviarEmailUsuarioNR(data[1][0].telefono,data[1][0].direccion,data[1][0].email,data[1][0].nombreCentro,
               data[1][0].nombreCliente,
-              req.body.fecha,req.body.fechaInicio,req.body.servicios, ttReserva);
+              req.body.fecha,req.body.fechaInicio,req.body.servicios, ttReserva,'');
           });
 
          return res.send({insertId:idCita, confirmada:confir });
