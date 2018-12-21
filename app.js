@@ -8252,11 +8252,28 @@ WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM e
 
 
   expressApp.post('/cerrarS', (req, res) => {
-    db(`UPDATE  pushHandler set logOut = CURRENT_TIMESTAMP WHERE idCliente = ?`,[req.body.idCliente])
+
+    if(req.body.device){
+
+      db(`UPDATE  pushHandler set logOut = CURRENT_TIMESTAMP 
+      WHERE idCliente = ? AND deviceID = ?`,[req.body.idCliente,req.body.device])
       .then((data) => {
         if (!data) res.send().status(500);
         return res.send(data);
       }).catch(err => res.send(err).status(500));
+
+    }
+    else{
+
+      db(`UPDATE  pushHandler set logOut = CURRENT_TIMESTAMP 
+      WHERE idCliente = ? `,[req.body.idCliente])
+      .then((data) => {
+        if (!data) res.send().status(500);
+        return res.send(data);
+      }).catch(err => res.send(err).status(500));
+
+    }  
+
   });
 
 
