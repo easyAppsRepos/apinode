@@ -1393,7 +1393,7 @@ moment.locale('es');
 
   nodemailer.createTestAccount((err, account) => {
             console.log(err);
-           
+           /* 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
          host: 'smtp.gmail.com',
@@ -1404,7 +1404,7 @@ moment.locale('es');
           pass: 'be'+numss // generated ethereal password
           }
     });
-/* 
+*/
 
     let transporter = nodemailer.createTransport({
          host: 'chi-node26.websitehostserver.net',
@@ -1416,10 +1416,10 @@ moment.locale('es');
           }
     });
 
-*/
+
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'info@yourbeauty.com.pa', // sender address
+        from: 'noreply@yourbeauty.com.pa', // sender address
         to: email, // list of receivers
         subject: asuntoEm, // Subject line
         html:`<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head>
