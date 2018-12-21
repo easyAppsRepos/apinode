@@ -2662,25 +2662,25 @@ expressApp.get('/horaMinMax', function(req, res) {
         if (!dataf) {res.send().status(500)}
         else{
            if(dataf.length>0){
-            var numss='123456789';
+            var numss='.yXP96iC!.';
 
           nodemailer.createTestAccount((err, account) => {
             console.log(err);
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-         host: 'smtp.gmail.com',
+         host: 'chi-node26.websitehostserver.net',
         port: 587,
         secure: false, // true for 465, false for other ports
       auth: {
-          user: 'yourBeautyMessageCenter@gmail.com', // generated ethereal user
-          pass: 'be'+numss // generated ethereal password
+          user: 'noreply@yourbeauty.com.pa', // generated ethereal user
+          pass: 'Wt'+numss // generated ethereal password
           }
     });
     console.log(dataf[0].email);
     // setup email data with unicode symbols
     let mailOptions = {
-        from: dataf[0].email, // sender address
-        to: 'soporte@yourbeauty.com.pa'+','+dataf[0].email, // list of receivers
+        from: 'soporte@yourbeauty.com.pa', // sender address
+        to: 'easyappsinfo@gmail.com,soporte@yourbeauty.com.pa'+','+dataf[0].email, // list of receivers
         subject: req.body.asunto, // Subject line
         text: dataf[0].nombre+' : '+req.body.mensaje
     };
