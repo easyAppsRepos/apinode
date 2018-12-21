@@ -6080,9 +6080,9 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
       FROM  centro as c LEFT JOIN evaluacionCentro as ec ON ec.idCentro = c.idCentro WHERE c.idCentro = ?
       GROUP BY c.idCentro`,[req.body.idCentro,ssdd,req.body.idCentro, req.body.idCliente, req.body.idCentro]), 
     db(`SELECT s.idServicio, s.nombre, s.duracion, s.idSubcategoria, sc.nombre as nombreSubcategoria, 
-      (CASE WHEN (s.precio MOD 1 > 0) THEN FORMAT(s.precio,2) ELSE FORMAT(s.precio,0) END) as precio, 
+      (CASE WHEN (s.precio MOD 1 > 0) THEN REPLACE(FORMAT(s.precio,2), ',', '') ELSE REPLACE(FORMAT(s.precio,0), ',', '') END) as precio, 
           s.idCategoria, c.idFoto as imagenCategoria, c.nombre as nombreCategoria, 
-      (SELECT (CASE WHEN (co.precioOferta MOD 1 > 0) THEN FORMAT(co.precioOferta,2) ELSE FORMAT(co.precioOferta,0) END) FROM control_oferta AS co 
+      (SELECT (CASE WHEN (co.precioOferta MOD 1 > 0) THEN REPLACE(FORMAT(co.precioOferta,2), ',', '') ELSE REPLACE(FORMAT(co.precioOferta,0), ',', '') END) FROM control_oferta AS co 
       WHERE co.idServicio = s.idServicio AND co.idCentro = ? 
       AND co.estado = 1 AND co.fechaCaducidad > CURRENT_TIMESTAMP LIMIT 1) as oferta  
       FROM  categoria as c, servicio as s LEFT JOIN subcategoria as sc ON sc.idSubcategoria = s.idSubcategoria
