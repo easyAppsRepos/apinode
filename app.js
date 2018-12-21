@@ -6112,8 +6112,11 @@ WHERE  c.fechaExpira > CURRENT_TIMESTAMP AND c.estado = 1  ORDER BY c.porcentaje
          console.log(i);
         return i;});
 
-console.log(data[1]);
-       
+      data[1].map(item=>{
+        item.precio = item.precio*1;
+        return item;
+      });
+        
 
         var groups = _.groupBy(data[1], 'nombreCategoria');
 
