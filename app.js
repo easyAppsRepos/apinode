@@ -6529,6 +6529,12 @@ ORDER BY c.porcentajeDescuento DESC LIMIT 1`,[req.body.idCentro,req.body.idClien
       .then((data) => {
         if (!data) res.send().status(500);
 
+            data[0].map(item=>{
+        item.precio = item.precio*1;
+        return item;
+      });
+
+
       var groups = _.groupBy(data[0], 'idCategoria');
 
 
