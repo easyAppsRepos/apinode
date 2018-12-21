@@ -5755,7 +5755,8 @@ GROUP BY c.idCentro  `,[req.body.fecha1, req.body.fecha2,req.body.fecha1, req.bo
 
 
   expressApp.post('/getCC', (req, res) => {
-    db(`SELECT c.idCentro,c.idFoto,c.nombre as nombreCentro, k.*,
+    db(`SELECT c.idCentro,c.idFoto,c.nombre as nombreCentro, k.idCupon,k.nombre, k.tipo, k.porcentajeDescuento,
+      k.fechaExpira, k.estado, k.tipoDescuento, k.premio,
       MAX(s.precio) as pMax, 
       MIN(s.precio) as pMin,COUNT(DISTINCT ec.puntuacion) as cantRate, 
       AVG(ec.puntuacion) as rate FROM  cupon as k, servicio as s, centro as c INNER JOIN cupon_centro AS cce ON cce.idCentro = c.idCentro AND cce.idCupon = ?
