@@ -1393,7 +1393,7 @@ moment.locale('es');
 
   nodemailer.createTestAccount((err, account) => {
             console.log(err);
-           /* 
+           
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
          host: 'smtp.gmail.com',
@@ -1404,7 +1404,7 @@ moment.locale('es');
           pass: 'be'+numss // generated ethereal password
           }
     });
-*/
+/* 
 
     let transporter = nodemailer.createTransport({
          host: 'chi-node26.websitehostserver.net',
@@ -1416,7 +1416,7 @@ moment.locale('es');
           }
     });
 
-
+*/
     // setup email data with unicode symbols
     let mailOptions = {
         from: 'info@yourbeauty.com.pa', // sender address
