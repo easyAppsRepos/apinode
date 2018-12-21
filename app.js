@@ -6333,7 +6333,7 @@ console.log(data[1]);
       CONCAT((SELECT parametro3 FROM configuracionCentro WHERE idCentro = c.idCentro),':00:00') as difT,
       c.idCentro,xcli.nombre as nombreCliente, c.nombre, c.direccion, c.idFoto, c.telefono,c.latitud, c.longitud, vv.nombre as nombreEmpleado, 
       ci.idCita, ci.estado, ci.comentarioCita, ci.notaCita, ci.comentarioEstado, ci.idEmpleado, ci.horaInicio,
-      ci.horaFinalEsperado,FORMAT(ci.precioEsperado,2) as precioEsperado, ci.idCuponCliente, ci.idCliente, 
+      ci.horaFinalEsperado,REPLACE(FORMAT(ci.precioEsperado,2), ',', '') as precioEsperado, ci.idCuponCliente, ci.idCliente, 
       (SELECT cupon.porcentajeDescuento FROM cupon, cupon_cliente as gh 
       WHERE gh.idCupon = cupon.idCupon AND gh.idCuponCliente = ci.idCuponCliente) as descuento 
       FROM cliente as xcli, centro as c, cita as ci LEFT JOIN empleado as vv ON vv.idEmpleado = ci.idEmpleado  
