@@ -5875,7 +5875,7 @@ AND cc.idCliente = ?`,[req.body.idCliente])
     db(`SELECT (SELECT GROUP_CONCAT(gg.nombre) FROM centro as gg 
 WHERE gg.idCentro IN(SELECT cp.idCentro FROM cupon_centro as cp 
 WHERE cp.idCupon = c.idCupon)) as nombresCentro, 
-c.nombre as nombreCupon,c.fechaExpira, c.idCupon 
+c.nombre as nombreCupon,c.fechaExpira, c.idCupon,c.idFoto  
 FROM cupon as c, cupon_cliente as cc WHERE c.idCupon = cc.idCupon 
 AND cc.idCuponCliente = ?`,[req.body.idCuponCliente])
       .then((data) => {
