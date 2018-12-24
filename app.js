@@ -7620,7 +7620,7 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
       WHERE idCentro = ?`,
       [direccionC,req.body.descripcion,req.body.latitud,req.body.longitud,req.body.telefonoNegocio,req.body.webUsuario,req.body.idCentro]),
      db(`UPDATE horarioEmpleado as he, horarioCentro as hc set he.horaEntrar = hc.horaAbrir, he.horaSalir = hc.horaCerrar,he.estado = hc.estado   
-WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT idEmpleado FROM empleado WHERE hc.idCentro = ?)`,
+WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT ss.idEmpleado FROM empleado as ss WHERE ss.idCentro = ?)`,
       [req.body.idCentro]),
       db(`UPDATE usuario_consola set pasos=3 WHERE email = (SELECT email FROM centro WHERE idCentro = ?)`,[req.body.idCentro])])
       .then((data) => {
