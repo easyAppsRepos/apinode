@@ -7624,7 +7624,7 @@ db(`SELECT nombre FROM centro WHERE idCentro = ?`,[idCentro])])
          if (!data) res.send().status(500);
 
       db(`UPDATE horarioEmpleado as he, horarioCentro as hc set he.horaEntrar = hc.horaAbrir, he.horaSalir = hc.horaCerrar,he.estado = hc.estado   
-      WHERE he.diaSemana = hc.diaSemana AND he.idEmpleado IN (SELECT ss.idEmpleado FROM empleado as ss WHERE ss.idCentro = ?)`,
+      WHERE he.diaSemana = hc.diaSemana AND hc.idCentro = ? AND he.idEmpleado IN (SELECT ss.idEmpleado FROM empleado as ss WHERE ss.idCentro = hc.idCentro)`,
       [req.body.idCentro])      .then((datas) => {
          if (!datas) res.send().status(500);
 
